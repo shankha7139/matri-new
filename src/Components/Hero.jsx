@@ -1,7 +1,9 @@
 import React from "react";
 import hero from "../assets/Hero.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="hero relative ">
@@ -10,7 +12,10 @@ export default function Hero() {
           LOGO
         </div>
         <div className="butt absolute top-0 right-0  ">
-          <button className="bg-cyan-600 text-white px-5 py-2 text-xl mx-5 my-10 rounded-br-xl rounded-tl-xl ">
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-cyan-600 text-white px-5 py-2 text-xl mx-5 my-10 rounded-br-xl rounded-tl-xl "
+          >
             Login
           </button>
           <button className="bg-rose-600 text-white px-5 py-2 text-xl mx-5 my-10 rounded-br-xl rounded-tl-xl ">
