@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import log from "../assets/loginban.jpg";
+import regi from "../assets/regban.jpg";
 
 export default function Login() {
   const [reg, setReg] = useState(false);
@@ -85,7 +86,7 @@ export default function Login() {
               </div>
             </div>
             <div class="md:block hidden w-1/2 ">
-              <img className="rounded-2xl " src={log} />
+              <img className="rounded-2xl " src={regi} />
             </div>
           </div>
         </section>
