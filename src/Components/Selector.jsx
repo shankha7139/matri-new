@@ -1,7 +1,9 @@
 import React from "react";
 import playstore from "../assets/playstore.png";
 import appstore from "../assets/appstore.png";
+import { useNavigate } from "react-router-dom";
 export default function () {
+  const navigate = useNavigate();
   return (
     <>
       <div className="container flex  px-40 py-20 bg-red-100 ">
@@ -15,13 +17,28 @@ export default function () {
         <div className="right basis-2/3 px-10 ">
           <h1 className="text-5xl py-3 ">By Mother Tongue</h1>
           <div className="buttons flex gap-5 py-3 border-t-2 border-cyan-400 border-dotted ">
-            <button className=" basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() =>
+                navigate("/matri", { state: { language: "bengali" } })
+              }
+              className=" basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               Bengali
             </button>
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300  ">
+            <button
+              onClick={() =>
+                navigate("/matri", { state: { language: "hindi" } })
+              }
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300  "
+            >
               Hindi
             </button>
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() =>
+                navigate("/matri", { state: { language: "english" } })
+              }
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               English
             </button>
             <button className="basis-2/5  bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
@@ -30,13 +47,28 @@ export default function () {
           </div>
           <h1 className="text-5xl py-3 ">By Religion</h1>
           <div className="buttons flex gap-5 py-3 border-t-2 border-cyan-400 border-dotted ">
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() =>
+                navigate("/matri", { state: { religion: "hindu" } })
+              }
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               Hindu
             </button>
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() =>
+                navigate("/matri", { state: { religion: "muslim" } })
+              }
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               Muslim
             </button>
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() =>
+                navigate("/matri", { state: { religion: "christian" } })
+              }
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               Christian
             </button>
             <button className=" basis-2/5 bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300">
@@ -45,13 +77,22 @@ export default function () {
           </div>
           <h1 className="text-5xl py-3 ">By Profession</h1>
           <div className="buttons flex gap-5 py-3 border-t-2 border-cyan-400 border-dotted ">
-            <button className=" basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() => navigate("/matri", { state: { prof: "teacher" } })}
+              className=" basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               Teacher
             </button>
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() => navigate("/matri", { state: { prof: "doctor" } })}
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               Doctor
             </button>
-            <button className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300">
+            <button
+              onClick={() => navigate("/matri", { state: { prof: "pilot" } })}
+              className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300"
+            >
               Pilot
             </button>
             <button className="basis-2/5 bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
