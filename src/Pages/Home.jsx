@@ -19,7 +19,7 @@ export default function Home() {
       <div className="getstarted flex gap-10 bg-rose-500 px-60 py-5 my-5 ">
         <p className="text-white text-5xl">Your Story is waiting to Happen</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/all-matri")}
           className="text-white text-5xl bg-cyan-700 px-5 py-2 rounded-br-xl rounded-tl-xl "
         >
           Get started

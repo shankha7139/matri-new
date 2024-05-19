@@ -41,7 +41,10 @@ export default function () {
             >
               English
             </button>
-            <button className="basis-2/5  bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() => navigate("/all-matri")}
+              className="basis-2/5  bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               More Matrimonials
             </button>
           </div>
@@ -49,7 +52,7 @@ export default function () {
           <div className="buttons flex gap-5 py-3 border-t-2 border-cyan-400 border-dotted ">
             <button
               onClick={() =>
-                navigate("/matri", { state: { religion: "hindu" } })
+                navigate("/matri", { state: { religion: "Hindu" } })
               }
               className="basis-1/5 bg-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
             >
@@ -71,7 +74,10 @@ export default function () {
             >
               Christian
             </button>
-            <button className=" basis-2/5 bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300">
+            <button
+              onClick={() => navigate("/all-matri")}
+              className=" basis-2/5 bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300"
+            >
               More Matrimonials
             </button>
           </div>
@@ -95,7 +101,10 @@ export default function () {
             >
               Pilot
             </button>
-            <button className="basis-2/5 bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 ">
+            <button
+              onClick={() => navigate("/all-matri")}
+              className="basis-2/5 bg-cyan-600 text-white text-3xl px-3 py-2 rounded hover:shadow-xl ease-in-out duration-300 "
+            >
               More Matrimonials
             </button>
           </div>

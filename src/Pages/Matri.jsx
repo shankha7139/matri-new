@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 export default function Matri() {
   const location = useLocation();
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState([]);
   const loadData = async () => {
     let response = await fetch("http://localhost:8008/api/matriData", {
       method: "POST",
@@ -13,7 +13,7 @@ export default function Matri() {
       },
     });
     response = await response.json();
-    console.log(respose[0]);
+    setUser(response[0]);
   };
 
   useEffect(() => {
@@ -22,9 +22,29 @@ export default function Matri() {
 
   return (
     <div>
-      {location.state.religion}
-      {location.state.language}
-      {location.state.prof}
+      {location.state.religion ? (
+        user
+          .filter((item) => item.religion == location.state.religion)
+          .map((filtered) => {
+            return <div>{filtered.name}</div>;
+          })
+      ) : (
+        <div className="div">
+          {location.state.language
+            ? user
+                .filter((item) => item.motherTongue == location.state.language)
+                .map((filtered) => {
+                  return <div>{filtered.name}</div>;
+                })
+            : user
+                .filter((item) => item.prof == location.state.prof)
+                .map((filtered) => {
+                  return <div>{filtered.name}</div>;
+                })}
+        </div>
+      )}
     </div>
   );
 }
+
+//30:10---#9
