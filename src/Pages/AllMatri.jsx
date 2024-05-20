@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import Card from "../Components/Card";
+import Footer from "../Components/Footer";
 
 export default function Matri() {
   const location = useLocation();
@@ -21,13 +23,20 @@ export default function Matri() {
   }, []);
 
   return (
-    <div>
-      {user != []
-        ? user.map((data) => {
-            return <div>{data.name}</div>;
-          })
-        : ""}
-    </div>
+    <>
+      <div className="px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        {user != []
+          ? user.map((data) => {
+              return (
+                <div>
+                  <Card name={data.name} sex={data.sex} prof={data.prof} />
+                </div>
+              );
+            })
+          : ""}
+      </div>
+      <Footer />
+    </>
   );
 }
 
