@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
 import Matri from "./Pages/Matri";
 import AllMatri from "./Pages/AllMatri";
+import Register from "./Pages/Register";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/matri" element={<Matri />} />
         <Route path="/all-matri" element={<AllMatri />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );

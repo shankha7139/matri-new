@@ -21,6 +21,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("hello world");
 });
+
+app.use("/api/user", require("./Routes/UserRoute"));
 app.use("/api", require("./Routes/Display"));
 
 app.listen(8008);
