@@ -14,18 +14,25 @@ export default function RegisterPage() {
   async function registerUser(ev) {
     ev.preventDefault();
     try {
-      await axios.post("http://localhost:8008/api/user/profile", {
-        name,
-        sex,
-        mtongue,
-        prof,
-        desc,
-        phone,
-        reli,
-      });
-      alert("Registration Succesfull now you can login");
+      console.log(name, sex, prof);
+      let response = await axios.post(
+        "http://localhost:8008/api/user/profile",
+        {
+          name: name,
+          sex: sex,
+          mtongue: mtongue,
+          prof: prof,
+          desc: desc,
+          phone: phone,
+          reli: reli,
+        }
+      );
+      const json = await response.json();
+      console.log(json);
+      alert(json);
     } catch (error) {
-      alert(error.response.data);
+      alert(error.response);
+      console.log(error.response);
     }
   }
 

@@ -30,7 +30,10 @@ export default function Matri() {
       <div className="px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
         {location.state.religion ? (
           user
-            .filter((item) => item.reli == location.state.religion)
+            .filter(
+              (item) =>
+                item.reli.toLowerCase() == location.state.religion.toLowerCase()
+            )
             .map((filtered) => {
               return (
                 <div>
@@ -46,7 +49,11 @@ export default function Matri() {
           <>
             {location.state.language
               ? user
-                  .filter((item) => item.mtongue == location.state.language)
+                  .filter(
+                    (item) =>
+                      item.mtongue.toLowerCase() ==
+                      location.state.language.toLowerCase()
+                  )
                   .map((filtered) => {
                     return (
                       <div>
@@ -59,7 +66,11 @@ export default function Matri() {
                     );
                   })
               : user
-                  .filter((item) => item.prof == location.state.prof)
+                  .filter(
+                    (item) =>
+                      item.prof.toLowerCase() ==
+                      location.state.prof.toLowerCase()
+                  )
                   .map((filtered) => {
                     return (
                       <div>

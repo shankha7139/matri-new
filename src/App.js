@@ -5,6 +5,7 @@ import Login from "./Pages/Login";
 import Matri from "./Pages/Matri";
 import AllMatri from "./Pages/AllMatri";
 import Register from "./Pages/Register";
+import Test from "./Pages/Test";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/matri" element={<Matri />} />
         <Route path="/all-matri" element={<AllMatri />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/test" element={<Test />} />
       </Routes>
     </BrowserRouter>
   );
