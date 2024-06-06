@@ -32,7 +32,8 @@ export default function Matri() {
           user
             .filter(
               (item) =>
-                item.reli.toLowerCase() == location.state.religion.toLowerCase()
+                item.religion.toLowerCase() ==
+                location.state.religion.toLowerCase()
             )
             .map((filtered) => {
               return (
@@ -51,7 +52,7 @@ export default function Matri() {
               ? user
                   .filter(
                     (item) =>
-                      item.mtongue.toLowerCase() ==
+                      item.motherTongue.toLowerCase() ==
                       location.state.language.toLowerCase()
                   )
                   .map((filtered) => {
@@ -68,7 +69,7 @@ export default function Matri() {
               : user
                   .filter(
                     (item) =>
-                      item.prof.toLowerCase() ==
+                      item.profession.toLowerCase() ==
                       location.state.prof.toLowerCase()
                   )
                   .map((filtered) => {
