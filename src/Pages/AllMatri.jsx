@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+
 export default function Matri() {
   const location = useLocation();
 
@@ -15,7 +16,7 @@ export default function Matri() {
   const [user, setUser] = useState([]);
 
   const loadData = async () => {
-    let response = await fetch("http://localhost:8008/api/matriData", {
+    let response = await fetch("http://localhost:3001/api/matriData", { // Update the URL if needed
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +41,6 @@ export default function Matri() {
         .toLowerCase()
         .includes(searchTerms.language.toLowerCase()) &&
       item.religion.toLowerCase().includes(searchTerms.religion.toLowerCase())
-      // console.log("in here")
     );
   });
 
@@ -65,7 +65,7 @@ export default function Matri() {
           name="prof"
           placeholder="Profession"
           className="border p-2 rounded flex-grow mr-2 mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4"
-          alue={searchTerms.prof}
+          value={searchTerms.prof} // Fixed typo
           onChange={handleSearchChange}
         />
         <input
@@ -73,7 +73,7 @@ export default function Matri() {
           name="religion"
           placeholder="Religion"
           className="border p-2 rounded flex-grow mr-2 mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4"
-          alue={searchTerms.religion}
+          value={searchTerms.religion} // Fixed typo
           onChange={handleSearchChange}
         />
         <button className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto">
@@ -81,29 +81,23 @@ export default function Matri() {
         </button>
       </div>
       <div className="px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        {filteredData != []
-          ? filteredData.map((data) => {
-              return (
-                <div>
-                  <Card
-                    name={data.name}
-                    sex={data.sex}
-                    prof={data.profession}
-                  />
-                </div>
-              );
-            })
-          : user.map((data) => {
-              return (
-                <div>
-                  <Card
-                    name={data.name}
-                    sex={data.sex}
-                    prof={data.profession}
-                  />
-                </div>
-              );
-            })}
+        {filteredData.length > 0 ? ( // Fixed conditional rendering
+          filteredData.map((data) => {
+            return (
+              <div>
+                <Card name={data.name} sex={data.sex} prof={data.profession} />
+              </div>
+            );
+          })
+        ) : (
+          user.map((data) => {
+            return (
+              <div>
+                <Card name={data.name} sex={data.sex} prof={data.profession} />
+              </div>
+            );
+          })
+        )}
       </div>
       <Footer />
     </>
