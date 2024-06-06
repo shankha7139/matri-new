@@ -3,16 +3,16 @@ import { useLocation } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+
 export default function Matri() {
   const location = useLocation();
-
   const [searchTerms, setSearchTerms] = useState({
     religion: "",
     language: "",
     prof: "",
   });
-
   const [user, setUser] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   const loadData = async () => {
     let response = await fetch("http://localhost:8008/api/matriData", {
@@ -22,8 +22,8 @@ export default function Matri() {
       },
     });
     response = await response.json();
-    setUser(response[0]);
-    console.log("response", response[0]);
+    setUser(response[0]); // Set the user state to the first (and only) array in the response
+    console.log("response", response);
     console.log("user", user);
   };
 
@@ -32,26 +32,37 @@ export default function Matri() {
     setSearchTerms((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  // Filter data based on search terms
-  const filteredData = user.filter((item) => {
-    return (
-      item.profession.toLowerCase().includes(searchTerms.prof.toLowerCase()) &&
-      item.mothertongue
-        .toLowerCase()
-        .includes(searchTerms.language.toLowerCase()) &&
-      item.religion.toLowerCase().includes(searchTerms.religion.toLowerCase())
-      // console.log("in here")
-    );
-  });
+  const filterData = () => {
+    const filtered = user.filter((item) => {
+      const professionLower = item.profession
+        ? item.profession.toLowerCase()
+        : "";
+      const mothertongueLower = item.mothertongue
+        ? item.mothertongue.toLowerCase()
+        : "";
+      const religionLower = item.religion ? item.religion.toLowerCase() : "";
+
+      return (
+        professionLower.includes(searchTerms.prof.toLowerCase()) &&
+        mothertongueLower.includes(searchTerms.language.toLowerCase()) &&
+        religionLower.includes(searchTerms.religion.toLowerCase())
+      );
+    });
+    setFilteredData(filtered);
+  };
 
   useEffect(() => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    filterData();
+  }, [user, searchTerms]);
+
   return (
     <>
       <Navbar />
-      <div className="flex flex-wrap justify-between items-center p-4 bg-slate-100 w-full px-24 ">
+      <div className="flex flex-wrap justify-between items-center p-4 bg-slate-100 w-full px-24">
         <input
           type="text"
           name="language"
@@ -65,7 +76,7 @@ export default function Matri() {
           name="prof"
           placeholder="Profession"
           className="border p-2 rounded flex-grow mr-2 mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4"
-          alue={searchTerms.prof}
+          value={searchTerms.prof}
           onChange={handleSearchChange}
         />
         <input
@@ -73,7 +84,7 @@ export default function Matri() {
           name="religion"
           placeholder="Religion"
           className="border p-2 rounded flex-grow mr-2 mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4"
-          alue={searchTerms.religion}
+          value={searchTerms.religion}
           onChange={handleSearchChange}
         />
         <button className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto">
@@ -81,29 +92,17 @@ export default function Matri() {
         </button>
       </div>
       <div className="px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        {filteredData != []
-          ? filteredData.map((data) => {
-              return (
-                <div>
-                  <Card
-                    name={data.name}
-                    sex={data.sex}
-                    prof={data.profession}
-                  />
-                </div>
-              );
-            })
-          : user.map((data) => {
-              return (
-                <div>
-                  <Card
-                    name={data.name}
-                    sex={data.sex}
-                    prof={data.profession}
-                  />
-                </div>
-              );
-            })}
+        {filteredData.length > 0
+          ? filteredData.map((data) => (
+              <div key={data.id}>
+                <Card name={data.name} sex={data.sex} prof={data.profession} />
+              </div>
+            ))
+          : user.map((data) => (
+              <div key={data.id}>
+                <Card name={data.name} sex={data.sex} prof={data.profession} />
+              </div>
+            ))}
       </div>
       <Footer />
     </>

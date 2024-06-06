@@ -68,7 +68,14 @@ app.post('/api/user/profile', upload.array('photos', 10), async (req, res) => {
   }
 });
 
-// app.use("/api/user", require("./Routes/UserRoute"));
-app.use("/api", require("./Routes/Display"));
+
+app.post("/api/matriData", (req, res) => {
+  try {
+    res.send([global.testuser]);
+  } catch (error) {
+    console.error(error.message);
+    res.send("server error");
+  }
+});
 
 app.listen(8008);
