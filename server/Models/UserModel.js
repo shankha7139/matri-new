@@ -1,28 +1,44 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
 
-
-const UserSchema = new Schema({
-  name: { type: String, required: true },
-  mtongue: { type: String, required: false },
-  sex: { type: String, required: true },
-  phone: { type: String, required: false },
-  prof: { type: String, required: true },
-  reli: { type: String, required: false },
-  desc: { type: String, required: true },
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  number: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  religion: {
+    type: String,
+    required: true,
+  },
+  motherTongue: {
+    type: String,
+    required: true,
+  },
+  sex: {
+    type: String,
+    required: true,
+  },
+  profession: {
+    type: String,
+    required: true,
+  },
+  photos: {
+    type: [String], // Array of strings to store the paths of uploaded photos
+    required: true,
+  },
 });
 
-// UserSchema.methods.matchPassword = async function (enteredPassword) {
-//   return await bcrypt.compare(enteredPassword, this.password);
-// };
+const User = mongoose.model("User", userSchema);
 
-// UserSchema.pre("save", async function (next) {
-//   if (!this.isModified) {
-//     next();
-//   }
-//   const salt = await bcrypt.genSalt(12);
-//   this.password = await bcrypt.hash(this.password, salt);
-// });
-
-const User = mongoose.model("User", UserSchema);
 module.exports = User;

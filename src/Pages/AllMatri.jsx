@@ -11,6 +11,7 @@ export default function Matri() {
     language: "",
     prof: "",
   });
+
   const [user, setUser] = useState([]);
 
   const loadData = async () => {
@@ -22,6 +23,8 @@ export default function Matri() {
     });
     response = await response.json();
     setUser(response[0]);
+    console.log("response", response[0]);
+    console.log("user", user);
   };
 
   const handleSearchChange = (e) => {
@@ -32,9 +35,12 @@ export default function Matri() {
   // Filter data based on search terms
   const filteredData = user.filter((item) => {
     return (
-      item.prof.toLowerCase().includes(searchTerms.prof.toLowerCase()) &&
-      item.mtongue.toLowerCase().includes(searchTerms.language.toLowerCase()) &&
-      item.reli.toLowerCase().includes(searchTerms.religion.toLowerCase())
+      item.profession.toLowerCase().includes(searchTerms.prof.toLowerCase()) &&
+      item.mothertongue
+        .toLowerCase()
+        .includes(searchTerms.language.toLowerCase()) &&
+      item.religion.toLowerCase().includes(searchTerms.religion.toLowerCase())
+      // console.log("in here")
     );
   });
 
@@ -79,14 +85,22 @@ export default function Matri() {
           ? filteredData.map((data) => {
               return (
                 <div>
-                  <Card name={data.name} sex={data.sex} prof={data.prof} />
+                  <Card
+                    name={data.name}
+                    sex={data.sex}
+                    prof={data.profession}
+                  />
                 </div>
               );
             })
           : user.map((data) => {
               return (
                 <div>
-                  <Card name={data.name} sex={data.sex} prof={data.prof} />
+                  <Card
+                    name={data.name}
+                    sex={data.sex}
+                    prof={data.profession}
+                  />
                 </div>
               );
             })}
