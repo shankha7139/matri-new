@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+import Header from "../Components/header";
 
 export default function Matri() {
   const location = useLocation();
@@ -26,7 +27,8 @@ export default function Matri() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
+      <Header />
       <div className="px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
         {location.state.religion ? (
           user

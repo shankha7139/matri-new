@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+import Header from "../Components/header";
+
 
 export default function Matri() {
   const location = useLocation();
@@ -61,7 +63,8 @@ export default function Matri() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
+      <Header />
       <div className="flex flex-wrap justify-between items-center p-4 bg-slate-100 w-full px-24">
         <input
           type="text"

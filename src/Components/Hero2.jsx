@@ -6,8 +6,8 @@ import love3 from "../assets/love3.png";
 export default function Hero2() {
   return (
     <div className="parent flex flex-col md:flex-row px-4 md:px-20 py-10 md:py-20">
-      <div className="left basis-full md:basis-2/3 border-r-4 border-cyan-500 rounded-lg px-5 py-10 md:px-10 md:py-20">
-        <div className="ecliplse1 flex flex-col md:flex-row px-5 py-2 gap-5 items-center">
+      <div className="left basis-full md:basis-2/3 border-r-0 md:border-r-4 border-cyan-500 rounded-lg px-5 py-10 md:px-10 md:py-20">
+        <div className="eclipse1 flex flex-col md:flex-row px-5 py-2 gap-5 items-center">
           <img src={love1} alt="love1" className="w-24 md:w-32" />
           <div className="info">
             <h1 className="text-2xl md:text-3xl text-cyan-500">Sign Up</h1>
@@ -16,18 +16,18 @@ export default function Hero2() {
             </p>
           </div>
         </div>
-        <div className="ecliplse2 flex flex-col md:flex-row px-5 py-2 gap-5 items-center md:ml-20">
-          <div className="info relative">
-            <h1 className="absolute inset-y-0 right-0 text-2xl md:text-3xl text-cyan-500">
+        <div className="eclipse2 flex flex-col md:flex-row px-5 py-2 gap-5 items-center md:ml-20">
+          <div className="info relative md:order-2">
+            <h1 className="absolute md:relative md:inset-auto md:right-auto inset-y-0 right-0 text-2xl md:text-3xl text-cyan-500">
               Connect
             </h1>
             <p className="text-sm md:text-base mt-8 md:mt-10">
               Select & Connect with matches you like
             </p>
           </div>
-          <img src={love2} alt="love2" className="w-24 md:w-32" />
+          <img src={love2} alt="love2" className="w-24 md:w-32 md:order-1" />
         </div>
-        <div className="ecliplse3 flex flex-col md:flex-row px-5 py-2 gap-5 items-center">
+        <div className="eclipse3 flex flex-col md:flex-row px-5 py-2 gap-5 items-center">
           <img src={love3} alt="love3" className="w-24 md:w-32" />
           <div className="info">
             <h1 className="text-2xl md:text-3xl text-cyan-500">Interact</h1>
