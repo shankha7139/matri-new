@@ -7,64 +7,48 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 export default function Footer() {
   return (
-    <div className="container mx-auto px-4">
-      <div className="top flex flex-col lg:flex-row justify-between items-center py-10">
-        <h1 className="text-2xl lg:text-3xl">LOGO</h1>
-        <div className="input flex mt-4 lg:mt-0">
+    <div className="bg-white">
+      <div className="top flex flex-col md:flex-row justify-between px-6 md:px-20 lg:px-40 py-10 items-center">
+        <h1 className="text-2xl mb-4 md:mb-0">LOGO</h1>
+        <div className="input flex w-full md:w-auto">
           <input
             type="text"
             placeholder="Subscribe Newsletter"
-            className="p-2 rounded-l border border-gray-300"
+            className="w-full md:w-auto border border-gray-300 p-2 rounded-l"
           />
-          <AiOutlineArrowRight className="bg-rose-500 w-10 h-10 text-white p-2 rounded-r cursor-pointer" />
+          <button className="bg-rose-500 w-10 h-10 flex items-center justify-center rounded-r hover:text-white shadow-xl duration-300 cursor-pointer">
+            <AiOutlineArrowRight className="text-white" />
+          </button>
         </div>
       </div>
-      <div className="anchors flex flex-wrap justify-center lg:justify-between py-2">
-        <a href="#" className="text-lg lg:text-xl mx-2 my-1 lg:my-0">
+      <div className="anchors flex flex-wrap justify-center md:justify-between px-6 md:px-20 lg:px-40 py-2 space-x-4 md:space-x-0">
+        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Blogs
         </a>
-        <a href="#" className="text-lg lg:text-xl mx-2 my-1 lg:my-0">
+        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Career
         </a>
-        <a href="#" className="text-lg lg:text-xl mx-2 my-1 lg:my-0">
+        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Achievements
         </a>
-        <a href="#" className="text-lg lg:text-xl mx-2 my-1 lg:my-0">
+        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Terms of Use
         </a>
-        <a href="#" className="text-lg lg:text-xl mx-2 my-1 lg:my-0">
+        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Help
         </a>
-        <a href="#" className="text-lg lg:text-xl mx-2 my-1 lg:my-0">
+        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Contact Us
         </a>
       </div>
-      <div className="socials flex justify-center lg:justify-between py-4">
-        <img
-          src={fb}
-          alt="Facebook"
-          className="bg-slate-300 p-2 rounded mx-2"
-        />
-        <img
-          src={insta}
-          alt="Instagram"
-          className="bg-slate-300 p-2 rounded mx-2"
-        />
-        <img
-          src={linked}
-          alt="LinkedIn"
-          className="bg-slate-300 p-2 rounded mx-2"
-        />
-        <img
-          src={twit}
-          alt="Twitter"
-          className="bg-slate-300 p-2 rounded mx-2"
-        />
+      <div className="socials flex justify-center md:justify-between px-6 md:px-20 lg:px-40 py-2 space-x-4 md:space-x-0">
+        <img src={fb} alt="" className="bg-slate-300 p-2 rounded" />
+        <img src={insta} alt="" className="bg-slate-300 p-2 rounded" />
+        <img src={linked} alt="" className="bg-slate-300 p-2 rounded" />
+        <img src={twit} alt="" className="bg-slate-300 p-2 rounded" />
       </div>
       <div className="copyright flex justify-center text-center bg-red-100 py-4">
-        <span className="text-sm lg:text-base">
-          Copyrights reserved &copy; Bantu Programmers
-        </span>
+        <span>Copyrights reserved &copy; Bantu Programmers</span>
       </div>
     </div>
   );

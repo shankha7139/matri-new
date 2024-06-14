@@ -6,8 +6,8 @@ import Selector from "../Components/Selector";
 import AboveFooter from "../Components/AboveFooter";
 import Footer from "../Components/Footer";
 import Hero from "../Components/Hero";
-import Header from "../Components/header";
 import { useNavigate } from "react-router-dom";
+import Header from "../Components/header";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -18,13 +18,13 @@ export default function Home() {
       <Hero2 />
       <Hero3 />
       <Reviews />
-      <div className="getstarted flex flex-col md:flex-row justify-center items-center gap-4 md:gap-10 bg-rose-500 px-4 md:px-20 py-5 my-5">
-        <p className="text-2xl md:text-4xl lg:text-5xl text-white text-center md:text-left">
+      <div className="getstarted flex flex-col md:flex-row gap-10 bg-rose-500 px-6 md:px-20 lg:px-40 xl:px-60 py-5 my-5 items-center text-center md:text-left">
+        <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">
           Your Story is waiting to Happen
         </p>
         <button
           onClick={() => navigate("/all-matri")}
-          className="text-lg md:text-2xl lg:text-5xl bg-cyan-700 text-white px-4 md:px-8 py-2 md:py-4 rounded-br-xl rounded-tl-xl"
+          className="text-white text-2xl md:text-5xl bg-cyan-700 px-5 py-2 rounded-br-xl rounded-tl-xl"
         >
           Get started
         </button>
