@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -8,6 +8,7 @@ import {
   orderBy,
   limit,
   query,
+  where,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -19,6 +20,8 @@ import { getAnalytics } from "firebase/analytics";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { getDoc, setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
+// import { collection, query, where, orderBy } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
@@ -47,28 +50,16 @@ function App() {
         <SignOut />
       </header>
 
-      <section>{user ? <ChatRoom /> : <div>sign in karo pehle</div>}</section>
+      <section>
+        {user ? (
+          <ChatRoom recipientId="79qLTSL8E0PRyiEShOXVCJoVJJG2" />
+        ) : (
+          <div>sign in karo pehle</div>
+        )}
+      </section>
     </div>
   );
 }
-
-// function SignIn() {
-//   const signInWithGoogle = () => {
-//     const provider = new firebase.auth.GoogleAuthProvider();
-//     auth.signInWithPopup(provider);
-//   };
-
-//   return (
-//     <>
-//       <button className="sign-in" onClick={signInWithGoogle}>
-//         Sign in with Google
-//       </button>
-//       <p>
-//         Do not violate the community guidelines or you will be banned for life!
-//       </p>
-//     </>
-//   );
-// }
 
 function SignOut() {
   return (
@@ -80,29 +71,68 @@ function SignOut() {
   );
 }
 
-function ChatRoom() {
+function ChatRoom({ recipientId }) {
   const dummy = useRef();
-  const messagesRef = collection(firestore, "messages");
-  const q = query(messagesRef, orderBy("createdAt"), limit(25));
+  const firestore = getFirestore();
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
-  const [messages] = useCollectionData(q, { idField: "id" });
+  // Create a reference to the conversation collection
+  const conversationsRef = collection(firestore, "conversations");
+
+  // Create a query to fetch messages for the current conversation'
+
+  const [conversationDoc, setConversationDoc] = useState(null);
+
+  useEffect(() => {
+    async function fetchConversation() {
+      const conversationId = [currentUser.uid, recipientId].sort().join(":");
+      const conversationRef = doc(conversationsRef, conversationId);
+      const conversationSnapshot = await getDoc(conversationRef);
+
+      if (conversationSnapshot.exists()) {
+        setConversationDoc(conversationRef);
+      } else {
+        const newConversationRef = await getOrCreateConversation(
+          conversationsRef,
+          currentUser.uid,
+          recipientId
+        );
+        setConversationDoc(newConversationRef);
+      }
+    }
+
+    fetchConversation();
+  }, [currentUser.uid, recipientId]);
+
+  const messagesRef = conversationDoc
+    ? collection(conversationDoc, "messages")
+    : null;
+  const messagesQuery = messagesRef
+    ? query(messagesRef, orderBy("createdAt"))
+    : null;
+
+  const [messages] = useCollectionData(messagesQuery, { idField: "id" });
+
+  console.log(messages);
 
   const [formValue, setFormValue] = useState("");
+
+  console.log(messages);
 
   const sendMessage = async (e) => {
     e.preventDefault();
 
-    const { uid, photoURL } = auth.currentUser;
+    if (conversationDoc) {
+      await addDoc(collection(conversationDoc, "messages"), {
+        text: formValue,
+        createdAt: serverTimestamp(),
+        senderId: currentUser.uid,
+      });
 
-    await addDoc(messagesRef, {
-      text: formValue,
-      createdAt: serverTimestamp(),
-      uid,
-      photoURL,
-    });
-
-    setFormValue("");
-    dummy.current.scrollIntoView({ behavior: "smooth" });
+      setFormValue("");
+      dummy.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -129,22 +159,42 @@ function ChatRoom() {
   );
 }
 
-function ChatMessage(props) {
-  const { text, uid, photoURL } = props.message;
+async function getOrCreateConversation(
+  conversationsRef,
+  currentUserId,
+  recipientId
+) {
+  const conversationId = [currentUserId, recipientId].sort().join(":");
+  const conversationRef = doc(conversationsRef, conversationId);
 
-  const messageClass = uid === auth.currentUser.uid ? "sent" : "received";
+  const conversationDoc = await getDoc(conversationRef);
+
+  if (conversationDoc.exists()) {
+    return conversationRef;
+  }
+
+  await setDoc(conversationRef, {
+    participants: [currentUserId, recipientId],
+    createdAt: serverTimestamp(),
+  });
+
+  await updateDoc(conversationRef, {
+    participants: arrayUnion(currentUserId, recipientId),
+  });
+
+  return conversationRef;
+}
+
+function ChatMessage(props) {
+  const { text, senderId } = props.message;
+  const auth = getAuth();
+
+  const messageClass = senderId === auth.currentUser.uid ? "sent" : "received";
 
   return (
-    <>
-      <div className={`message ${messageClass}`}>
-        <img
-          src={
-            photoURL || "https://api.adorable.io/avatars/23/abott@adorable.png"
-          }
-        />
-        <p>{text}</p>
-      </div>
-    </>
+    <div className={`message ${messageClass}`}>
+      <p>{text}</p>
+    </div>
   );
 }
 

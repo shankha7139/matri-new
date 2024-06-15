@@ -8,7 +8,6 @@ function ConversationThreads() {
   const auth = getAuth();
   const currentUser = auth.currentUser;
 
-  // Fetch the list of users excluding the current user
   const usersRef = collection(firestore, "users");
   const q = query(usersRef, where("uid", "!=", currentUser.uid));
   const [users] = useCollectionData(q, { idField: "id" });
