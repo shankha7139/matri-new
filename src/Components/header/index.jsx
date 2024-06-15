@@ -12,7 +12,6 @@ const Header = () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const email = user.email;
-
       console.log("User email:", email);
       setLoggedUser(email.split("@")[0]);
     } else {
