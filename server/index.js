@@ -41,15 +41,36 @@ app.get("/", (req, res) => {
 });
 
 app.post('/api/user/profile', upload.array('photos', 10), async (req, res) => { 
-  const { name, age, number, email, religion, motherTongue, sex, profession } = req.body;
+  const {
+    name,
+    age,
+    number,
+    email,
+    religion,
+    motherTongue,
+    sex,
+    profession,
+    chatId,
+  } = req.body;
 
-  if (!name || !age || !number || !email || !religion || !motherTongue || !sex || !profession) {
-    return res.status(400).json({ error: 'All fields are required.' });
+  if (
+    !name ||
+    !age ||
+    !number ||
+    !email ||
+    !religion ||
+    !motherTongue ||
+    !sex ||
+    !profession ||
+    !chatId
+  ) {
+    return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
     const newUser = new User({
       name,
+      chatId,
       age,
       number,
       email,
@@ -57,14 +78,19 @@ app.post('/api/user/profile', upload.array('photos', 10), async (req, res) => {
       motherTongue,
       sex,
       profession,
-      photos: req.files.map(file => file.path) 
+      photos: req.files.map((file) => file.path),
     });
 
     const savedUser = await newUser.save();
-    res.status(201).json({ message: 'Profile submitted successfully.', userId: savedUser._id });
+    res
+      .status(201)
+      .json({
+        message: "Profile submitted successfully.",
+        userId: savedUser._id,
+      });
   } catch (err) {
-    console.error('Error submitting profile:', err);
-    res.status(500).json({ error: 'Internal server error.' });
+    console.error("Error submitting profile:", err);
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 

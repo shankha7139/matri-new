@@ -95,7 +95,12 @@ export default function Matri() {
         {filteredData.length > 0
           ? filteredData.map((data) => (
               <div key={data.id}>
-                <Card name={data.name} sex={data.sex} prof={data.profession} />
+                <Card
+                  name={data.name}
+                  sex={data.sex}
+                  prof={data.profession}
+                  chatId={data.chatId}
+                />
               </div>
             ))
           : user.map((data) => (

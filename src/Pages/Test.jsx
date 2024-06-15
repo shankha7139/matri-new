@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useAuth } from "../context/authContext";
 
 const ProfileForm = () => {
+  const { currentUser } = useAuth();
+  console.log(currentUser.uid);
   const [formData, setFormData] = useState({
+    chatId: currentUser.uid,
     name: "",
     age: "",
     number: "",

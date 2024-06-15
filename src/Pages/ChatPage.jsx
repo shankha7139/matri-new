@@ -21,6 +21,7 @@ import { getAnalytics } from "firebase/analytics";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { getDoc, setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { useLocation } from "react-router-dom";
 // import { collection, query, where, orderBy } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -42,17 +43,12 @@ const analytics = getAnalytics(app);
 
 function App() {
   const [user] = useAuthState(auth);
-
+  const location = useLocation();
   return (
     <div className="App">
-      <header>
-        <h1>⚛️🔥💬</h1>
-        <SignOut />
-      </header>
-
       <section>
         {user ? (
-          <ChatRoom recipientId="79qLTSL8E0PRyiEShOXVCJoVJJG2" />
+          <ChatRoom recipientId={location.state.chatId} />
         ) : (
           <div>sign in karo pehle</div>
         )}
@@ -136,26 +132,31 @@ function ChatRoom({ recipientId }) {
   };
 
   return (
-    <>
-      <main>
+    <div className="flex flex-col h-full">
+      <main className="flex-1 p-4 overflow-y-auto">
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
 
         <span ref={dummy}></span>
       </main>
 
-      <form onSubmit={sendMessage}>
+      <form onSubmit={sendMessage} className="flex p-4 bg-gray-200">
         <input
+          className="flex-1 py-2 px-4 mr-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
           value={formValue}
           onChange={(e) => setFormValue(e.target.value)}
-          placeholder="say something nice"
+          placeholder="Type a message..."
         />
 
-        <button type="submit" disabled={!formValue}>
-          🕊️
+        <button
+          type="submit"
+          disabled={!formValue}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full disabled:opacity-50"
+        >
+          Send
         </button>
       </form>
-    </>
+    </div>
   );
 }
 
@@ -192,10 +193,23 @@ function ChatMessage(props) {
   const messageClass = senderId === auth.currentUser.uid ? "sent" : "received";
 
   return (
-    <div className={`message ${messageClass}`}>
-      <p>{text}</p>
+    <div
+      className={`flex ${
+        messageClass === "sent" ? "justify-end" : "justify-start"
+      } mb-4`}
+    >
+      <div
+        className={`py-2 px-4 rounded-lg max-w-xs lg:max-w-md ${
+          messageClass === "sent"
+            ? "bg-blue-600 text-white"
+            : "bg-gray-300 text-gray-800"
+        }`}
+      >
+        <p>{text}</p>
+      </div>
     </div>
   );
 }
+
 
 export default App;
