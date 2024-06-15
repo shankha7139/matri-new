@@ -1,26 +1,15 @@
 import React, { useRef, useState } from "react";
-import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp,
-  orderBy,
-  limit,
-  query,
-} from "firebase/firestore";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-} from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
+import "./App.css";
+
+import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/auth";
+import "firebase/analytics";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-const firebaseConfig = {
+firebase.initializeApp({
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
   authDomain: "matri-site-cf115.firebaseapp.com",
   projectId: "matri-site-cf115",
@@ -28,14 +17,11 @@ const firebaseConfig = {
   messagingSenderId: "231063048901",
   appId: "1:231063048901:web:968969b3f06dd22f1096ac",
   measurementId: "G-351NC8Z306",
-};
+});
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const firestore = getFirestore(app);
-const analytics = getAnalytics(app);
-
-// ... (rest of your code remains the same)
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+const analytics = firebase.analytics();
 
 function App() {
   const [user] = useAuthState(auth);
@@ -47,28 +33,28 @@ function App() {
         <SignOut />
       </header>
 
-      <section>{user ? <ChatRoom /> : <div>sign in karo pehle</div>}</section>
+      <section>{user ? <ChatRoom /> : <SignIn />}</section>
     </div>
   );
 }
 
-// function SignIn() {
-//   const signInWithGoogle = () => {
-//     const provider = new firebase.auth.GoogleAuthProvider();
-//     auth.signInWithPopup(provider);
-//   };
+function SignIn() {
+  const signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider);
+  };
 
-//   return (
-//     <>
-//       <button className="sign-in" onClick={signInWithGoogle}>
-//         Sign in with Google
-//       </button>
-//       <p>
-//         Do not violate the community guidelines or you will be banned for life!
-//       </p>
-//     </>
-//   );
-// }
+  return (
+    <>
+      <button className="sign-in" onClick={signInWithGoogle}>
+        Sign in with Google
+      </button>
+      <p>
+        Do not violate the community guidelines or you will be banned for life!
+      </p>
+    </>
+  );
+}
 
 function SignOut() {
   return (
@@ -82,10 +68,10 @@ function SignOut() {
 
 function ChatRoom() {
   const dummy = useRef();
-  const messagesRef = collection(firestore, "messages");
-  const q = query(messagesRef, orderBy("createdAt"), limit(25));
+  const messagesRef = firestore.collection("messages");
+  const query = messagesRef.orderBy("createdAt").limit(25);
 
-  const [messages] = useCollectionData(q, { idField: "id" });
+  const [messages] = useCollectionData(query, { idField: "id" });
 
   const [formValue, setFormValue] = useState("");
 
@@ -94,9 +80,9 @@ function ChatRoom() {
 
     const { uid, photoURL } = auth.currentUser;
 
-    await addDoc(messagesRef, {
+    await messagesRef.add({
       text: formValue,
-      createdAt: serverTimestamp(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid,
       photoURL,
     });
