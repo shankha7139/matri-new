@@ -11,6 +11,7 @@ import { AuthProvider } from "./context/authContext";
 import ChatPage from "./Pages/ChatPage";
 import PaymentDetails from "./Pages/PaymentDetails"
 import PaymentGateway from "./Pages/PaymentGateway"
+import DisplayProfile from "./Pages/DisplayProfile";
 
 const App = () => {
   return (
@@ -27,7 +28,7 @@ const App = () => {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/payment-details" element={<PaymentDetails />}/>
           <Route path="/payment-gateway" element={<PaymentGateway />}/>
-
+          <Route path="/individualProfile" element={<DisplayProfile />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

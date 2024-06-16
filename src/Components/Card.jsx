@@ -6,7 +6,10 @@ export default function Card(props) {
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-slate-100 p-4 rounded-xl relative ">
+      <div  className = "bg-slate-100 p-4 rounded-xl relative "
+      onClick = {
+        () => navigate("/indivisualProfile")
+      } >
         <div className="relative">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none hover:opacity-75 lg:h-80">
             <img
