@@ -53,6 +53,7 @@ app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
     sex,
     profession,
     chatId,
+    description,
   } = req.body;
 
   if (
@@ -89,6 +90,7 @@ app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
       motherTongue,
       sex,
       profession,
+      description,
       photos: uploadedImages.map((img) => img.secure_url), // Store image URLs
     });
 

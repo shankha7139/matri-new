@@ -11,6 +11,7 @@ const ProfileForm = () => {
     motherTongue: "",
     sex: "",
     profession: "",
+    description: "",
   });
   const [photos, setPhotos] = useState([]);
 
@@ -59,7 +60,7 @@ const ProfileForm = () => {
 
   return (
     <div className="max-w-md mx-auto bg-white p-4 mt-10 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Profile Form</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Profile Formssss</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {[
           { label: "Name", type: "text", name: "name" },
@@ -69,6 +70,7 @@ const ProfileForm = () => {
           { label: "Religion", type: "text", name: "religion" },
           { label: "Mother Tongue", type: "text", name: "motherTongue" },
           { label: "Profession", type: "text", name: "profession" },
+          // { label: "Description", type: "text", name: "description" },
         ].map((field) => (
           <div key={field.name}>
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -84,6 +86,18 @@ const ProfileForm = () => {
             />
           </div>
         ))}
+        <div>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+            required
+          />
+        </div>
         <div>
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Sex

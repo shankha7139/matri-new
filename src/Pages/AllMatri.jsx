@@ -99,8 +99,14 @@ export default function Matri() {
                   name={data.name}
                   sex={data.sex}
                   prof={data.profession}
+                  photos={data.photos}
                   chatId={data.chatId}
-                  dp={data.photos[0]}
+                  age={data.age}
+                  number={data.number}
+                  email={data.email}
+                  religion={data.religion}
+                  motherTongue={data.motherTongue}
+                  description={data.description}
                 />
               </div>
             ))
@@ -110,8 +116,14 @@ export default function Matri() {
                   name={data.name}
                   sex={data.sex}
                   prof={data.profession}
-                  dp={data.photos[0]}
+                  photos={data.photos}
                   chatId={data.chatId}
+                  age={data.age}
+                  number={data.number}
+                  email={data.email}
+                  religion={data.religion}
+                  motherTongue={data.motherTongue}
+                  description={data.description}
                 />
               </div>
             ))}

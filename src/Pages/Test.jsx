@@ -15,6 +15,7 @@ const ProfileForm = () => {
     motherTongue: "",
     sex: "",
     profession: "",
+    description: "",
   });
   const [photos, setPhotos] = useState([]);
 
@@ -63,7 +64,7 @@ const ProfileForm = () => {
 
   return (
     <div className="max-w-md mx-auto bg-white p-8 mt-10 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Profile Form</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Profile Formwww</h1>
       <form onSubmit={handleSubmit}>
         {[
           { label: "Name", type: "text", name: "name" },
@@ -73,6 +74,7 @@ const ProfileForm = () => {
           { label: "Religion", type: "text", name: "religion" },
           { label: "Mother Tongue", type: "text", name: "motherTongue" },
           { label: "Profession", type: "text", name: "profession" },
+          { label: "Description", type: "text", name: "description" },
         ].map((field) => (
           <div key={field.name} className="mb-4">
             <label
