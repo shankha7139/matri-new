@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import Footer from "../Components/Footer";
-import Navbar from "../Components/Navbar";
+import Header from "../Components/header";
 
 const PaymentDetails = () => {
   return (
+    <>
+    < Header / >
     <section class="bg-white dark:bg-gray-900">
       <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
@@ -324,7 +325,9 @@ const PaymentDetails = () => {
 
       <Footer />
     </section>
+    </>
   );
+  
 };
 
 export default PaymentDetails;

@@ -19,9 +19,7 @@ export default function Hero2() {
         <div className="ecliplse2 flex flex-col md:flex-row px-5 py-2 gap-5 items-center md:ml-20">
           <img src={love2} alt="love2" className="w-24 md:w-32" />
           <div className="info relative text-center md:text-left">
-            <h1 className="md:absolute md:inset-y-0 md:left-0 text-2xl md:text-3xl text-cyan-500">
-              Connect
-            </h1>
+            <h1 className="md:absolute md:inset-y-0 md:left-0 text-2xl md:text-3xl text-cyan-500">Connect</h1>
             <p className="text-sm md:text-base mt-8 md:mt-10">
               Select & Connect with matches you like
             </p>

@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <div className="bg-white">
       <div className="top flex flex-col md:flex-row justify-between px-6 md:px-20 lg:px-40 py-10 items-center">
-        <h1 className="text-2xl mb-4 md:mb-0">LOGO</h1>
+        <h1 className="text-2xl mb-4 md:mb-0">YV</h1>
         <div className="input flex w-full md:w-auto">
           <input
             type="text"
@@ -22,15 +22,6 @@ export default function Footer() {
         </div>
       </div>
       <div className="anchors flex flex-wrap justify-center md:justify-between px-6 md:px-20 lg:px-40 py-2 space-x-4 md:space-x-0">
-        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
-          Blogs
-        </a>
-        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
-          Career
-        </a>
-        <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
-          Achievements
-        </a>
         <a href="" className="text-lg md:text-xl mx-2 md:mx-0">
           Terms of Use
         </a>

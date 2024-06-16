@@ -6,7 +6,6 @@ import {
   addDoc,
   serverTimestamp,
   orderBy,
-  limit,
   query,
   where,
 } from "firebase/firestore";
@@ -22,7 +21,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { getDoc, setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
-// import { collection, query, where, orderBy } from "firebase/firestore";
+import Header from "../Components/header";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
@@ -39,14 +38,13 @@ const auth = getAuth(app);
 const firestore = getFirestore(app);
 const analytics = getAnalytics(app);
 
-// ... (rest of your code remains the same)
-
 function App() {
   const [user] = useAuthState(auth);
   const location = useLocation();
   return (
     <div className="App">
-      <section>
+      <Header />
+      <section className="relative h-full">
         {user ? (
           <ChatRoom recipientId={location.state.chatId} />
         ) : (
@@ -73,10 +71,7 @@ function ChatRoom({ recipientId }) {
   const auth = getAuth();
   const currentUser = auth.currentUser;
 
-  // Create a reference to the conversation collection
   const conversationsRef = collection(firestore, "conversations");
-
-  // Create a query to fetch messages for the current conversation'
 
   const [conversationDoc, setConversationDoc] = useState(null);
 
@@ -110,11 +105,7 @@ function ChatRoom({ recipientId }) {
 
   const [messages] = useCollectionData(messagesQuery, { idField: "id" });
 
-  console.log(messages);
-
   const [formValue, setFormValue] = useState("");
-
-  console.log(messages);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -132,7 +123,7 @@ function ChatRoom({ recipientId }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pt-16 pb-16">
       <main className="flex-1 p-4 overflow-y-auto">
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
@@ -140,7 +131,10 @@ function ChatRoom({ recipientId }) {
         <span ref={dummy}></span>
       </main>
 
-      <form onSubmit={sendMessage} className="flex p-4 bg-gray-200">
+      <form
+        onSubmit={sendMessage}
+        className="fixed bottom-0 left-0 right-0 flex p-4 bg-gray-200"
+      >
         <input
           className="flex-1 py-2 px-4 mr-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
           value={formValue}
@@ -187,15 +181,24 @@ async function getOrCreateConversation(
 }
 
 function ChatMessage(props) {
-  const { text, senderId } = props.message;
+  const { text, senderId, createdAt } = props.message;
   const auth = getAuth();
 
   const messageClass = senderId === auth.currentUser.uid ? "sent" : "received";
 
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
+
   return (
     <div
-      className={`flex ${
-        messageClass === "sent" ? "justify-end" : "justify-start"
+      className={`flex flex-col ${
+        messageClass === "sent" ? "items-end" : "items-start"
       } mb-4`}
     >
       <div
@@ -207,9 +210,13 @@ function ChatMessage(props) {
       >
         <p>{text}</p>
       </div>
+      <span className="text-xs text-gray-500 mt-1">
+        {createdAt?.seconds
+          ? formatDate(new Date(createdAt.seconds * 1000))
+          : ""}
+      </span>
     </div>
   );
 }
-
 
 export default App;

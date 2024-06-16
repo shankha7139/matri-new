@@ -9,6 +9,7 @@ import Register from "./Components/auth/register";
 import Header from "./Components/header";
 import { AuthProvider } from "./context/authContext";
 import ChatPage from "./Pages/ChatPage";
+import PaymentDetails from "./Pages/PaymentDetails"
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/all-matri" element={<AllMatri />} />
           <Route path="/profile" element={<Test />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/payment-details" element={<PaymentDetails />}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

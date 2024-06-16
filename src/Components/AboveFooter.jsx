@@ -22,7 +22,7 @@ export default function AboveFooter() {
       </div>
       <div className="banner flex flex-col sm:flex-row items-center gap-4 sm:gap-20 justify-center bg-slate-100 py-4 sm:py-6 border-b-2 border-slate-300">
         <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-white bg-cyan-600 px-4 py-2 sm:px-6 sm:py-3 rounded-full text-center">
-          Trusted by Millions
+          Trusted by Minions
         </h1>
         <div className="flex flex-wrap justify-center mt-4 sm:mt-0">
           <div className="flex flex-col items-center mr-4 sm:mr-8">
@@ -35,7 +35,7 @@ export default function AboveFooter() {
           </div>
           <div className="flex flex-col items-center">
             <img src={love6} alt="" className="w-16 sm:w-20" />
-            <p className="text-base sm:text-lg mt-2">100% Privacy</p>
+            <p className="text-base sm:text-lg mt-2">99.99% Privacy</p>
           </div>
         </div>
       </div>
