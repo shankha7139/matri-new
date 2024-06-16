@@ -10,6 +10,7 @@ import Header from "./Components/header";
 import { AuthProvider } from "./context/authContext";
 import ChatPage from "./Pages/ChatPage";
 import PaymentDetails from "./Pages/PaymentDetails"
+import PaymentGateway from "./Pages/PaymentGateway"
 
 const App = () => {
   return (
@@ -25,6 +26,8 @@ const App = () => {
           <Route path="/profile" element={<Test />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/payment-details" element={<PaymentDetails />}/>
+          <Route path="/payment-gateway" element={<PaymentGateway />}/>
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>
