@@ -12,26 +12,28 @@ import Header from "../Components/header";
 export default function Home() {
   const navigate = useNavigate();
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <Hero />
-      <Hero2 />
-      <Hero3 />
-      <Reviews />
-      <div className="getstarted flex flex-col md:flex-row gap-10 bg-rose-500 px-6 md:px-20 lg:px-40 xl:px-60 py-5 my-5 items-center text-center md:text-left">
-        <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">
-          Your Story is waiting to Happen
-        </p>
-        <button
-          onClick={() => navigate("/all-matri")}
-          className="text-white text-2xl md:text-5xl bg-cyan-700 px-5 py-2 rounded-br-xl rounded-tl-xl"
-        >
-          Get started
-        </button>
+      <div className="flex-grow">
+        <Hero />
+        <Hero2 />
+        {/* <Hero3 /> */}
+        <Reviews />
+        <div className="flex flex-col md:flex-row gap-10 bg-rose-500 px-6 md:px-20 lg:px-40 xl:px-60 py-5 items-center text-center">
+          <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">
+            Your Story is waiting to Happen
+          </p>
+          <button
+            onClick={() => navigate("/all-matri")}
+            className="text-white text-2xl md:text-5xl bg-cyan-700 px-5 py-2 rounded-br-xl rounded-tl-xl"
+          >
+            Get started
+          </button>
+        </div>
+        <Selector />
+        <AboveFooter />
       </div>
-      <Selector />
-      <AboveFooter />
       <Footer />
-    </>
+    </div>
   );
 }

@@ -1,4 +1,3 @@
-// ProfileDetail.js
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AiOutlineSend } from "react-icons/ai";
@@ -11,26 +10,20 @@ const ProfileDetail = () => {
   const [chatbox, setChatbox] = useState(false);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
-  // ... other code ...
+  if (!profile) {
+    return <div className="text-center p-10">No profile data available.</div>;
+  }
 
   const displayPhotos = showAllPhotos
     ? profile.photos
     : profile.photos.slice(0, 3);
 
-  if (!profile) {
-    return <div className="text-center p-10">No profile data available.</div>;
-  }
-
   return (
     <>
       <Header />
       <div className="container mx-auto p-4 mt-10">
-        <div className={`flex ${chatbox ? "lg:space-x-4" : ""}`}>
-          <div
-            className={`${
-              chatbox ? "lg:w-1/2" : "w-full"
-            } transition-all duration-300 ease-in-out`}
-          >
+        <div className="relative">
+          <div className={`${chatbox ? "hidden" : "block"} transition-all duration-300 ease-in-out`}>
             <h1 className="text-3xl font-bold mb-6 text-center">
               {profile.name}'s Profile
             </h1>
@@ -112,35 +105,43 @@ const ProfileDetail = () => {
             </div>
           </div>
 
-          {chatbox && (
-            <div className="hidden lg:block lg:w-1/2 transition-all duration-300 ease-in-out">
-              <Chat chatId={profile.chatId} />
+         {chatbox && (
+            <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50 p-4">
+                <div className="flex items-center space-x-4 mb-4">
+                <div className="w-16 h-16">
+                    <img
+                    src={profile.photos[0]}
+                    alt={`${profile.name}'s profile`}
+                    className="object-cover rounded-full w-full h-full"
+                    />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-semibold">{profile.name}</h2>
+                </div>
+                <button
+                    onClick={() => setChatbox(false)}
+                    className="absolute top-0 right-0 m-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                >
+                    &#x2715;
+                </button>
+                </div>
+                <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 112px)' }}>
+                <Chat chatId={profile.chatId} />
+                </div>
+            </div>
+            )}
+
+          {!chatbox && (
+            <div className="fixed bottom-4 right-4 z-50">
+              <button
+                onClick={() => setChatbox(true)}
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg"
+              >
+                <AiOutlineSend size={24} />
+              </button>
             </div>
           )}
         </div>
-
-        <div className="fixed bottom-4 right-4 z-10">
-          <button
-            onClick={() => setChatbox(!chatbox)}
-            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg"
-          >
-            <AiOutlineSend size={24} />
-          </button>
-        </div>
-
-        {chatbox && (
-          <div className="lg:hidden fixed inset-0 bg-white z-50 overflow-auto">
-            <div className="p-4">
-              <button
-                onClick={() => setChatbox(false)}
-                className="mb-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-              >
-                Close Chat
-              </button>
-              <Chat chatId={profile.chatId} />
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

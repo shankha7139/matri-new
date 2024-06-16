@@ -68,7 +68,6 @@ function SignOut() {
     )
   );
 }
-
 function ChatRoom({ recipientId }) {
   const dummy = useRef();
   const firestore = getFirestore();
@@ -128,16 +127,16 @@ function ChatRoom({ recipientId }) {
 
   return (
     <div className="flex flex-col h-full">
-      <main className="flex-1 p-4 overflow-y-auto">
+      <main className="flex-1 p-4 overflow-y-auto mb-16"> {/* Add mb-16 to create space for the form */}
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <span ref={dummy}></span>
       </main>
 
-      <form onSubmit={sendMessage} className="p-4 bg-gray-200">
-        <div className="flex">
+      <form onSubmit={sendMessage} className="p-4 bg-gray-200 sticky bottom-0 w-full">
+        <div className="flex items-center space-x-4">
           <input
-            className="flex-1 py-2 px-4 mr-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="flex-1 py-2 px-4 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
             value={formValue}
             onChange={(e) => setFormValue(e.target.value)}
             placeholder="Type a message..."
@@ -155,6 +154,7 @@ function ChatRoom({ recipientId }) {
     </div>
   );
 }
+
 
 async function getOrCreateConversation(
   conversationsRef,
