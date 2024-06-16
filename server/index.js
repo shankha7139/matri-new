@@ -4,6 +4,8 @@ const multer = require("multer");
 const path = require("path");
 const bodyParser = require("body-parser");
 const User = require("./Models/UserModel");
+const cloudinary = require("./Cloudinary");
+const fs = require("fs");
 
 require("dotenv").config();
 const app = express();
@@ -40,7 +42,7 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-app.post('/api/user/profile', upload.array('photos', 10), async (req, res) => { 
+app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
   const {
     name,
     age,
@@ -68,6 +70,15 @@ app.post('/api/user/profile', upload.array('photos', 10), async (req, res) => {
   }
 
   try {
+    // Upload images to Cloudinary
+    const uploadPromises = req.files.map((file) =>
+      cloudinary.uploader.upload(file.path)
+    );
+    const uploadedImages = await Promise.all(uploadPromises);
+
+    // Delete local files after upload
+    req.files.forEach((file) => fs.unlinkSync(file.path));
+
     const newUser = new User({
       name,
       chatId,
@@ -78,22 +89,19 @@ app.post('/api/user/profile', upload.array('photos', 10), async (req, res) => {
       motherTongue,
       sex,
       profession,
-      photos: req.files.map((file) => file.path),
+      photos: uploadedImages.map((img) => img.secure_url), // Store image URLs
     });
 
     const savedUser = await newUser.save();
-    res
-      .status(201)
-      .json({
-        message: "Profile submitted successfully.",
-        userId: savedUser._id,
-      });
+    res.status(201).json({
+      message: "Profile submitted successfully.",
+      userId: savedUser._id,
+    });
   } catch (err) {
     console.error("Error submitting profile:", err);
     res.status(500).json({ error: "Internal server error." });
   }
 });
-
 
 app.post("/api/matriData", (req, res) => {
   try {

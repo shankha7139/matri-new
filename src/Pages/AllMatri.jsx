@@ -100,12 +100,19 @@ export default function Matri() {
                   sex={data.sex}
                   prof={data.profession}
                   chatId={data.chatId}
+                  dp={data.photos[0]}
                 />
               </div>
             ))
           : user.map((data) => (
               <div key={data.id}>
-                <Card name={data.name} sex={data.sex} prof={data.profession} />
+                <Card
+                  name={data.name}
+                  sex={data.sex}
+                  prof={data.profession}
+                  dp={data.photos[0]}
+                  chatId={data.chatId}
+                />
               </div>
             ))}
       </div>
