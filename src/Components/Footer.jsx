@@ -7,7 +7,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 export default function Footer() {
   return (
-    <div className="bg-white">
+    <footer className="bg-white w-full">
       <div className="top flex flex-col md:flex-row justify-between px-6 md:px-20 lg:px-40 py-10 items-center">
         <h1 className="text-2xl mb-4 md:mb-0">YV</h1>
         <div className="input flex w-full md:w-auto">
@@ -41,6 +41,6 @@ export default function Footer() {
       <div className="copyright flex justify-center text-center bg-red-100 py-4">
         <span>Copyrights reserved &copy; Bantu Programmers</span>
       </div>
-    </div>
+    </footer>
   );
 }

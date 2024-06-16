@@ -3,7 +3,7 @@ import Slider from "./Slider";
 
 export default function Reviews() {
   return (
-    <div className="container flex flex-col lg:flex-row px-5 md:px-20 lg:px-40 py-10 md:py-20">
+    <div className="flex flex-col lg:flex-row px-5 md:px-20 lg:px-40 py-10 md:py-20">
       <div className="left lg:basis-2/3 border-r-0 lg:border-r-4 border-cyan-500 rounded-lg px-5 mb-10 lg:mb-0">
         <Slider />
         <button className="flex justify-center text-center bg-cyan-600 text-lg md:text-2xl w-full py-3 rounded text-white hover:shadow-xl duration-300">
