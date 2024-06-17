@@ -19,9 +19,18 @@ import { getAnalytics } from "firebase/analytics";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { getDoc, setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+
 import { useLocation } from "react-router-dom";
 import Header from "../Components/header";
+import FriendRequests from "../Components/FriendRequests";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
@@ -46,7 +55,10 @@ function App() {
       <Header />
       <section className="relative h-full">
         {user ? (
-          <ChatRoom recipientId={location.state.chatId} />
+          <>
+            <FriendRequests /> {/* Render the FriendRequests component */}
+            <ChatRoom recipientId={location.state.chatId} />
+          </>
         ) : (
           <div>sign in karo pehle</div>
         )}
@@ -163,6 +175,22 @@ async function getOrCreateConversation(
   const conversationRef = doc(conversationsRef, conversationId);
 
   const conversationDoc = await getDoc(conversationRef);
+
+  // Check if the users are friends
+  const friendRequestQuery = query(
+    collection(firestore, "friendRequests"),
+    where("senderId", "in", [currentUserId, recipientId]),
+    where("recipientId", "in", [currentUserId, recipientId]),
+    where("status", "==", "accepted")
+  );
+
+  const querySnapshot = await getDocs(friendRequestQuery);
+
+  if (querySnapshot.empty) {
+    // Users are not friends, restrict conversation creation or prompt user to send friend request
+    console.log("Users are not friends. Cannot create conversation.");
+    return null;
+  }
 
   if (conversationDoc.exists()) {
     return conversationRef;
