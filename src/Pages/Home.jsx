@@ -8,6 +8,7 @@ import Footer from "../Components/Footer";
 import Hero from "../Components/Hero";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/header";
+import FriendRequests from "../Components/FriendRequests";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function Home() {
       <Header />
       <div className="flex-grow">
         <Hero />
+        <FriendRequests />
         <Hero2 />
         {/* <Hero3 /> */}
         <Reviews />

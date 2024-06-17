@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { AiOutlineSend } from "react-icons/ai";
 import Chat from "../Components/Chat";
 import Header from "../Components/header";
+import SendFriendRequest from "../Components/SendFriendRequest";
 
 const ProfileDetail = () => {
   const location = useLocation();
@@ -98,6 +99,10 @@ const ProfileDetail = () => {
                     <span className="font-bold">Phone:</span> {profile.number}
                   </p>
                 </div>
+              </div>
+              <div className="bg-cyan-600 p-4 rounded-xl">
+                {" "}
+                <SendFriendRequest recipientId={profile.chatId} />
               </div>
 
               <h3 className="text-xl font-semibold mt-6 mb-2">Description</h3>
