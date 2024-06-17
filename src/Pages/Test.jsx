@@ -1,12 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { useAuth } from "../context/authContext";
 
 const ProfileForm = () => {
-  const { currentUser } = useAuth();
-  console.log(currentUser.uid);
   const [formData, setFormData] = useState({
-    chatId: currentUser.uid,
     name: "",
     age: "",
     number: "",
@@ -16,8 +12,14 @@ const ProfileForm = () => {
     sex: "",
     profession: "",
     description: "",
+    aadhaarNumber: "", // New field for Aadhaar number
+    captcha: "", // New field for captcha
   });
   const [photos, setPhotos] = useState([]);
+  const [captchaImage, setCaptchaImage] = useState("");
+  const [captchaAudio, setCaptchaAudio] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const [result, setResult] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -30,8 +32,74 @@ const ProfileForm = () => {
     setPhotos([...photos, ...acceptedFiles]);
   };
 
+  const generateCaptcha = () => {
+    fetch("http://127.0.0.1:5000/generate-captcha", {
+      // Updated URL
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCaptchaImage("data:image/jpeg;base64," + data.imageBase64);
+        setCaptchaAudio("data:audio/mpeg;base64," + data.audioBase64);
+        setTransactionId(data.transactionId);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
+  const verifyAadhaar = () => {
+    const data = {
+      aadhaar_number: formData.aadhaarNumber,
+      captcha: formData.captcha,
+      transaction_id: transactionId,
+    };
+
+    fetch("http://127.0.0.1:5000/verify-aadhaar", {
+      // Updated URL
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.statusMessage.includes("doesn't")) {
+          setResult(
+            "Aadhaar verification failed: Aadhaar number doesn't exist."
+          );
+        } else if (data.status === "Error") {
+          setResult(
+            "Captcha verification failed. Please enter the correct captcha."
+          );
+        } else {
+          setResult("Aadhaar verification successful: Aadhaar number exists.");
+        }
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setResult("Error occurred while verifying Aadhaar.");
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
+      });
+  };
+
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    verifyAadhaar();
+
     const formDataToSend = new FormData();
     for (const key in formData) {
       formDataToSend.append(key, formData[key]);
@@ -49,7 +117,7 @@ const ProfileForm = () => {
       if (response.ok) {
         alert("Profile submitted successfully!");
       } else {
-        alert(`Error: ${data.error}`);
+        // alert(Error: ${data.error});
       }
     } catch (err) {
       console.error("Error submitting profile:", err);
@@ -63,9 +131,9 @@ const ProfileForm = () => {
   });
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 mt-10 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Profile Formwww</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-md mx-auto bg-white p-4 mt-10 rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6 text-center">Profile Form</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
         {[
           { label: "Name", type: "text", name: "name" },
           { label: "Age", type: "number", name: "age" },
@@ -74,13 +142,9 @@ const ProfileForm = () => {
           { label: "Religion", type: "text", name: "religion" },
           { label: "Mother Tongue", type: "text", name: "motherTongue" },
           { label: "Profession", type: "text", name: "profession" },
-          { label: "Description", type: "text", name: "description" },
         ].map((field) => (
-          <div key={field.name} className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor={field.name}
-            >
+          <div key={field.name}>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
               {field.label}
             </label>
             <input
@@ -93,11 +157,20 @@ const ProfileForm = () => {
             />
           </div>
         ))}
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="sex"
-          >
+        <div>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
             Sex
           </label>
           <select
@@ -115,7 +188,51 @@ const ProfileForm = () => {
             <option value="other">Other</option>
           </select>
         </div>
-        <div className="mb-4">
+        <div>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Aadhaar Number
+          </label>
+          <input
+            type="text"
+            name="aadhaarNumber"
+            value={formData.aadhaarNumber}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Captcha
+          </label>
+          <img src={captchaImage} alt="Captcha" className="mb-2" />
+          <audio controls src={captchaAudio} className="mb-2">
+            Your browser does not support the audio element.
+          </audio>
+          <input
+            type="text"
+            name="captcha"
+            value={formData.captcha}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <button
+          type="button"
+          onClick={generateCaptcha}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Refresh Captcha
+        </button>
+        <button
+          type="button"
+          onClick={verifyAadhaar}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
+        >
+          Verify Aadhaar
+        </button>
+        <div>
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Upload Photos
           </label>
@@ -130,22 +247,20 @@ const ProfileForm = () => {
               <p>Drag 'n' drop some photos here, or click to select files</p>
             )}
           </div>
-          <div className="mt-4">
-            {photos.length > 0 && (
-              <div>
-                <h4 className="text-gray-700 text-sm font-bold mb-2">
-                  Selected Photos:
-                </h4>
-                <ul>
-                  {photos.map((photo, index) => (
-                    <li key={index} className="text-gray-600 text-sm">
-                      {photo.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          {photos.length > 0 && (
+            <div className="mt-4">
+              <h4 className="text-gray-700 text-sm font-bold mb-2">
+                Selected Photos:
+              </h4>
+              <ul>
+                {photos.map((photo, index) => (
+                  <li key={index} className="text-gray-600 text-sm">
+                    {photo.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <button
           type="submit"
@@ -154,6 +269,7 @@ const ProfileForm = () => {
           Submit
         </button>
       </form>
+      {result && <p className="text-center mt-4">{result}</p>}
     </div>
   );
 };
