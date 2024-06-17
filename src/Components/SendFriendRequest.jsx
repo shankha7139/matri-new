@@ -1,18 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import {
   getFirestore,
   collection,
   addDoc,
   serverTimestamp,
+  onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 
 const SendFriendRequest = ({ recipientId }) => {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState(null);
+  const [requestSent, setRequestSent] = useState(false);
+  const [areFriends, setAreFriends] = useState(false);
   const auth = getAuth();
   const firestore = getFirestore();
   const currentUserId = auth.currentUser.uid;
+
+  useEffect(() => {
+    const friendRequestQuery = query(
+      collection(firestore, "friendRequests"),
+      where("senderId", "in", [currentUserId, recipientId]),
+      where("recipientId", "in", [currentUserId, recipientId]),
+      where("status", "==", "accepted")
+    );
+
+    const unsubscribe = onSnapshot(friendRequestQuery, (querySnapshot) => {
+      setAreFriends(!querySnapshot.empty);
+    });
+
+    return unsubscribe;
+  }, [currentUserId, recipientId, firestore]);
 
   const handleSendRequest = async () => {
     setIsSending(true);
@@ -26,6 +46,7 @@ const SendFriendRequest = ({ recipientId }) => {
         status: "pending",
         createdAt: serverTimestamp(),
       });
+      setRequestSent(true);
       console.log("Friend request sent successfully.");
     } catch (error) {
       console.error("Error sending friend request:", error);
@@ -37,9 +58,15 @@ const SendFriendRequest = ({ recipientId }) => {
 
   return (
     <div>
-      <button onClick={handleSendRequest} disabled={isSending}>
-        {isSending ? "Sending..." : "Send Friend Request"}
-      </button>
+      {areFriends ? (
+        <p>You are already friends</p>
+      ) : requestSent ? (
+        <p>Friend request sent</p>
+      ) : (
+        <button onClick={handleSendRequest} disabled={isSending}>
+          {isSending ? "Sending..." : "Send Friend Request"}
+        </button>
+      )}
       {error && <p>{error}</p>}
     </div>
   );

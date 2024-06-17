@@ -16,11 +16,20 @@ import {
   signOut,
 } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
-
+import FriendRequests from "./FriendRequests";
+import Header from "./header";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { getDoc, setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  getDoc,
+  setDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  getDocs,
+} from "firebase/firestore";
 import { useLocation } from "react-router-dom";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
   authDomain: "matri-site-cf115.firebaseapp.com",
@@ -39,20 +48,47 @@ const analytics = getAnalytics(app);
 function App(props) {
   const [user] = useAuthState(auth);
   const location = useLocation();
+  const [isFriend, setIsFriend] = useState(null);
+
+  useEffect(() => {
+    const checkFriendship = async () => {
+      if (user && location.state && location.state.props.chatId) {
+        console.log("Checking if friends with:", location.state.props.chatId);
+        const areFriends = await checkIfFriends(
+          user.uid,
+          location.state.props.chatId
+        );
+        console.log("Are friends result:", areFriends);
+        setIsFriend(areFriends);
+      }
+    };
+
+    console.log("Running checkFriendship useEffect");
+    console.log(location.state.props.chatId);
+    checkFriendship();
+    console.log(isFriend);
+  }, [user, location.state]);
+
   return (
-    <div className="App h-full">
-      <section className="h-full">
+    <div className="App">
+      <Header />
+      <section className="relative h-full">
         {user ? (
-          <ChatRoom recipientId={props.chatId} />
+          <>
+            {isFriend === false ? (
+              <div className="flex items-center justify-center h-full">
+                You are not friends with this user.
+              </div>
+            ) : isFriend === true ? (
+              <ChatRoom recipientId={location.state.props.chatId} />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                Loading...
+              </div>
+            )}
+          </>
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <button
-              onClick={() => signInWithPopup(auth, new GoogleAuthProvider())}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Sign in with Google
-            </button>
-          </div>
+          <div>Sign in first</div>
         )}
       </section>
     </div>
@@ -68,6 +104,7 @@ function SignOut() {
     )
   );
 }
+
 function ChatRoom({ recipientId }) {
   const dummy = useRef();
   const firestore = getFirestore();
@@ -77,24 +114,35 @@ function ChatRoom({ recipientId }) {
   const conversationsRef = collection(firestore, "conversations");
 
   const [conversationDoc, setConversationDoc] = useState(null);
+  const [areFriends, setAreFriends] = useState(false);
 
   useEffect(() => {
-    async function fetchConversation() {
-      const conversationId = [currentUser.uid, recipientId].sort().join(":");
-      const conversationRef = doc(conversationsRef, conversationId);
-      const conversationSnapshot = await getDoc(conversationRef);
+    const fetchConversation = async () => {
+      console.log("Fetching conversation for:", recipientId);
+      const areFriendsResult = await checkIfFriends(
+        currentUser.uid,
+        recipientId
+      );
+      console.log("Are friends result in ChatRoom:", areFriendsResult);
+      setAreFriends(areFriendsResult);
 
-      if (conversationSnapshot.exists()) {
-        setConversationDoc(conversationRef);
-      } else {
-        const newConversationRef = await getOrCreateConversation(
-          conversationsRef,
-          currentUser.uid,
-          recipientId
-        );
-        setConversationDoc(newConversationRef);
+      if (areFriendsResult) {
+        const conversationId = [currentUser.uid, recipientId].sort().join(":");
+        const conversationRef = doc(conversationsRef, conversationId);
+        const conversationSnapshot = await getDoc(conversationRef);
+
+        if (conversationSnapshot.exists()) {
+          setConversationDoc(conversationRef);
+        } else {
+          const newConversationRef = await getOrCreateConversation(
+            conversationsRef,
+            currentUser.uid,
+            recipientId
+          );
+          setConversationDoc(newConversationRef);
+        }
       }
-    }
+    };
 
     fetchConversation();
   }, [currentUser.uid, recipientId]);
@@ -125,15 +173,25 @@ function ChatRoom({ recipientId }) {
     }
   };
 
+  if (!areFriends) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        You need to be friends to chat.
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col h-full">
-      <main className="flex-1 p-4 overflow-y-auto mb-16"> {/* Add mb-16 to create space for the form */}
+      <main className="flex-1 p-4 overflow-y-auto mb-16">
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <span ref={dummy}></span>
       </main>
 
-      <form onSubmit={sendMessage} className="p-4 bg-gray-200 sticky bottom-0 w-full">
+      <form
+        onSubmit={sendMessage}
+        className="p-4 bg-gray-200 sticky bottom-0 w-full"
+      >
         <div className="flex items-center space-x-4">
           <input
             className="flex-1 py-2 px-4 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -155,6 +213,23 @@ function ChatRoom({ recipientId }) {
   );
 }
 
+async function checkIfFriends(currentUserId, recipientId) {
+  console.log(
+    "Checking if friends in function for:",
+    currentUserId,
+    recipientId
+  );
+  const firestore = getFirestore();
+  const friendRequestQuery = query(
+    collection(firestore, "friendRequests"),
+    where("senderId", "in", [currentUserId, recipientId]),
+    where("recipientId", "in", [currentUserId, recipientId]),
+    where("status", "==", "accepted")
+  );
+  const querySnapshot = await getDocs(friendRequestQuery);
+  console.log("Query snapshot:", querySnapshot.empty);
+  return !querySnapshot.empty;
+}
 
 async function getOrCreateConversation(
   conversationsRef,
@@ -166,10 +241,27 @@ async function getOrCreateConversation(
 
   const conversationDoc = await getDoc(conversationRef);
 
+  // Check if the users are friends
+  const friendRequestQuery = query(
+    collection(firestore, "friendRequests"),
+    where("senderId", "in", [currentUserId, recipientId]),
+    where("recipientId", "in", [currentUserId, recipientId]),
+    where("status", "==", "accepted")
+  );
+
+  const querySnapshot = await getDocs(friendRequestQuery);
+
+  if (querySnapshot.empty) {
+    // Users are not friends, restrict conversation creation or prompt user to send friend request
+    console.log("Users are not friends. Cannot create conversation.");
+    return null;
+  }
+
   if (conversationDoc.exists()) {
     return conversationRef;
   }
 
+  // Create a new conversation if the users are friends and no conversation exists
   await setDoc(conversationRef, {
     participants: [currentUserId, recipientId],
     createdAt: serverTimestamp(),

@@ -50,17 +50,45 @@ const analytics = getAnalytics(app);
 function App() {
   const [user] = useAuthState(auth);
   const location = useLocation();
+
+  // New state to track if the users are friends
+  const [isFriend, setIsFriend] = useState(null);
+
+  useEffect(() => {
+    async function checkFriendship() {
+      if (user && location.state && location.state.chatId) {
+        const areFriends = await checkIfFriends(
+          user.uid,
+          location.state.chatId
+        );
+        setIsFriend(areFriends);
+      }
+    }
+
+    checkFriendship();
+  }, [user, location.state]);
+
   return (
     <div className="App">
       <Header />
       <section className="relative h-full">
         {user ? (
           <>
-            <FriendRequests /> {/* Render the FriendRequests component */}
-            <ChatRoom recipientId={location.state.chatId} />
+            <FriendRequests />
+            {isFriend === false ? (
+              <div className="flex items-center justify-center h-full">
+                You are not friends with this user.
+              </div>
+            ) : isFriend === true ? (
+              <ChatRoom recipientId={location.state.chatId} />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                Loading...
+              </div>
+            )}
           </>
         ) : (
-          <div>sign in karo pehle</div>
+          <div>Sign in first</div>
         )}
       </section>
     </div>
@@ -86,22 +114,31 @@ function ChatRoom({ recipientId }) {
   const conversationsRef = collection(firestore, "conversations");
 
   const [conversationDoc, setConversationDoc] = useState(null);
+  const [areFriends, setAreFriends] = useState(false);
 
   useEffect(() => {
     async function fetchConversation() {
-      const conversationId = [currentUser.uid, recipientId].sort().join(":");
-      const conversationRef = doc(conversationsRef, conversationId);
-      const conversationSnapshot = await getDoc(conversationRef);
+      const areFriendsResult = await checkIfFriends(
+        currentUser.uid,
+        recipientId
+      );
+      setAreFriends(areFriendsResult);
 
-      if (conversationSnapshot.exists()) {
-        setConversationDoc(conversationRef);
-      } else {
-        const newConversationRef = await getOrCreateConversation(
-          conversationsRef,
-          currentUser.uid,
-          recipientId
-        );
-        setConversationDoc(newConversationRef);
+      if (areFriendsResult) {
+        const conversationId = [currentUser.uid, recipientId].sort().join(":");
+        const conversationRef = doc(conversationsRef, conversationId);
+        const conversationSnapshot = await getDoc(conversationRef);
+
+        if (conversationSnapshot.exists()) {
+          setConversationDoc(conversationRef);
+        } else {
+          const newConversationRef = await getOrCreateConversation(
+            conversationsRef,
+            currentUser.uid,
+            recipientId
+          );
+          setConversationDoc(newConversationRef);
+        }
       }
     }
 
@@ -133,6 +170,14 @@ function ChatRoom({ recipientId }) {
       dummy.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  if (!areFriends) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        You need to be friends to chat.
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full pt-16 pb-16">
@@ -166,6 +211,19 @@ function ChatRoom({ recipientId }) {
   );
 }
 
+async function checkIfFriends(currentUserId, recipientId) {
+  const firestore = getFirestore();
+  const friendRequestQuery = query(
+    collection(firestore, "friendRequests"),
+    where("senderId", "in", [currentUserId, recipientId]),
+    where("recipientId", "in", [currentUserId, recipientId]),
+    where("status", "==", "accepted")
+  );
+
+  const querySnapshot = await getDocs(friendRequestQuery);
+  return !querySnapshot.empty;
+}
+
 async function getOrCreateConversation(
   conversationsRef,
   currentUserId,
@@ -196,6 +254,7 @@ async function getOrCreateConversation(
     return conversationRef;
   }
 
+  // Create a new conversation if the users are friends and no conversation exists
   await setDoc(conversationRef, {
     participants: [currentUserId, recipientId],
     createdAt: serverTimestamp(),
