@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const ProfileForm = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const ProfileForm = () => {
   const [captchaAudio, setCaptchaAudio] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [result, setResult] = useState("");
+  const [verificationStatus, setVerificationStatus] = useState(null); // New state for verification status
 
   const handleChange = (e) => {
     setFormData({
@@ -70,25 +72,21 @@ const ProfileForm = () => {
           setResult(
             "Aadhaar verification failed: Aadhaar number doesn't exist."
           );
+          setVerificationStatus(false); // Set verification status to false
         } else if (data.status === "Error") {
           setResult(
             "Captcha verification failed. Please enter the correct captcha."
           );
+          setVerificationStatus(false); // Set verification status to false
         } else {
           setResult("Aadhaar verification successful: Aadhaar number exists.");
+          setVerificationStatus(true); // Set verification status to true
         }
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 10000);
       })
       .catch((error) => {
         console.error("Error:", error);
         setResult("Error occurred while verifying Aadhaar.");
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 10000);
+        setVerificationStatus(false); // Set verification status to false
       });
   };
 
@@ -232,6 +230,15 @@ const ProfileForm = () => {
         >
           Verify Aadhaar
         </button>
+        {verificationStatus !== null && (
+          <span className="ml-2">
+            {verificationStatus ? (
+              <FaCheckCircle className="text-green-500" />
+            ) : (
+              <FaTimesCircle className="text-red-500" />
+            )}
+          </span>
+        )}
         <div>
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Upload Photos

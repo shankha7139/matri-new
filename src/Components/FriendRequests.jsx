@@ -14,8 +14,7 @@ const FriendRequests = () => {
   const [outgoingRequests, setOutgoingRequests] = useState([]);
   const auth = getAuth();
   const firestore = getFirestore();
-  const currentUserId = auth.currentUser.uid;
-
+const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
   useEffect(() => {
     const incomingRequestsQuery = query(
       collection(firestore, "friendRequests"),
