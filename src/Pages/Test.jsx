@@ -122,6 +122,25 @@ const ProfileForm = () => {
 
   return (
     <div className="container mx-auto bg-red-100 p-6 mt-10 rounded-lg shadow-md">
+      <button
+        className="absolute top-0 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => window.history.back()}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
       <h1 className="text-2xl font-bold mb-6 text-center">Profile Info</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-wrap -mx-2">
