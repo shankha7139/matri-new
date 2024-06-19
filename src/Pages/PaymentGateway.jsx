@@ -6,6 +6,25 @@ const PaymentGateway = () => {
   return (
     <>
     < Header / >
+       <button
+        className="absolute top-14 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => window.history.back()}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
     <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
   <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
     <div class="mx-auto max-w-5xl">
@@ -64,28 +83,28 @@ const PaymentGateway = () => {
             <div class="space-y-2">
               <dl class="flex items-center justify-between gap-4">
                 <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Original price</dt>
-                <dd class="text-base font-medium text-gray-900 dark:text-white">$6,592.00</dd>
+                <dd class="text-base font-medium text-gray-900 dark:text-white">₹899.00</dd>
               </dl>
 
               <dl class="flex items-center justify-between gap-4">
-                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                <dd class="text-base font-medium text-green-500">-$299.00</dd>
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Discount</dt>
+                <dd class="text-base font-medium text-green-500">-₹400.00</dd>
               </dl>
 
-              <dl class="flex items-center justify-between gap-4">
+              {/* <dl class="flex items-center justify-between gap-4">
                 <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Store Pickup</dt>
                 <dd class="text-base font-medium text-gray-900 dark:text-white">$99</dd>
-              </dl>
+              </dl> */}
 
               <dl class="flex items-center justify-between gap-4">
                 <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                <dd class="text-base font-medium text-gray-900 dark:text-white">$799</dd>
+                <dd class="text-base font-medium text-gray-900 dark:text-white">₹89.82</dd>
               </dl>
             </div>
 
             <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
               <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-              <dd class="text-base font-bold text-gray-900 dark:text-white">$7,191.00</dd>
+              <dd class="text-base font-bold text-gray-900 dark:text-white">₹588.82</dd>
             </dl>
           </div>
 

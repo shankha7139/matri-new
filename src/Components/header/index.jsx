@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 // Import Notification and User icons as images
 import NotificationIcon from "../../assets/notification.png";
 import UserIcon from "../../assets/user.png";
+import Pricing from "../../assets/Pricing.png"
 
 const Header = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Header = () => {
           className="flex items-center cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <span className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl">
+          <span className="text-3xl font-bold text-white transition-all duration-1000 ease-in-out px-4 py-2 rounded-lg hover:text-4xl">
             YV
           </span>
         </div>
@@ -52,7 +53,12 @@ const Header = () => {
             className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl"
             to={"/payment-details"}
           >
-            Pricing
+            <img
+              src={Pricing}
+              alt="Pricing"
+              className="w-6 h-6"
+              style={{ verticalAlign: "middle" }}
+            />
           </Link>
 
           <button
@@ -85,14 +91,19 @@ const Header = () => {
                 onMouseLeave={handleMouseLeave}
                 className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-lg w-48"
               >
+                <div div className = "block px-4 py-2 text-gray-800 w-full text-center bg-gray-200" >
+                  Hi! {loggedUser}
+                </div>
+            
+                <div className="border-t border-gray-200 my-2"></div>
                 <button
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-center"
                   onClick={() => navigate("/profile")}
                 >
                   Edit Profile
                 </button>
                 <button
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-center"
                   onClick={() => {
                     doSignOut().then(() => {
                       navigate("/login");

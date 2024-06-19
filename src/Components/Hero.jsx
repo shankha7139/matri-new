@@ -24,7 +24,7 @@ export default function Hero() {
         </button>
       </div> */}
 
-     <div className="absolute top-2/3 left-0 p-4 pl-8 text-2xl bg-gradient-to-r from-gray-500 to-transparent rounded-xl md:top-1/2 md:p-8 md:text-3xl lg:p-12 lg:text-4xl">
+     <div className="absolute top-2/3 left-10 p-4 pl-8 text-2xl bg-gradient-to-r from-gray-500 to-transparent rounded-xl md:top-1/2 md:p-8 md:text-3xl lg:p-12 lg:text-4xl">
         <h1 className="text-white">Trusted Matrimony and</h1>
         <h1 className="text-rose-600">Matchmaking Service.....</h1>
       </div>

@@ -24,7 +24,7 @@ const ProfileDetail = () => {
       <Header />
       <div className="container mx-auto p-4 mt-10">
         <button
-          className="absolute top-12 left-10 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="absolute top-14 left-10 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           onClick={() => window.history.back()}
         >
           <svg

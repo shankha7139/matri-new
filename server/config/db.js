@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { MongoClient } = require("mongodb");
 
 const url =
-  "mongodb://matri:matri@ac-aia6j0k-shard-00-00.s1c4bwr.mongodb.net:27017,ac-aia6j0k-shard-00-01.s1c4bwr.mongodb.net:27017,ac-aia6j0k-shard-00-02.s1c4bwr.mongodb.net:27017/?ssl=true&replicaSet=atlas-gcq09h-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0";
+  "mongodb+srv://matri:zsxxxd8YVGOh1FC0@cluster0.s1c4bwr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const dbName = "test";
 const collectionName = "users";
 
