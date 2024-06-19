@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  adharVarified: {
+    type: Boolean,
+    required: true,
+  },
   chatId: {
     type: String,
     required: true,

@@ -23,8 +23,31 @@ const ProfileDetail = () => {
     <>
       <Header />
       <div className="container mx-auto p-4 mt-10">
+        <button
+          className="absolute top-12 left-10 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={() => window.history.back()}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </button>
         <div className="relative">
-          <div className={`${chatbox ? "hidden" : "block"} transition-all duration-300 ease-in-out`}>
+          <div
+            className={`${
+              chatbox ? "hidden" : "block"
+            } transition-all duration-300 ease-in-out`}
+          >
             <h1 className="text-3xl font-bold mb-6 text-center">
               {profile.name}'s Profile
             </h1>
@@ -110,31 +133,34 @@ const ProfileDetail = () => {
             </div>
           </div>
 
-         {chatbox && (
+          {chatbox && (
             <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50 p-4">
-                <div className="flex items-center space-x-4 mb-4">
+              <div className="flex items-center space-x-4 mb-4">
                 <div className="w-16 h-16">
-                    <img
+                  <img
                     src={profile.photos[0]}
                     alt={`${profile.name}'s profile`}
                     className="object-cover rounded-full w-full h-full"
-                    />
+                  />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-semibold">{profile.name}</h2>
+                  <h2 className="text-2xl font-semibold">{profile.name}</h2>
                 </div>
                 <button
-                    onClick={() => setChatbox(false)}
-                    className="absolute top-0 right-0 m-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => setChatbox(false)}
+                  className="absolute top-0 right-0 m-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
                 >
-                    &#x2715;
+                  &#x2715;
                 </button>
-                </div>
-                <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 112px)' }}>
+              </div>
+              <div
+                className="overflow-auto"
+                style={{ maxHeight: "calc(100vh - 112px)" }}
+              >
                 <Chat chatId={profile.chatId} />
-                </div>
+              </div>
             </div>
-            )}
+          )}
 
           {!chatbox && (
             <div className="fixed bottom-4 right-4 z-50">

@@ -3,9 +3,15 @@ import { useLocation } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+import { useAuth } from "../context/authContext";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Matri() {
+  const { userLoggedIn } = useAuth();
+  const [loggedUser, setLoggedUser] = useState("");
   const location = useLocation();
+  const auth = getAuth();
+
   const [searchTerms, setSearchTerms] = useState({
     religion: "",
     language: "",
@@ -25,6 +31,7 @@ export default function Matri() {
     setUser(response[0]); // Set the user state to the first (and only) array in the response
     console.log("response", response);
     console.log("user", user);
+    console.log("user logged in", userLoggedIn);
   };
 
   const handleSearchChange = (e) => {
@@ -53,6 +60,17 @@ export default function Matri() {
 
   useEffect(() => {
     loadData();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const email = user.email;
+        console.log("Usesadasdr email:", email);
+        setLoggedUser(user.uid);
+        console.log("userid", user.uid, " --- ", loggedUser);
+      } else {
+        console.log("User is signed out");
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -95,36 +113,40 @@ export default function Matri() {
         {filteredData.length > 0
           ? filteredData.map((data) => (
               <div key={data.id}>
-                <Card
-                  name={data.name}
-                  sex={data.sex}
-                  prof={data.profession}
-                  photos={data.photos}
-                  chatId={data.chatId}
-                  age={data.age}
-                  number={data.number}
-                  email={data.email}
-                  religion={data.religion}
-                  motherTongue={data.motherTongue}
-                  description={data.description}
-                />
+                {loggedUser != data.chatId && (
+                  <Card
+                    name={data.name}
+                    sex={data.sex}
+                    prof={data.profession}
+                    photos={data.photos}
+                    chatId={data.chatId}
+                    age={data.age}
+                    number={data.number}
+                    email={data.email}
+                    religion={data.religion}
+                    motherTongue={data.motherTongue}
+                    description={data.description}
+                  />
+                )}
               </div>
             ))
           : user.map((data) => (
               <div key={data.id}>
-                <Card
-                  name={data.name}
-                  sex={data.sex}
-                  prof={data.profession}
-                  photos={data.photos}
-                  chatId={data.chatId}
-                  age={data.age}
-                  number={data.number}
-                  email={data.email}
-                  religion={data.religion}
-                  motherTongue={data.motherTongue}
-                  description={data.description}
-                />
+                {loggedUser != data.chatId && (
+                  <Card
+                    name={data.name}
+                    sex={data.sex}
+                    prof={data.profession}
+                    photos={data.photos}
+                    chatId={data.chatId}
+                    age={data.age}
+                    number={data.number}
+                    email={data.email}
+                    religion={data.religion}
+                    motherTongue={data.motherTongue}
+                    description={data.description}
+                  />
+                )}
               </div>
             ))}
       </div>

@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaCheckCircle, FaTimesCircle, FaVolumeUp } from "react-icons/fa";
+import { useAuth } from "../context/authContext";
 
 const ProfileForm = () => {
+  const { currentUser } = useAuth();
+  console.log(currentUser.uid);
+  const [adharCheck, setAdharCheck] = useState(false);
   const [formData, setFormData] = useState({
+    chatId: currentUser.uid,
     name: "",
     age: "",
     number: "",
@@ -66,14 +71,17 @@ const ProfileForm = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.statusMessage.includes("doesn't") || data.status === "Error") {
-          setVerificationStatus(false); // Set verification status to false
+          setVerificationStatus(false);
+          setAdharCheck(false);
         } else {
-          setVerificationStatus(true); // Set verification status to true
+          setVerificationStatus(true);
+          setAdharCheck(true);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setVerificationStatus(false); // Set verification status to false
+        setVerificationStatus(false);
+        setAdharCheck(false);
       });
   };
 
@@ -89,6 +97,8 @@ const ProfileForm = () => {
     for (const key in formData) {
       formDataToSend.append(key, formData[key]);
     }
+    formDataToSend.append("adharVarified", adharCheck);
+
     photos.forEach((photo, index) => {
       formDataToSend.append("photos", photo);
     });

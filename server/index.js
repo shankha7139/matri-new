@@ -54,6 +54,7 @@ app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
     profession,
     chatId,
     description,
+    adharVarified,
   } = req.body;
 
   if (
@@ -65,7 +66,8 @@ app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
     !motherTongue ||
     !sex ||
     !profession ||
-    !chatId
+    !chatId ||
+    !adharVarified
   ) {
     return res.status(400).json({ error: "All fields are required." });
   }
@@ -91,6 +93,7 @@ app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
       sex,
       profession,
       description,
+      adharVarified,
       photos: uploadedImages.map((img) => img.secure_url), // Store image URLs
     });
 
