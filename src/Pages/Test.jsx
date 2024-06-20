@@ -4,16 +4,19 @@ import { FaCheckCircle, FaTimesCircle, FaVolumeUp } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { doc, setDoc } from "firebase/firestore";
+import { db, storage } from "../firebase/Firebase"; // Import storage
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import storage functions
 
 const ProfileForm = () => {
   const { currentUser } = useAuth();
   const [adharCheck, setAdharCheck] = useState(false);
   const [formData, setFormData] = useState({
-    chatId: currentUser.uid,
+    uid: currentUser.uid,
     name: "",
     age: "",
     number: "",
-    email: "",
+    email: currentUser.email,
     religion: "",
     motherTongue: "",
     sex: "",
@@ -40,7 +43,15 @@ const ProfileForm = () => {
   };
 
   const handlePhotoUpload = (acceptedFiles) => {
-    setPhotos([...photos, ...acceptedFiles]);
+    const formattedFiles = acceptedFiles.map((file) => ({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      url: URL.createObjectURL(file), // Create a local URL for rendering preview
+      file: file // Keep the file object itself for uploading/storage
+    }));
+  
+    setPhotos([...photos, ...formattedFiles]);
   };
 
   const generateCaptcha = () => {
@@ -94,6 +105,13 @@ const ProfileForm = () => {
     generateCaptcha();
   }, []);
 
+  const uploadPhoto = async (photo) => {
+    const storageRef = ref(storage, `photos/${currentUser.uid}/${photo.name}`);
+    await uploadBytes(storageRef, photo.file);
+    const url = await getDownloadURL(storageRef);
+    return url;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!adharCheck) {
@@ -102,27 +120,30 @@ const ProfileForm = () => {
     }
 
     setIsSubmitting(true);
-    const formDataToSend = new FormData();
-    for (const key in formData) {
-      formDataToSend.append(key, formData[key]);
-    }
-    formDataToSend.append("adharVarified", adharCheck);
-
-    photos.forEach((photo, index) => {
-      formDataToSend.append("photos", photo);
-    });
 
     try {
-      const response = await fetch("http://localhost:8008/api/user/profile", {
-        method: "POST",
-        body: formDataToSend,
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setProfileUpdated(true);
-      } else {
-        alert(`Error: ${data.error}`);
-      }
+      // Upload photos and get their URLs
+      const photoURLs = await Promise.all(photos.map(uploadPhoto));
+
+      // Save user data in Firestore
+      const userRef = doc(db, "users", currentUser.uid);
+      await setDoc(userRef, {
+        uid: formData.uid,
+        name: formData.name,
+        age: formData.age ? parseInt(formData.age) : null,
+        number: formData.number,
+        email: formData.email,
+        religion: formData.religion,
+        motherTongue: formData.motherTongue,
+        sex: formData.sex,
+        profession: formData.profession,
+        description: formData.description,
+        adharVarified: adharCheck,
+        photos: photoURLs, // Store URLs instead of File objects
+        updatedAt: new Date()
+      }, { merge: true });
+
+      setProfileUpdated(true);
     } catch (err) {
       console.error("Error submitting profile:", err);
       alert("Error submitting profile");
@@ -174,7 +195,6 @@ const ProfileForm = () => {
             { label: "Name", type: "text", name: "name" },
             { label: "Age", type: "number", name: "age" },
             { label: "Phone Number", type: "text", name: "number" },
-            { label: "Email", type: "email", name: "email" },
             { label: "Religion", type: "text", name: "religion" },
             { label: "Mother Tongue", type: "text", name: "motherTongue" },
             { label: "Profession", type: "text", name: "profession" },
@@ -211,6 +231,18 @@ const ProfileForm = () => {
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
+          </div>
+          <div className="w-full sm:w-1/2 px-2 mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              readOnly
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200 cursor-not-allowed"
+            />
           </div>
           <div className="w-full px-2 mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -309,8 +341,9 @@ const ProfileForm = () => {
                   {photos.map((photo, index) => (
                     <li key={index} className="text-gray-600 text-sm">
                       {photo.name}
+                      <img src={photo.url} alt={photo.name} className="mt-2 w-16 h-16 object-cover rounded" />
                     </li>
-                  ))}
+                  ))}                  
                 </ul>
               </div>
             )}
