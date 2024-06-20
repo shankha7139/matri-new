@@ -14,21 +14,20 @@ export default function Card(props) {
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none hover:opacity-75 lg:h-80">
             <img
               src={props.photos[0]}
-              alt="Product"
+              alt="User has not set any image"
               className="object-cover object-center lg:h-full lg:w-full"
             />
+            <h3 className="text-sm absolute bottom-14 left-2 bg-gray-200 px-2 py-1 rounded-full ">
+              <a
+                href="#"
+                aria-hidden="true"
+              >
+                {props.name}
+              </a>
+            </h3>
           </div>
           <div className="mt-4 flex justify-between">
             <div>
-              <h3 className="text-sm ">
-                <a
-                  href="#"
-                  className="absolute top-2 left-2 bg-gray-200 px-2 py-1 rounded-full "
-                  aria-hidden="true"
-                >
-                  {props.name}
-                </a>
-              </h3>
               <p className="mt-1 text-sm text-gray-500">{props.prof}</p>
             </div>
 

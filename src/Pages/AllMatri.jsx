@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
-import Navbar from "../Components/Navbar";
+import Headers from "../Components/header";
 import { useAuth } from "../context/authContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -79,7 +79,7 @@ export default function Matri() {
 
   return (
     <>
-      <Navbar />
+      <Headers />
        <button
         className="absolute top-14 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         onClick={() => window.history.back()}
@@ -99,7 +99,7 @@ export default function Matri() {
           ></path>
         </svg>
       </button>
-      <div className="flex flex-wrap justify-between items-center p-4 bg-slate-100 w-full px-4 md:px-24">
+      <div className="flex flex-wrap justify-between items-center p-4 bg-slate-100 w-full px-4 md:px-24 mt-14">
         <input
           type="text"
           name="language"

@@ -17,7 +17,7 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .then(() => console.log("Database connectedddd!"))
+    .then(() => console.log("Database connected!"))
     .catch((err) => console.log(err));
 
   try {
@@ -27,7 +27,8 @@ const connectDB = async () => {
     global.testuser = documents;
     // console.log(testuser);
   } catch (err) {
-    console.error(err);
+    console.error('Connection error:', err.message);
+    setTimeout(connectDB, 5000); // Retry connection after 5 seconds
   }
 };
 

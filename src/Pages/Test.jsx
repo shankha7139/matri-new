@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaCheckCircle, FaTimesCircle, FaVolumeUp } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const ProfileForm = () => {
   const { currentUser } = useAuth();
-  console.log(currentUser.uid);
   const [adharCheck, setAdharCheck] = useState(false);
   const [formData, setFormData] = useState({
     chatId: currentUser.uid,
@@ -25,7 +26,11 @@ const ProfileForm = () => {
   const [captchaImage, setCaptchaImage] = useState("");
   const [captchaAudio, setCaptchaAudio] = useState("");
   const [transactionId, setTransactionId] = useState("");
-  const [verificationStatus, setVerificationStatus] = useState(null); // New state for verification status
+  const [verificationStatus, setVerificationStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profileUpdated, setProfileUpdated] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -91,8 +96,12 @@ const ProfileForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    verifyAadhaar();
+    if (!adharCheck) {
+      alert("Please verify your Aadhaar before submitting.");
+      return;
+    }
 
+    setIsSubmitting(true);
     const formDataToSend = new FormData();
     for (const key in formData) {
       formDataToSend.append(key, formData[key]);
@@ -110,13 +119,15 @@ const ProfileForm = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Profile submitted successfully!");
+        setProfileUpdated(true);
       } else {
-        // alert(Error: ${data.error});
+        alert(`Error: ${data.error}`);
       }
     } catch (err) {
       console.error("Error submitting profile:", err);
       alert("Error submitting profile");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -128,6 +139,11 @@ const ProfileForm = () => {
   const playCaptchaAudio = () => {
     const audio = new Audio(captchaAudio);
     audio.play();
+  };
+
+  const handleDialogClose = () => {
+    setProfileUpdated(false);
+    navigate("/");
   };
 
   return (
@@ -300,13 +316,36 @@ const ProfileForm = () => {
             )}
           </div>
         </div>
-        <button
-          type="submit"
-          className="bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-        >
-          Submit
-        </button>
+        {isSubmitting ? (
+          <button
+            type="button"
+            className="bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full cursor-not-allowed"
+            disabled
+          >
+            Submitting...
+          </button>
+        ) : profileUpdated ? null : (
+          <button
+            type="submit"
+            className={`bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
+              !adharCheck ? "cursor-not-allowed opacity-50" : ""
+            }`}
+            disabled={!adharCheck}
+          >
+            Submit
+          </button>
+        )}
       </form>
+
+      <Dialog open={profileUpdated} onClose={handleDialogClose}>
+        <DialogTitle>Profile Updated!</DialogTitle>
+        <DialogContent>Your profile has been updated successfully.</DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary" variant="contained">
+            Go to Home
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

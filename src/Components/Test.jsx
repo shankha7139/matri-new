@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaCheckCircle, FaTimesCircle, FaVolumeUp } from "react-icons/fa";
+import { useAuth } from "../context/authContext";
 
 const ProfileForm = () => {
+  const { currentUser } = useAuth();
+  const [adharCheck, setAdharCheck] = useState(false);
   const [formData, setFormData] = useState({
+    chatId: currentUser.uid,
     name: "",
     age: "",
     number: "",
@@ -20,7 +24,9 @@ const ProfileForm = () => {
   const [captchaImage, setCaptchaImage] = useState("");
   const [captchaAudio, setCaptchaAudio] = useState("");
   const [transactionId, setTransactionId] = useState("");
-  const [verificationStatus, setVerificationStatus] = useState(null); // New state for verification status
+  const [verificationStatus, setVerificationStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to handle form submission status
+  const [profileUpdated, setProfileUpdated] = useState(false); // New state to handle profile updated message
 
   const handleChange = (e) => {
     setFormData({
@@ -66,14 +72,17 @@ const ProfileForm = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.statusMessage.includes("doesn't") || data.status === "Error") {
-          setVerificationStatus(false); // Set verification status to false
+          setVerificationStatus(false);
+          setAdharCheck(false);
         } else {
-          setVerificationStatus(true); // Set verification status to true
+          setVerificationStatus(true);
+          setAdharCheck(true);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setVerificationStatus(false); // Set verification status to false
+        setVerificationStatus(false);
+        setAdharCheck(false);
       });
   };
 
@@ -83,12 +92,15 @@ const ProfileForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     verifyAadhaar();
 
     const formDataToSend = new FormData();
     for (const key in formData) {
       formDataToSend.append(key, formData[key]);
     }
+    formDataToSend.append("adharVarified", adharCheck);
+
     photos.forEach((photo, index) => {
       formDataToSend.append("photos", photo);
     });
@@ -100,13 +112,16 @@ const ProfileForm = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Profile submitted successfully!");
+        setProfileUpdated(true);
+        // alert("Profile submitted successfully!");
       } else {
         // alert(Error: ${data.error});
       }
     } catch (err) {
       console.error("Error submitting profile:", err);
       alert("Error submitting profile");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -122,9 +137,26 @@ const ProfileForm = () => {
 
   return (
     <div className="container mx-auto bg-red-100 p-6 mt-10 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">
-        Profile Infodsjfhksdjh
-      </h1>
+      <button
+        className="absolute top-0 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => window.history.back()}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
+      <h1 className="text-2xl font-bold mb-6 text-center">Profile Info</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-wrap -mx-2">
           {[
@@ -221,14 +253,14 @@ const ProfileForm = () => {
             <button
               type="button"
               onClick={generateCaptcha}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
+              className="bg-cyan-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
             >
               Refresh Captcha
             </button>
             <button
               type="button"
               onClick={verifyAadhaar}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-cyan-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Verify Aadhaar
             </button>
@@ -273,12 +305,26 @@ const ProfileForm = () => {
             )}
           </div>
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-        >
-          Submit
-        </button>
+        {isSubmitting ? (
+          <button
+            type="button"
+            className="bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full cursor-not-allowed"
+            disabled
+          >
+            Submitting...
+          </button>
+        ) : profileUpdated ? (
+          <p className="text-center text-green-500 font-bold">
+            Profile updated!
+          </p>
+        ) : (
+          <button
+            type="submit"
+            className="bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+          >
+            Submit
+          </button>
+        )}
       </form>
     </div>
   );

@@ -42,7 +42,7 @@ const ProfileDetail = () => {
             ></path>
           </svg>
         </button>
-        <div className="relative">
+        <div className="relative mt-7">
           <div
             className={`${
               chatbox ? "hidden" : "block"
