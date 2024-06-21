@@ -20,6 +20,7 @@ const SendFriendRequest = ({ recipientId }) => {
   const currentUserId = auth.currentUser.uid;
 
   useEffect(() => {
+    console.log(recipientId);
     const friendRequestQuery = query(
       collection(firestore, "friendRequests"),
       where("senderId", "in", [currentUserId, recipientId]),

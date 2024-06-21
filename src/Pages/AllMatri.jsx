@@ -5,6 +5,7 @@ import Footer from "../Components/Footer";
 import Headers from "../Components/header";
 import { useAuth } from "../context/authContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 export default function Matri() {
   const { userLoggedIn } = useAuth();
@@ -21,17 +22,20 @@ export default function Matri() {
   const [filteredData, setFilteredData] = useState([]);
 
   const loadData = async () => {
-    let response = await fetch("http://localhost:8008/api/matriData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    response = await response.json();
-    setUser(response[0]); // Set the user state to the first (and only) array in the response
-    console.log("response", response);
-    console.log("user", user);
-    console.log("user logged in", userLoggedIn);
+    const db = getFirestore();
+    const usersCollection = collection(db, "users");
+
+    try {
+      const querySnapshot = await getDocs(usersCollection);
+      const userData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUser(userData);
+      console.log("Users data:", userData);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   const handleSearchChange = (e) => {
@@ -63,7 +67,7 @@ export default function Matri() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const email = user.email;
-        console.log("Usesadasdr email:", email);
+        console.log("User email:", email);
         setLoggedUser(user.uid);
         console.log("userid", user.uid, " --- ", loggedUser);
       } else {
@@ -80,7 +84,7 @@ export default function Matri() {
   return (
     <>
       <Headers />
-       <button
+      <button
         className="absolute top-14 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         onClick={() => window.history.back()}
       >
@@ -138,7 +142,7 @@ export default function Matri() {
                     sex={data.sex}
                     prof={data.profession}
                     photos={data.photos}
-                    chatId={data.chatId}
+                    uid={data.uid}
                     age={data.age}
                     number={data.number}
                     email={data.email}

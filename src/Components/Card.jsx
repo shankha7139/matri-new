@@ -18,10 +18,7 @@ export default function Card(props) {
               className="object-cover object-center lg:h-full lg:w-full"
             />
             <h3 className="text-sm absolute bottom-14 left-2 bg-gray-200 px-2 py-1 rounded-full ">
-              <a
-                href="#"
-                aria-hidden="true"
-              >
+              <a href="#" aria-hidden="true">
                 {props.name}
               </a>
             </h3>
@@ -36,7 +33,7 @@ export default function Card(props) {
         </div>
         <div
           className="absolute p-4 bg-rose-500 rounded-full text-white right-3 top-3 cursor-pointer "
-          onClick={() => navigate("/chat", { state: { chatId: props.chatId } })}
+          onClick={() => navigate("/chat", { state: { uId: props.uid } })}
         >
           <AiOutlineSend />
         </div>

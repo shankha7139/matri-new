@@ -52,11 +52,11 @@ function App(props) {
 
   useEffect(() => {
     const checkFriendship = async () => {
-      if (user && location.state && location.state.props.chatId) {
-        console.log("Checking if friends with:", location.state.props.chatId);
+      if (user && location.state && location.state.props.uid) {
+        console.log("Checking if friends with:", location.state.props.uid);
         const areFriends = await checkIfFriends(
           user.uid,
-          location.state.props.chatId
+          location.state.props.uid
         );
         console.log("Are friends result:", areFriends);
         setIsFriend(areFriends);
@@ -64,7 +64,7 @@ function App(props) {
     };
 
     console.log("Running checkFriendship useEffect");
-    console.log(location.state.props.chatId);
+    console.log(location.state.props.uid);
     checkFriendship();
     console.log(isFriend);
   }, [user, location.state]);
@@ -80,7 +80,7 @@ function App(props) {
                 You are not friends with this user.
               </div>
             ) : isFriend === true ? (
-              <ChatRoom recipientId={location.state.props.chatId} />
+              <ChatRoom recipientId={location.state.props.uid} />
             ) : (
               <div className="flex items-center justify-center h-full">
                 Loading...
