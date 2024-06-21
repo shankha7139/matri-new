@@ -8,9 +8,7 @@ export default function Hero() {
     <div className="relative">
       <img src={hero} alt="Hero" className="w-full h-screen object-cover" />
 {/* 
-      <div className="absolute top-0 left-0 p-4 text-xl md:p-8 md:text-2xl lg:p-12 lg:text-3xl">
-        YV
-      </div> */}
+      
 
       {/* <div className="absolute top-0 right-0 flex flex-col items-end md:flex-row md:items-center p-4 md:p-8 lg:p-12 space-y-2 md:space-y-0 md:space-x-4 lg:space-x-8">
         <button

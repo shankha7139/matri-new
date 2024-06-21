@@ -4,10 +4,9 @@ import { FaCheckCircle, FaTimesCircle, FaVolumeUp } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db, storage } from "../firebase/Firebase"; // Import storage
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import storage functions
-
+import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 const ProfileForm = () => {
   const { currentUser } = useAuth();
   const [adharCheck, setAdharCheck] = useState(false);
@@ -32,6 +31,9 @@ const ProfileForm = () => {
   const [verificationStatus, setVerificationStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileUpdated, setProfileUpdated] = useState(false);
+  const [existingPhotos, setExistingPhotos] = useState([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [photoToDelete, setPhotoToDelete] = useState(null);
 
   const navigate = useNavigate();
 
@@ -105,6 +107,77 @@ const ProfileForm = () => {
     generateCaptcha();
   }, []);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          setFormData((prevData) => ({
+            ...prevData,
+            ...userDoc.data(),
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [currentUser.uid]);
+  
+  const fetchExistingPhotos = async () => {
+  const storageRef = ref(storage, `photos/${currentUser.uid}`);
+  try {
+    const result = await listAll(storageRef);
+    const urlPromises = result.items.map(imageRef => getDownloadURL(imageRef));
+    const urls = await Promise.all(urlPromises);
+    setExistingPhotos(urls.map((url, index) => ({
+      name: `Photo ${index + 1}`,
+      url: url
+    })));
+  } catch (error) {
+    console.error("Error fetching existing photos:", error);
+  }
+};
+
+useEffect(() => {
+  fetchExistingPhotos();
+}, [currentUser.uid]);
+
+const openDeleteDialog = (photo, index) => {
+  setPhotoToDelete({
+    photo,
+    index
+  });
+  setDeleteDialogOpen(true);
+};
+
+const closeDeleteDialog = () => {
+  setDeleteDialogOpen(false);
+  setPhotoToDelete(null);
+};
+
+const deletePhoto = async () => {
+  if (photoToDelete) {
+    try {
+      if (photoToDelete.photo.file) {
+        // This is a newly uploaded photo
+        setPhotos(photos.filter((_, i) => i !== photoToDelete.index));
+      } else {
+        // This is an existing photo from Firebase Storage
+        const photoRef = ref(storage, photoToDelete.photo.url);
+        await deleteObject(photoRef);
+        setExistingPhotos(existingPhotos.filter((_, i) => i !== photoToDelete.index));
+      }
+    } catch (error) {
+      console.error("Error deleting photo:", error);
+      alert("Failed to delete photo. Please try again.");
+    }
+  }
+  closeDeleteDialog();
+};
+
   const uploadPhoto = async (photo) => {
     const storageRef = ref(storage, `photos/${currentUser.uid}/${photo.name}`);
     await uploadBytes(storageRef, photo.file);
@@ -122,8 +195,11 @@ const ProfileForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Upload photos and get their URLs
-      const photoURLs = await Promise.all(photos.map(uploadPhoto));
+      // Upload only new photos and get their URLs
+      const newPhotoURLs = await Promise.all(photos.map(uploadPhoto));
+
+      // Combine existing photo URLs with new photo URLs
+      const allPhotoURLs = [...existingPhotos.map(photo => photo.url), ...newPhotoURLs];
 
       // Save user data in Firestore
       const userRef = doc(db, "users", currentUser.uid);
@@ -139,9 +215,11 @@ const ProfileForm = () => {
         profession: formData.profession,
         description: formData.description,
         adharVarified: adharCheck,
-        photos: photoURLs, // Store URLs instead of File objects
+        photos: allPhotoURLs,
         updatedAt: new Date()
-      }, { merge: true });
+      }, {
+        merge: true
+      });
 
       setProfileUpdated(true);
     } catch (err) {
@@ -257,19 +335,20 @@ const ProfileForm = () => {
             />
           </div>
           <div className="w-full flex items-start px-2 mb-4">
-            <div className="flex-1 mr-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Aadhaar Number
-              </label>
-              <input
-                type="text"
-                name="aadhaarNumber"
-                value={formData.aadhaarNumber}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required
-              />
-            </div>
+          <div className="flex-1 mr-2">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Aadhaar Number
+            </label>
+            <input
+              type="text"
+              name="aadhaarNumber"
+              value={formData.aadhaarNumber}
+              onChange={handleChange}
+              placeholder="Doesn't Get Stored, Relax!"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
             <div className="flex flex-col items-start flex-1 ml-2">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Captcha
@@ -286,6 +365,7 @@ const ProfileForm = () => {
                   name="captcha"
                   value={formData.captcha}
                   onChange={handleChange}
+                  placeholder = "Enter Captcha"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ml-2"
                   required
                 />
@@ -317,37 +397,47 @@ const ProfileForm = () => {
               </span>
             )}
           </div>
-          <div className="w-full px-2 mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Upload Photos
-            </label>
-            <div
-              {...getRootProps()}
-              className="border-dashed border-2 border-gray-300 p-4 text-center cursor-pointer"
-            >
-              <input {...getInputProps()} multiple />
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : (
-                <p>Drag 'n' drop some photos here, or click to select files</p>
-              )}
-            </div>
-            {photos.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-gray-700 text-sm font-bold mb-2">
-                  Selected Photos:
-                </h4>
-                <ul>
-                  {photos.map((photo, index) => (
-                    <li key={index} className="text-gray-600 text-sm">
-                      {photo.name}
-                      <img src={photo.url} alt={photo.name} className="mt-2 w-16 h-16 object-cover rounded" />
-                    </li>
-                  ))}                  
-                </ul>
-              </div>
+        <div className="w-full px-2 mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Upload Photos
+          </label>
+          <div
+            {...getRootProps()}
+            className="border-dashed border-2 border-gray-300 p-4 text-center cursor-pointer"
+          >
+            <input {...getInputProps()} multiple />
+            {isDragActive ? (
+              <p>Drop the files here ...</p>
+            ) : (
+              <p>Drag 'n' drop some photos here, or click to select files</p>
             )}
           </div>
+          {(existingPhotos.length > 0 || photos.length > 0) && (
+            <div className="mt-4">
+              <h4 className="text-gray-700 text-sm font-bold mb-2">
+                Photos:
+              </h4>
+              <div className="flex flex-wrap -mx-2">
+                {[...existingPhotos, ...photos].map((photo, index) => (
+                  <div key={index} className="px-2 mb-4 w-1/4 sm:w-1/6 relative">
+                    <img 
+                      src={photo.url} 
+                      alt={photo.name} 
+                      className="w-full h-24 object-cover rounded"
+                    />
+                    <button
+                      onClick={() => openDeleteDialog(photo, index)}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center m-1 focus:outline-none"
+                    >
+                      ×
+                    </button>
+                    <p className="text-gray-600 text-xs mt-1 truncate">{photo.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
         </div>
         {isSubmitting ? (
           <button
@@ -369,6 +459,21 @@ const ProfileForm = () => {
           </button>
         )}
       </form>
+
+      <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this photo?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={deletePhoto} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={profileUpdated} onClose={handleDialogClose}>
         <DialogTitle>Profile Updated!</DialogTitle>
