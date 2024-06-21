@@ -6,15 +6,17 @@ import {
   where,
   collection,
   onSnapshot,
+  doc,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const FriendRequests = () => {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [outgoingRequests, setOutgoingRequests] = useState([]);
   const auth = getAuth();
   const firestore = getFirestore();
-const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
+  const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
   useEffect(() => {
     const incomingRequestsQuery = query(
       collection(firestore, "friendRequests"),
@@ -79,11 +81,11 @@ const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
       console.error("Error rejecting friend request:", error);
     }
   };
-
+  console.log(incomingRequests);
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Friend Requests</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="w-full">
+      <h2 className="text-xl font-bold mb-4">Friend Requests</h2>
+      <div className="space-y-4">
         <div>
           <h3 className="text-lg font-semibold mb-2">Incoming Requests</h3>
           {incomingRequests.length === 0 ? (
@@ -93,19 +95,19 @@ const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
               {incomingRequests.map((request) => (
                 <li
                   key={request.id}
-                  className="bg-white shadow-md rounded-md p-4 flex justify-between items-center"
+                  className="bg-white shadow-md rounded-md p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center"
                 >
-                  <p>From: {request.senderId}</p>
+                  <p className="mb-2 sm:mb-0">From: {request.senderId}</p>
                   <div className="space-x-2">
                     <button
                       onClick={() => handleAcceptRequest(request.id)}
-                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded text-sm"
                     >
                       Accept
                     </button>
                     <button
                       onClick={() => handleRejectRequest(request.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm"
                     >
                       Reject
                     </button>
@@ -124,10 +126,9 @@ const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
               {outgoingRequests.map((request) => (
                 <li
                   key={request.id}
-                  className="bg-white shadow-md rounded-md p-4"
+                  className="bg-white shadow-md rounded-md p-3"
                 >
                   <p>To: {request.recipientId}</p>
-                  {/* You can add additional actions or information here */}
                 </li>
               ))}
             </ul>

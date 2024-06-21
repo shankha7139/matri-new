@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['"Georgia"', 'sans-serif'],
+        // 'sans': ['"Georgia"', 'sans-serif'],
+        mono: ["ui-monospace", "SFMono-Regular"],
       },
     },
   },
