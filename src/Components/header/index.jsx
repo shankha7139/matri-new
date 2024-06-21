@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
 import { doSignOut } from "../../firebase/auth";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import logo from "../../assets/Logo.png";
+
 
 // Import Notification and User icons as images
 import NotificationIcon from "../../assets/notification.png";
@@ -45,7 +47,7 @@ const Header = () => {
             onClick={() => navigate("/")}
           >
             <span className="text-3xl font-bold text-white transition-all duration-1000 ease-in-out px-4 py-2 rounded-lg hover:text-4xl">
-              YV
+              <img className="mx-auto h-14 w-auto" src={logo} alt="Logo" />
             </span>
           </div>
         </div>

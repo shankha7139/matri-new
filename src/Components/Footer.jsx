@@ -4,12 +4,13 @@ import insta from "../assets/Instagram.png";
 import twit from "../assets/Twitter.png";
 import linked from "../assets/LinkedIn.png";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import logo from "../assets/Logo.png";
 
 export default function Footer() {
   return (
     <footer className="bg-white w-full">
       <div className="top flex flex-col md:flex-row justify-between px-6 md:px-20 lg:px-40 py-10 items-center">
-        <h1 className="text-2xl mb-4 md:mb-0">YV</h1>
+        <img className="mb-4 md:mb-0 h-14 w-auto" src={logo} alt="Logo" />
         <div className="input flex w-full md:w-auto">
           <input
             type="text"

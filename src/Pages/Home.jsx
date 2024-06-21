@@ -17,9 +17,7 @@ export default function Home() {
       <Header />
       <div className="flex-grow">
         <Hero />
-        {/* <FriendRequests /> */}
         <Hero2 />
-        {/* <Hero3 /> */}
         <Reviews />
         <div className="flex flex-col md:flex-row gap-10 bg-rose-500 px-6 md:px-20 lg:px-40 xl:px-60 py-5 items-center text-center">
           <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">

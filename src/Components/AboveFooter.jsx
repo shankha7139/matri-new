@@ -2,14 +2,13 @@ import React from "react";
 import love4 from "../assets/love4.png";
 import love5 from "../assets/love5.png";
 import love6 from "../assets/love6.png";
+import logo from "../assets/Logo.png";
 
 export default function AboveFooter() {
   return (
     <>
       <div className="flex flex-col px-4 py-10 justify-center items-center sm:px-10 md:px-20 lg:px-40 xl:px-60">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-center">
-          LOGO
-        </h1>
+        <img className="mx-auto h-14 w-auto" src={logo} alt="Logo" />
         <p className="text-lg sm:text-xl lg:text-2xl text-center mt-4">
           In today's world, finding a partner can be difficult. There are so
           many options for singles to choose from and they all seem alike! That
