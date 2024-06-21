@@ -17,7 +17,7 @@ export default function Home() {
       <Header />
       <div className="flex-grow">
         <Hero />
-        <FriendRequests />
+        {/* <FriendRequests /> */}
         <Hero2 />
         {/* <Hero3 /> */}
         <Reviews />
