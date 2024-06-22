@@ -86,10 +86,9 @@ export default function Matri() {
     loadData();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const email = user.email;
-        console.log("User email:", email);
-        setLoggedUser(user.uid);
-        console.log("userid", user.uid, " --- ", loggedUser);
+        setLoggedUser(user.uid); // Use user.uid directly
+        console.log("User email:", user.email);
+        console.log("userid", user.uid);
       } else {
         console.log("User is signed out");
       }
@@ -100,8 +99,6 @@ export default function Matri() {
   useEffect(() => {
     filterData();
   }, [user, searchTerms]);
-
-  
 
   return (
     <>
@@ -125,7 +122,7 @@ export default function Matri() {
           ></path>
         </svg>
       </button>
-      <div className="flex flex-wrap justify-between items-center p-4 bg-slate-100 w-full px-4 md:px-24 mt-14">
+      <div className="flex flex-wrap justify-between items-center p-4 w-full px-4 md:px-24 mt-28">
         <input
           type="text"
           name="language"
@@ -154,16 +151,17 @@ export default function Matri() {
           Search
         </button>
       </div>
-     <div className="px-4 md:px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+     <div className="px-4 md:px-20 mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {isLoading ? (
           // Display skeleton cards while loading
           Array.from({ length: 8 }).map((_, index) => (
             <SkeletonCard key={index} />
           ))
         ) : filteredData.length > 0 ? (
-          filteredData.map((data) => (
-            <div key={data.id}>
-              {loggedUser != data.chatId && (
+          filteredData
+            .filter(data => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
+            .map((data) => (
+              <div key={data.id}>
                 <Card
                   name={data.name}
                   sex={data.sex}
@@ -177,19 +175,19 @@ export default function Matri() {
                   motherTongue={data.motherTongue}
                   description={data.description}
                 />
-              )}
-            </div>
-          ))
+              </div>
+            ))
         ) : (
-          user.map((data) => (
-            <div key={data.id}>
-              {loggedUser != data.chatId && (
+          user
+            .filter(data => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
+            .map((data) => (
+              <div key={data.id}>
                 <Card
                   name={data.name}
                   sex={data.sex}
                   prof={data.profession}
                   photos={data.photos}
-                  chatId={data.chatId}
+                  uid={data.uid}
                   age={data.age}
                   number={data.number}
                   email={data.email}
@@ -197,9 +195,8 @@ export default function Matri() {
                   motherTongue={data.motherTongue}
                   description={data.description}
                 />
-              )}
-            </div>
-          ))
+              </div>
+            ))
         )}
       </div>
       <Footer />

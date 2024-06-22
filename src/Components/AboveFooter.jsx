@@ -29,14 +29,14 @@ export default function AboveFooter() {
         </div>
       </div>
       <div className="flex flex-col px-4 py-10 justify-center items-center sm:px-10 md:px-20 lg:px-40 xl:px-60">
-        <img className="mx-auto h-14 w-auto" src={logo} alt="Logo" />
+        <img className="mx-auto h-24 w-auto" src={logo} alt="Logo" />
         <p className="text-lg sm:text-xl lg:text-2xl text-center mt-4">
           In today's world, finding a partner can be difficult. There are so
           many options for singles to choose from and they all seem alike! That
-          is why BantuBiye was founded with the goal of making your search
-          easier. We want you to find happiness. BantuBiye is India's No.1
+          is why YV was founded with the goal of making your search
+          easier. We want you to find happiness. YV is India's No.1
           Matchmaking Service, founded with a simple objective - to help people
-          find happiness and love in their lives. BantuBiye has helped more than
+          find happiness and love in their lives. YV has helped more than
           a million Indian couples marry each other.
         </p>
       </div>

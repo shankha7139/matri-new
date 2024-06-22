@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { FaCheckCircle, FaTimesCircle, FaVolumeUp } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaVolumeUp, FaEye, FaTrash  } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db, storage } from "../firebase/Firebase"; // Import storage
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
+import "../styles/shimmer.css";
+
+
 const ProfileForm = () => {
   const { currentUser } = useAuth();
   const [adharCheck, setAdharCheck] = useState(false);
@@ -34,6 +37,9 @@ const ProfileForm = () => {
   const [existingPhotos, setExistingPhotos] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [photoToDelete, setPhotoToDelete] = useState(null);
+  const [isPhotosLoading, setIsPhotosLoading] = useState(true);
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   const navigate = useNavigate();
 
@@ -57,7 +63,7 @@ const ProfileForm = () => {
   };
 
   const generateCaptcha = () => {
-    fetch("http://34.93.158.128:80/generate-captcha", {
+    fetch("http://127.0.0.1:5000/generate-captcha", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +85,7 @@ const ProfileForm = () => {
       transaction_id: transactionId,
     };
 
-    fetch("http://34.93.158.128/verify-aadhaar", {
+    fetch("http://127.0.0.1:5000/verify-aadhaar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -127,19 +133,21 @@ const ProfileForm = () => {
   }, [currentUser.uid]);
   
   const fetchExistingPhotos = async () => {
-  const storageRef = ref(storage, `photos/${currentUser.uid}`);
-  try {
-    const result = await listAll(storageRef);
-    const urlPromises = result.items.map(imageRef => getDownloadURL(imageRef));
-    const urls = await Promise.all(urlPromises);
-    setExistingPhotos(urls.map((url, index) => ({
-      name: `Photo ${index + 1}`,
-      url: url
-    })));
-  } catch (error) {
-    console.error("Error fetching existing photos:", error);
-  }
-};
+    setIsPhotosLoading(true);
+    const storageRef = ref(storage, `photos/${currentUser.uid}`);
+    try {
+      const result = await listAll(storageRef);
+      const urlPromises = result.items.map(imageRef => getDownloadURL(imageRef));
+      const urls = await Promise.all(urlPromises);
+      setExistingPhotos(urls.map((url) => ({
+        url: url
+      })));
+    } catch (error) {
+      console.error("Error fetching existing photos:", error);
+    } finally {
+      setIsPhotosLoading(false);
+    }
+  };
 
 useEffect(() => {
   fetchExistingPhotos();
@@ -244,6 +252,17 @@ const deletePhoto = async () => {
     setProfileUpdated(false);
     navigate("/");
   };
+   
+  const handleImageClick = (url) => {
+    setSelectedImage(url);
+    setOpenImageModal(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setOpenImageModal(false);
+    setSelectedImage("");
+  };
+
 
   return (
     <div className="container mx-auto bg-red-100 p-6 mt-10 rounded-lg shadow-md">
@@ -397,7 +416,7 @@ const deletePhoto = async () => {
               </span>
             )}
           </div>
-        <div className="w-full px-2 mb-4">
+       <div className="w-full px-2 mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Upload Photos
           </label>
@@ -417,27 +436,46 @@ const deletePhoto = async () => {
               <h4 className="text-gray-700 text-sm font-bold mb-2">
                 Photos:
               </h4>
-              <div className="flex flex-wrap -mx-2">
-                {[...existingPhotos, ...photos].map((photo, index) => (
-                  <div key={index} className="px-2 mb-4 w-1/4 sm:w-1/6 relative">
-                    <img 
-                      src={photo.url} 
-                      alt={photo.name} 
-                      className="w-full h-24 object-cover rounded"
-                    />
-                    <button
-                      onClick={() => openDeleteDialog(photo, index)}
-                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center m-1 focus:outline-none"
-                    >
-                      ×
-                    </button>
-                    <p className="text-gray-600 text-xs mt-1 truncate">{photo.name}</p>
-                  </div>
-                ))}
-              </div>
+              {isPhotosLoading ? (
+                <div className="shimmer-container flex flex-wrap -mx-2">
+                  {/* Example shimmer divs */}
+                  <div className="shimmer px-2 mb-4 w-1/6"></div>
+                  <div className="shimmer px-2 mb-4 w-1/6"></div>
+                  <div className="shimmer px-2 mb-4 w-1/6"></div>
+                  <div className="shimmer px-2 mb-4 w-1/6"></div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap -mx-2">
+                  {[...existingPhotos, ...photos].map((photo, index) => (
+  <div key={index} className="px-2 mb-4 w-1/4 sm:w-1/6 relative">
+    <img
+      src={photo.url}
+      alt={photo.name}
+      className="object-contain h-auto w-full rounded"
+    />
+    <button
+      onClick={() => handleImageClick(photo.url)}
+      className="absolute top-0 left-0 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center m-1 focus:outline-none"
+    >
+      <FaEye />
+    </button>
+    <button
+      onClick={() => openDeleteDialog(photo, index)}
+      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center m-1 focus:outline-none"
+    >
+      ×
+    </button>
+    <p className="text-gray-600 text-xs mt-1 truncate">{photo.name}</p>
+  </div>
+))}
+
+                </div>
+              )}
             </div>
           )}
         </div>
+
+
         </div>
         {isSubmitting ? (
           <button
@@ -481,6 +519,16 @@ const deletePhoto = async () => {
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary" variant="contained">
             Go to Home
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openImageModal} onClose={handleCloseImageModal}>
+        <DialogContent>
+          <img src={selectedImage} alt="Selected" className="w-full h-auto" />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseImageModal} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>
