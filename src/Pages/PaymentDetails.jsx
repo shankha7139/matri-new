@@ -472,6 +472,7 @@ const PaymentDetails = () => {
             </div> */}
           </div>
         </div>
+        <Footer />
       </section>
       </>
   );
