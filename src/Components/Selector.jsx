@@ -1,6 +1,4 @@
 import React from "react";
-import playstore from "../assets/playstore.png";
-import appstore from "../assets/appstore.png";
 import { useNavigate } from "react-router-dom";
 import shadi2 from "../assets/shadi2.png";
 
@@ -128,21 +126,6 @@ export default function Reviews() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="apps w-full flex flex-col items-center justify-center py-5 bg-slate-100">
-        <h1 className="text-3xl md:text-5xl pb-3">Get the Matrimony app here..</h1>
-        <div className="flex gap-3">
-          <img
-            src={playstore}
-            alt="playstore"
-            className="h-16 md:h-20 w-auto object-contain cursor-pointer hover:shadow-xl duration-300"
-          />
-          <img
-            src={appstore}
-            alt="appstore"
-            className="h-16 md:h-20 w-auto object-contain cursor-pointer hover:shadow-xl duration-300"
-          />
         </div>
       </div>
     </>

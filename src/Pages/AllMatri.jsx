@@ -6,6 +6,22 @@ import Headers from "../Components/header";
 import { useAuth } from "../context/authContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import CircularProgress from '@mui/material/CircularProgress';
+
+const SkeletonCard = () => (
+  <div className="border rounded-lg p-4 max-w-sm w-full mx-auto">
+    <div className="animate-pulse flex flex-col space-y-4">
+      <div className="rounded-full bg-slate-200 h-40 w-40 mx-auto"></div>
+      <div className="flex-1 space-y-4 py-1">
+        <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+        <div className="space-y-2">
+          <div className="h-4 bg-slate-200 rounded"></div>
+          <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default function Matri() {
   const { userLoggedIn } = useAuth();
@@ -20,8 +36,10 @@ export default function Matri() {
   });
   const [user, setUser] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadData = async () => {
+    setIsLoading(true);
     const db = getFirestore();
     const usersCollection = collection(db, "users");
 
@@ -35,6 +53,8 @@ export default function Matri() {
       console.log("Users data:", userData);
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +100,8 @@ export default function Matri() {
   useEffect(() => {
     filterData();
   }, [user, searchTerms]);
+
+  
 
   return (
     <>
@@ -132,46 +154,53 @@ export default function Matri() {
           Search
         </button>
       </div>
-      <div className="px-4 md:px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {filteredData.length > 0
-          ? filteredData.map((data) => (
-              <div key={data.id}>
-                {loggedUser != data.chatId && (
-                  <Card
-                    name={data.name}
-                    sex={data.sex}
-                    prof={data.profession}
-                    photos={data.photos}
-                    uid={data.uid}
-                    age={data.age}
-                    number={data.number}
-                    email={data.email}
-                    religion={data.religion}
-                    motherTongue={data.motherTongue}
-                    description={data.description}
-                  />
-                )}
-              </div>
-            ))
-          : user.map((data) => (
-              <div key={data.id}>
-                {loggedUser != data.chatId && (
-                  <Card
-                    name={data.name}
-                    sex={data.sex}
-                    prof={data.profession}
-                    photos={data.photos}
-                    chatId={data.chatId}
-                    age={data.age}
-                    number={data.number}
-                    email={data.email}
-                    religion={data.religion}
-                    motherTongue={data.motherTongue}
-                    description={data.description}
-                  />
-                )}
-              </div>
-            ))}
+     <div className="px-4 md:px-20 mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        {isLoading ? (
+          // Display skeleton cards while loading
+          Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))
+        ) : filteredData.length > 0 ? (
+          filteredData.map((data) => (
+            <div key={data.id}>
+              {loggedUser != data.chatId && (
+                <Card
+                  name={data.name}
+                  sex={data.sex}
+                  prof={data.profession}
+                  photos={data.photos}
+                  uid={data.uid}
+                  age={data.age}
+                  number={data.number}
+                  email={data.email}
+                  religion={data.religion}
+                  motherTongue={data.motherTongue}
+                  description={data.description}
+                />
+              )}
+            </div>
+          ))
+        ) : (
+          user.map((data) => (
+            <div key={data.id}>
+              {loggedUser != data.chatId && (
+                <Card
+                  name={data.name}
+                  sex={data.sex}
+                  prof={data.profession}
+                  photos={data.photos}
+                  chatId={data.chatId}
+                  age={data.age}
+                  number={data.number}
+                  email={data.email}
+                  religion={data.religion}
+                  motherTongue={data.motherTongue}
+                  description={data.description}
+                />
+              )}
+            </div>
+          ))
+        )}
       </div>
       <Footer />
     </>
