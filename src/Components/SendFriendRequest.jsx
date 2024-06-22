@@ -48,7 +48,7 @@ const SendFriendRequest = ({ recipientId }) => {
         createdAt: serverTimestamp(),
       });
       setRequestSent(true);
-      console.log("Friend request sent successfully.");
+      console.log("Friend request sent ✅.");
     } catch (error) {
       console.error("Error sending friend request:", error);
       setError("Failed to send friend request. Please try again.");
@@ -62,7 +62,7 @@ const SendFriendRequest = ({ recipientId }) => {
       {areFriends ? (
         <p>You are already friends</p>
       ) : requestSent ? (
-        <p>Friend request sent</p>
+        <p>Friend request sent ✅</p>
       ) : (
         <button onClick={handleSendRequest} disabled={isSending}>
           {isSending ? "Sending..." : "Send Friend Request"}
