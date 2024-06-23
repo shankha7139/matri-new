@@ -63,7 +63,7 @@ const ProfileForm = () => {
   };
 
   const generateCaptcha = () => {
-    fetch("http://127.0.0.1:5000/generate-captcha", {
+    fetch("http://localhost:8008/api/generate-captcha", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const ProfileForm = () => {
       transaction_id: transactionId,
     };
 
-    fetch("http://127.0.0.1:5000/verify-aadhaar", {
+    fetch("http://localhost:8008/api/verify-aadhaar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
