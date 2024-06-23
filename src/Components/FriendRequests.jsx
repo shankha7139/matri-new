@@ -9,6 +9,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 
 const FriendRequests = () => {
@@ -17,6 +18,22 @@ const FriendRequests = () => {
   const auth = getAuth();
   const firestore = getFirestore();
   const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
+
+  const fetchUserProfiles = async (userIds) => {
+    const userProfiles = {};
+    const userPromises = userIds.map(async (userId) => {
+      const userDoc = await getDoc(doc(firestore, "users", userId));
+      if (userDoc.exists()) {
+        userProfiles[userId] =
+          userDoc.data().name || userDoc.data().displayName || "Unknown User";
+      } else {
+        userProfiles[userId] = "Unknown User";
+      }
+    });
+    await Promise.all(userPromises);
+    return userProfiles;
+  };
+
   useEffect(() => {
     const incomingRequestsQuery = query(
       collection(firestore, "friendRequests"),
@@ -32,23 +49,37 @@ const FriendRequests = () => {
 
     const unsubscribeIncoming = onSnapshot(
       incomingRequestsQuery,
-      (querySnapshot) => {
+      async (querySnapshot) => {
         const requests = [];
         querySnapshot.forEach((doc) => {
           requests.push({ id: doc.id, ...doc.data() });
         });
-        setIncomingRequests(requests);
+        const userIds = requests.map((request) => request.senderId);
+        const userProfiles = await fetchUserProfiles(userIds);
+        setIncomingRequests(
+          requests.map((request) => ({
+            ...request,
+            senderName: userProfiles[request.senderId],
+          }))
+        );
       }
     );
 
     const unsubscribeOutgoing = onSnapshot(
       outgoingRequestsQuery,
-      (querySnapshot) => {
+      async (querySnapshot) => {
         const requests = [];
         querySnapshot.forEach((doc) => {
           requests.push({ id: doc.id, ...doc.data() });
         });
-        setOutgoingRequests(requests);
+        const userIds = requests.map((request) => request.recipientId);
+        const userProfiles = await fetchUserProfiles(userIds);
+        setOutgoingRequests(
+          requests.map((request) => ({
+            ...request,
+            recipientName: userProfiles[request.recipientId],
+          }))
+        );
       }
     );
 
@@ -97,7 +128,7 @@ const FriendRequests = () => {
                   key={request.id}
                   className="bg-white shadow-md rounded-md p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center"
                 >
-                  <p className="mb-2 sm:mb-0">From: {request.senderId}</p>
+                  <p className="mb-2 sm:mb-0">From: {request.senderName}</p>
                   <div className="space-x-2">
                     <button
                       onClick={() => handleAcceptRequest(request.id)}
@@ -128,7 +159,7 @@ const FriendRequests = () => {
                   key={request.id}
                   className="bg-white shadow-md rounded-md p-3"
                 >
-                  <p>To: {request.recipientId}</p>
+                  <p>To: {request.recipientName}</p>
                 </li>
               ))}
             </ul>

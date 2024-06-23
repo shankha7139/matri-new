@@ -4,12 +4,18 @@ import { useAuth } from "../../context/authContext";
 import { doSignOut } from "../../firebase/auth";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import logo from "../../assets/Logo.png";
-
+import {
+  getFirestore,
+  query,
+  where,
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
 
 // Import Notification and User icons as images
 import NotificationIcon from "../../assets/notification.png";
 import UserIcon from "../../assets/user.png";
-import Pricing from "../../assets/Pricing.png"
+import Pricing from "../../assets/Pricing.png";
 import FriendRequests from "../FriendRequests";
 
 const Header = () => {
@@ -20,19 +26,30 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [incomingRequests, setIncomingRequests] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const email = user.email;
-        console.log("User email:", email);
-        setLoggedUser(email.split("@")[0]);
-      } else {
-        console.log("User is signed out");
-      }
-    });
-    return () => unsubscribe();
-  }, [auth]);
+    if (userLoggedIn && auth.currentUser) {
+      const firestore = getFirestore();
+      const currentUserId = auth.currentUser.uid;
+
+      const incomingRequestsQuery = query(
+        collection(firestore, "friendRequests"),
+        where("recipientId", "==", currentUserId),
+        where("status", "==", "pending")
+      );
+
+      const unsubscribe = onSnapshot(incomingRequestsQuery, (querySnapshot) => {
+        const requests = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setIncomingRequests(requests);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [userLoggedIn, auth]);
 
   const handleMouseLeave = () => {
     setShowDropdown(false);
@@ -67,7 +84,7 @@ const Header = () => {
             </Link>
 
             <button
-              className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl cursor-pointer"
+              className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl cursor-pointer relative"
               onClick={() => setShowNotifications(!showNotifications)}
             >
               <img
@@ -76,6 +93,9 @@ const Header = () => {
                 className="w-6 h-6"
                 style={{ verticalAlign: "middle" }}
               />
+              {incomingRequests.length > 0 && (
+                <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"></span>
+              )}
             </button>
 
             <div className="relative">
