@@ -28,7 +28,7 @@ import {
   arrayUnion,
   getDocs,
 } from "firebase/firestore";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
@@ -48,26 +48,24 @@ const analytics = getAnalytics(app);
 function App(props) {
   const [user] = useAuthState(auth);
   const location = useLocation();
+  const params = useParams();
   const [isFriend, setIsFriend] = useState(null);
+  const [recipientId, setRecipientId] = useState(null);
 
   useEffect(() => {
     const checkFriendship = async () => {
-      if (user && location.state && location.state.props.uid) {
-        console.log("Checking if friends with:", location.state.props.uid);
-        const areFriends = await checkIfFriends(
-          user.uid,
-          location.state.props.uid
-        );
+      const uid = props.uid || location.state?.props?.uid || params.uid;
+      if (user && uid) {
+        console.log("Checking if friends with:", uid);
+        setRecipientId(uid);
+        const areFriends = await checkIfFriends(user.uid, uid);
         console.log("Are friends result:", areFriends);
         setIsFriend(areFriends);
       }
     };
 
-    console.log("Running checkFriendship useEffect");
-    console.log(location.state.props.uid);
     checkFriendship();
-    console.log(isFriend);
-  }, [user, location.state]);
+  }, [user, location.state, params, props.uid]);
 
   return (
     <div className="App">
@@ -80,7 +78,7 @@ function App(props) {
                 You are not friends with this user.
               </div>
             ) : isFriend === true ? (
-              <ChatRoom recipientId={location.state.props.uid} />
+              <ChatRoom recipientId={recipientId} chatId={props.chatId} />
             ) : (
               <div className="flex items-center justify-center h-full">
                 Loading...
@@ -105,7 +103,7 @@ function SignOut() {
   );
 }
 
-function ChatRoom({ recipientId }) {
+function ChatRoom({ recipientId, chatId }) {
   const dummy = useRef();
   const firestore = getFirestore();
   const auth = getAuth();
@@ -127,8 +125,16 @@ function ChatRoom({ recipientId }) {
       setAreFriends(areFriendsResult);
 
       if (areFriendsResult) {
-        const conversationId = [currentUser.uid, recipientId].sort().join(":");
-        const conversationRef = doc(conversationsRef, conversationId);
+        let conversationRef;
+        if (chatId) {
+          conversationRef = doc(conversationsRef, chatId);
+        } else {
+          const conversationId = [currentUser.uid, recipientId]
+            .sort()
+            .join(":");
+          conversationRef = doc(conversationsRef, conversationId);
+        }
+
         const conversationSnapshot = await getDoc(conversationRef);
 
         if (conversationSnapshot.exists()) {
@@ -145,7 +151,7 @@ function ChatRoom({ recipientId }) {
     };
 
     fetchConversation();
-  }, [currentUser.uid, recipientId]);
+  }, [currentUser.uid, recipientId, chatId]);
 
   const messagesRef = conversationDoc
     ? collection(conversationDoc, "messages")

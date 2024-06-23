@@ -37,12 +37,6 @@ export default function Card(props) {
             <p className="text-sm font-medium text-gray-900">{props.sex}</p>
           </div>
         </div>
-        <div
-          className="absolute p-4 bg-rose-500 rounded-full text-white right-3 top-3 cursor-pointer"
-          onClick={() => navigate("/chat", { state: { uId: props.uid } })}
-        >
-          <AiOutlineSend />
-        </div>
       </div>
     </>
   );

@@ -1,9 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { collection, getFirestore } from "firebase/firestore";
-import {
-  getStorage
-} from "firebase/storage";
+import { Firestore, collection, getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUqEZklvL_n9rwZ2v78vxXWVv6z_2ALUE",
@@ -19,11 +17,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const friendRequestsRef = collection(db, "friendRequests");
 const storage = getStorage(app);
+const firestore = getFirestore(app);
 
-export {
-  app,
-  auth,
-  db,
-  friendRequestsRef,
-  storage
-};
+export { app, auth, db, friendRequestsRef, storage, firestore };
