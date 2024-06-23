@@ -215,7 +215,7 @@ function ChatRoom({ recipientId }) {
 
 async function checkIfFriends(currentUserId, recipientId) {
   console.log(
-    "Checking if friends in function for:",
+    "Checking if friend in function for:",
     currentUserId,
     recipientId
   );
