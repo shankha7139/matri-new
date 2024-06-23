@@ -39,6 +39,16 @@ const Header = () => {
         where("status", "==", "pending")
       );
 
+      const getUserLoggedIn = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const email = user.email;
+          console.log("User email:", email);
+          setLoggedUser(email.split("@")[0]);
+        } else {
+          console.log("User is signed out");
+        }
+      });
+
       const unsubscribe = onSnapshot(incomingRequestsQuery, (querySnapshot) => {
         const requests = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -48,6 +58,7 @@ const Header = () => {
       });
 
       return () => unsubscribe();
+      return () => getUserLoggedIn();
     }
   }, [userLoggedIn, auth]);
 
