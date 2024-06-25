@@ -196,7 +196,7 @@ function ChatRoom({ recipientId, chatId }) {
 
       <form
         onSubmit={sendMessage}
-        className="p-4 bg-gray-200 sticky bottom-0 w-full"
+        className="fixed p-4 bg-gray-200 bottom-0 w-full"
       >
         <div className="flex items-center space-x-4">
           <input

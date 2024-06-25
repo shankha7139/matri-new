@@ -9,6 +9,13 @@ import { db, storage } from "../firebase/Firebase";
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import "../styles/shimmer.css";
 import Headers from "../Components/header";
+import { getAuth, deleteUser } from "firebase/auth";
+import { deleteDoc } from "firebase/firestore";
+import { doSignOut } from "../firebase/auth";
+import { auth } from "../firebase/Firebase";
+import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+
+
 
 const ProfileForm = () => {
   const { currentUser } = useAuth();
@@ -41,8 +48,13 @@ const ProfileForm = () => {
   const [openImageModal, setOpenImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
+  const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [deletePassword, setDeletePassword] = useState('');
 
   const navigate = useNavigate();
+
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -114,8 +126,10 @@ const ProfileForm = () => {
     generateCaptcha();
   }, []);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
+useEffect(() => {
+  const fetchUserProfile = async () => {
+    setIsLoading(true);
+    if (currentUser) {
       try {
         const userRef = doc(db, "users", currentUser.uid);
         const userDoc = await getDoc(userRef);
@@ -128,10 +142,14 @@ const ProfileForm = () => {
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
-    };
+    }
+    setIsLoading(false);
+  };
 
-    fetchUserProfile();
-  }, [currentUser.uid]);
+  fetchUserProfile();
+}, [currentUser]);
+
+
 
   useEffect(() => {
     fetchExistingPhotos();
@@ -276,6 +294,56 @@ const ProfileForm = () => {
     setSelectedImage("");
   };
 
+  const openDeleteAccountDialog = () => {
+    setDeleteAccountDialogOpen(true);
+  };
+
+  const closeDeleteAccountDialog = () => {
+    setDeleteAccountDialogOpen(false);
+  };
+
+  const closeAndResetDeleteDialog = () => {
+    closeDeleteAccountDialog();
+    setDeletePassword('');
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      if (!deletePassword) {
+        alert("Password is required to delete your account.");
+        return;
+      }
+
+      // Re-authenticate the user
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, deletePassword);
+      await reauthenticateWithCredential(auth.currentUser, credential);
+
+      // Delete user document from Firestore
+      await deleteDoc(doc(db, "users", currentUser.uid));
+
+      // Delete user from Firebase Authentication
+      await deleteUser(auth.currentUser);
+
+      // Close the dialog and navigate
+      closeDeleteAccountDialog();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("Failed to delete account. Please try again.");
+    } finally {
+      // Clear the password state
+      setDeletePassword('');
+    }
+  };
+
+  if (isLoading) {
+  return <div>Loading...</div>;
+}
+
+if (!currentUser) {
+  return <div>User not found. Please log in.</div>;
+}
+
   return (
     <>
     <Headers />
@@ -308,13 +376,18 @@ const ProfileForm = () => {
             <img
               src={profilePhoto}
               alt="Profile"
-              className="w-full h-full rounded-full object-cover border-2 border-orange-300"
+              className="w-full h-full rounded-full object-cover border-2"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
             />
           </div>
         </div>
       )}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className = "flex flex-col gap-4 md:flex-row" >
           <div className="w-full md:w-1/2">
             <label className="block font-medium">Name:</label>
             <input
@@ -322,7 +395,12 @@ const ProfileForm = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input bg-white"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             />
           </div>
@@ -334,6 +412,11 @@ const ProfileForm = () => {
               value={formData.age}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             />
           </div>
@@ -347,6 +430,11 @@ const ProfileForm = () => {
               value={formData.number}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             />
           </div>
@@ -358,6 +446,11 @@ const ProfileForm = () => {
               value={formData.email}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
               disabled
             />
@@ -372,6 +465,11 @@ const ProfileForm = () => {
               value={formData.religion}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             />
           </div>
@@ -383,6 +481,11 @@ const ProfileForm = () => {
               value={formData.motherTongue}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             />
           </div>
@@ -395,6 +498,11 @@ const ProfileForm = () => {
               value={formData.sex}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             >
               <option value="">Select Sex</option>
@@ -410,6 +518,11 @@ const ProfileForm = () => {
               value={formData.profession}
               onChange={handleChange}
               className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              style = {
+                {
+                  boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+                }
+              }
               required
             />
           </div>
@@ -421,6 +534,11 @@ const ProfileForm = () => {
             value={formData.description}
             onChange={handleChange}
             className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+            style = {
+              {
+                boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+              }
+            }
             required
           />
         </div>
@@ -432,6 +550,11 @@ const ProfileForm = () => {
             value={formData.aadhaarNumber}
             onChange={handleChange}
             className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+            style = {
+              {
+                boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+              }
+            }
             required
           />
         </div>
@@ -451,6 +574,11 @@ const ProfileForm = () => {
             value={formData.captcha}
             onChange={handleChange}
             className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+            style = {
+              {
+                boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+              }
+            }
             required
           />
           <button
@@ -481,6 +609,11 @@ const ProfileForm = () => {
         <div
           {...getRootProps()}
           className="border-dashed border-2 p-4 rounded-lg text-center neumorphic-drag"
+          style = {
+            {
+              boxShadow: '5px 5px 10px #d97706, -5px -5px 10px #fcd34d',
+            }
+          }
         >
           <label className="block font-medium">Upload Photos:</label>
           <p className="text-gray-500 text-sm">The first picture will be the profile photo</p>          
@@ -540,6 +673,13 @@ const ProfileForm = () => {
         >
           {isSubmitting ? "Submitting..." : "Submit"}
         </button>
+        <button
+          type="button"
+          onClick={openDeleteAccountDialog}
+          className="w-full py-2 mt-4 rounded-lg bg-red-500 text-white neumorphic-button-delete"
+        >
+          Delete Account
+        </button>
       </form>
     </div>
 
@@ -565,6 +705,28 @@ const ProfileForm = () => {
             Cancel
           </Button>
           <Button onClick={deletePhoto} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={deleteAccountDialogOpen} onClose={closeDeleteAccountDialog} fullWidth maxWidth="sm">
+        <DialogTitle>Delete Account</DialogTitle>
+        <DialogContent dividers>
+          <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+          <p>Please enter your password to confirm account deletion:</p>
+          <input
+            type="password"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+            className="w-full p-2 mt-2 rounded-lg border border-gray-300"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeAndResetDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteAccount} color="secondary">
             Delete
           </Button>
         </DialogActions>

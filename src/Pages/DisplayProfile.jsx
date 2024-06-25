@@ -148,8 +148,8 @@ const ProfileDetail = () => {
           </div>
 
           {chatbox && (
-            <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50 p-4">
-              <div className="flex items-center space-x-4 mb-4">
+            <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50 top-14 mr-2">
+              <div className="flex items-center space-x-4 mb-4 p-4">
                 <div className="w-16 h-16">
                   <img
                     src={profile.photos[0]}
@@ -158,7 +158,7 @@ const ProfileDetail = () => {
                   />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-semibold">{profile.name}</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold">{profile.name}</h2>
                 </div>
                 <button
                   onClick={() => setChatbox(false)}
