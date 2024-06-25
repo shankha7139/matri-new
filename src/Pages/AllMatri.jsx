@@ -7,6 +7,7 @@ import { useAuth } from "../context/authContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import CircularProgress from '@mui/material/CircularProgress';
+import DualSlider from "../Components/DualSlider";
 
 const SkeletonCard = () => (
   <div className="border rounded-lg p-4 max-w-sm w-full mx-auto">
@@ -37,6 +38,17 @@ export default function Matri() {
   const [user, setUser] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [ageRange, setAgeRange] = useState({ low: 18, high: 100 });
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [loggedUserGender, setLoggedUserGender] = useState("");
+
+  const toggleFilterVisibility = () => {
+    setIsFilterVisible(!isFilterVisible);
+  };
+
+  const handleAgeRangeChange = (range) => {
+    setAgeRange(range);
+  };
 
   const loadData = async () => {
     setIsLoading(true);
@@ -51,6 +63,12 @@ export default function Matri() {
       }));
       setUser(userData);
       console.log("Users data:", userData);
+
+      // Get logged user's gender
+      const loggedUserData = userData.find(user => user.uid === loggedUser);
+      if (loggedUserData) {
+        setLoggedUserGender(loggedUserData.sex);
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -72,16 +90,21 @@ export default function Matri() {
         ? item.motherTongue.toLowerCase()
         : "";
       const religionLower = item.religion ? item.religion.toLowerCase() : "";
+      const age = item.age ? parseInt(item.age) : 0;
 
       return (
         professionLower.includes(searchTerms.prof.toLowerCase()) &&
         mothertongueLower.includes(searchTerms.language.toLowerCase()) &&
-        religionLower.includes(searchTerms.religion.toLowerCase())
+        religionLower.includes(searchTerms.religion.toLowerCase()) &&
+        age >= ageRange.low &&
+        age <= ageRange.high &&
+        item.sex !== loggedUserGender && // Filter for opposite gender
+          item.sex && // Ensure the user has a gender specified
+          (item.sex === 'male' || item.sex === 'female')
       );
     });
     setFilteredData(filtered);
   };
-
   useEffect(() => {
     loadData();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -98,12 +121,13 @@ export default function Matri() {
 
   useEffect(() => {
     filterData();
-  }, [user, searchTerms]);
+  }, [user, searchTerms, ageRange]);
 
   return (
     <>
       <Headers />
-      <button
+      <div className="flex justify-between">
+        <button
         className="absolute top-14 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         onClick={() => window.history.back()}
       >
@@ -122,82 +146,97 @@ export default function Matri() {
           ></path>
         </svg>
       </button>
-      <div className="flex flex-wrap justify-between items-center p-4 w-full px-4 md:px-24 mt-28">
-        <input
-          type="text"
-          name="language"
-          placeholder="Language"
-          className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2"
-          value={searchTerms.language}
-          onChange={handleSearchChange}
-        />
-        <input
-          type="text"
-          name="prof"
-          placeholder="Profession"
-          className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2"
-          value={searchTerms.prof}
-          onChange={handleSearchChange}
-        />
-        <input
-          type="text"
-          name="religion"
-          placeholder="Religion"
-          className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2"
-          value={searchTerms.religion}
-          onChange={handleSearchChange}
-        />
-        <button className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto">
-          Search
-        </button>
+        <div className="mt-28 px-4 md:px-24">
+          <button
+            onClick={toggleFilterVisibility}
+            className="bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+          >
+            {isFilterVisible ? "Hide Filters" : "Show Filters"}
+          </button>
+        </div>
       </div>
-     <div className="px-4 md:px-20 mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {isLoading ? (
-          // Display skeleton cards while loading
-          Array.from({ length: 8 }).map((_, index) => (
-            <SkeletonCard key={index} />
-          ))
-        ) : filteredData.length > 0 ? (
-          filteredData
-            .filter(data => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
-            .map((data) => (
-              <div key={data.id}>
-                <Card
-                  name={data.name}
-                  sex={data.sex}
-                  prof={data.profession}
-                  photos={data.photos}
-                  uid={data.uid}
-                  age={data.age}
-                  number={data.number}
-                  email={data.email}
-                  religion={data.religion}
-                  motherTongue={data.motherTongue}
-                  description={data.description}
-                />
-              </div>
-            ))
-        ) : (
-          user
-            .filter(data => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
-            .map((data) => (
-              <div key={data.id}>
-                <Card
-                  name={data.name}
-                  sex={data.sex}
-                  prof={data.profession}
-                  photos={data.photos}
-                  uid={data.uid}
-                  age={data.age}
-                  number={data.number}
-                  email={data.email}
-                  religion={data.religion}
-                  motherTongue={data.motherTongue}
-                  description={data.description}
-                />
-              </div>
-            ))
+
+      <div>
+        {isFilterVisible && (
+          <div className="flex flex-wrap justify-between items-center p-4 w-full bg-gray-100 pb-10 rounded-lg ">
+            <input
+              type="text"
+              name="language"
+              placeholder="Language"
+              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2"
+              value={searchTerms.language}
+              onChange={handleSearchChange}
+            />
+            <input
+              type="text"
+              name="prof"
+              placeholder="Profession"
+              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2"
+              value={searchTerms.prof}
+              onChange={handleSearchChange}
+            />
+            <input
+              type="text"
+              name="religion"
+              placeholder="Religion"
+              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2"
+              value={searchTerms.religion}
+              onChange={handleSearchChange}
+            />
+            <div className="w-full mt-4">
+              <h3 className="text-lg font-semibold mb-2">
+                Age Range: {ageRange.low} - {ageRange.high}
+              </h3>
+              <DualSlider min={20} max={60} onChange={handleAgeRangeChange} />
+            </div>
+          </div>
         )}
+      </div>
+      <div className="px-4 md:px-20 mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        {isLoading
+          ? // Display skeleton cards while loading
+            Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))
+          : filteredData.length > 0
+          ? filteredData
+              .filter((data) => loggedUser !== data.uid && data.name && data.sex !== loggedUserGender) // Filter out the logged-in user's profile and profiles with no name
+              .map((data) => (
+                <div key={data.id}>
+                  <Card
+                    name={data.name}
+                    sex={data.sex}
+                    prof={data.profession}
+                    photos={data.photos}
+                    uid={data.uid}
+                    age={data.age}
+                    number={data.number}
+                    email={data.email}
+                    religion={data.religion}
+                    motherTongue={data.motherTongue}
+                    description={data.description}
+                  />
+                </div>
+              ))
+          : user
+              .filter((data) => loggedUser !== data.uid && data.name && data.sex !== loggedUserGender) // Filter out the logged-in user's profile and profiles with no name
+              .map((data) => (
+                <div key={data.id}>
+                  <Card
+                    name={data.name}
+                    sex={data.sex}
+                    prof={data.profession}
+                    photos={data.photos}
+                    uid={data.uid}
+                    age={data.age}
+                    number={data.number}
+                    email={data.email}
+                    religion={data.religion}
+                    motherTongue={data.motherTongue}
+                    description={data.description}
+                  />
+                </div>
+              ))}
       </div>
       <Footer />
     </>

@@ -18,19 +18,19 @@ export default function Home() {
       <div className="flex-grow">
         <Hero />
         <Hero2 />
-        <Reviews />
         <div className="flex flex-col md:flex-row gap-4 md:gap-10 bg-orange-400 py-5 items-center justify-center text-center">
             <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">
-              Your Story is waiting to Happen
+              Find you perfect partner
             </p>
             <button
               onClick={() => navigate("/all-matri")}
               className="text-white text-2xl md:text-5xl bg-cyan-700 px-5 py-2 rounded-br-xl rounded-tl-xl"
             >
-              Get started
+              Explore!
             </button>
           </div>
         <Selector />
+        <Reviews />
         <AboveFooter />
       </div>
       <Footer />

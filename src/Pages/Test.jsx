@@ -326,7 +326,6 @@ const deletePhoto = async () => {
               </option>
               <option value="male">Male</option>
               <option value="female">Female</option>
-              <option value="other">Other</option>
             </select>
           </div>
           <div className="w-full sm:w-1/2 px-2 mb-4">

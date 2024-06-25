@@ -16,28 +16,28 @@ export default function Reviews() {
             <img
               src={shadi2}
               alt="shadi2"
-              className="w-full h-auto pt-10 rounded-lg"
+              className="w-full h-auto mt-10 rounded-lg"
             />
           </div>
         </div>
         <div className="right w-full md:w-2/3 px-5 md:px-10">
           <div className="section">
-            <h1 className="text-3xl md:text-5xl py-3">By Mother Tongue</h1>
+            <h1 className="text-3xl md:text-5xl py-3">By Area</h1>
             <div className="buttons flex flex-wrap gap-3 md:gap-5 py-3 border-t-2 border-cyan-400 border-dotted">
               <button
                 className="w-full md:w-2/5 bg-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
               >
-                Bengali
+                Bundelkhand
               </button>
               <button
                 className="w-full md:w-1/5 bg-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
               >
-                Hindi
+                Malwa
               </button>
               <button
                 className="w-full md:w-1/5 bg-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
               >
-                English
+                Doaba
               </button>
               {/* <button
                 className="w-full md:w-2/5 bg-cyan-600 text-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
@@ -47,23 +47,23 @@ export default function Reviews() {
             </div>
           </div>
           <div className="section">
-            <h1 className="text-3xl md:text-5xl py-3 mt-24">By Religion</h1>
+            <h1 className="text-3xl md:text-5xl py-3 mt-24">By Caste</h1>
             <div className="buttons flex flex-wrap gap-3 md:gap-5 py-3 border-t-2 border-cyan-400 border-dotted">
               <button
                 
                 className="w-full md:w-1/5 bg-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
               >
-                Hindu
+                Yadav 1
               </button>
               <button
                 className="w-full md:w-1/5 bg-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
               >
-                Muslim
+                Yadav 2
               </button>
               <button
                 className="w-full md:w-2/5 bg-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
               >
-                Christian
+                Yadav 3
               </button>
               {/* <button
                 className="w-full md:w-2/5 bg-cyan-600 text-white text-xl md:text-3xl px-3 py-2 rounded hover:shadow-xl duration-300"
