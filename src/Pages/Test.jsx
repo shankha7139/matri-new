@@ -8,6 +8,7 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db, storage } from "../firebase/Firebase";
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import "../styles/shimmer.css";
+import Headers from "../Components/header";
 
 const ProfileForm = () => {
   const { currentUser } = useAuth();
@@ -39,6 +40,7 @@ const ProfileForm = () => {
   const [isPhotosLoading, setIsPhotosLoading] = useState(true);
   const [openImageModal, setOpenImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("");
 
   const navigate = useNavigate();
 
@@ -131,6 +133,10 @@ const ProfileForm = () => {
     fetchUserProfile();
   }, [currentUser.uid]);
 
+  useEffect(() => {
+    fetchExistingPhotos();
+  }, [currentUser.uid]);
+
   const fetchExistingPhotos = async () => {
     setIsPhotosLoading(true);
     const storageRef = ref(storage, `photos/${currentUser.uid}`);
@@ -143,16 +149,16 @@ const ProfileForm = () => {
           url: url,
         }))
       );
+      // Set the first photo as the profile photo
+      if (urls.length > 0) {
+        setProfilePhoto(urls[0]);
+      }
     } catch (error) {
       console.error("Error fetching existing photos:", error);
     } finally {
       setIsPhotosLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchExistingPhotos();
-  }, [currentUser.uid]);
 
   const openDeleteDialog = (photo, index) => {
     setPhotoToDelete({
@@ -248,6 +254,8 @@ const ProfileForm = () => {
     accept: "image/*",
   });
 
+  
+
   const playCaptchaAudio = () => {
     const audio = new Audio(captchaAudio);
     audio.play();
@@ -269,9 +277,42 @@ const ProfileForm = () => {
   };
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-orange-200 py-12">
+    <>
+    <Headers />
+    <button
+        className="fixed top-12 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => window.history.back()}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
+    
+  <div div className = "min-h-screen flex items-center justify-center bg-orange-200 py-12 mt-14">
     <div className="bg-white p-6 rounded-2xl shadow-md w-4/5 neumorphic-card">
       <h1 className="text-2xl font-bold mb-4 text-center">Profile Form</h1>
+      {profilePhoto && (
+        <div className="flex justify-center mb-4">
+          <div className="w-24 h-24 rounded-full shadow-[inset_5px_5px_10px_#d4d4d4,inset_-5px_-5px_10px_#ffffff] p-1">
+            <img
+              src={profilePhoto}
+              alt="Profile"
+              className="w-full h-full rounded-full object-cover border-2 border-orange-300"
+            />
+          </div>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col gap-4 md:flex-row">
           <div className="w-full md:w-1/2">
@@ -441,6 +482,8 @@ const ProfileForm = () => {
           {...getRootProps()}
           className="border-dashed border-2 p-4 rounded-lg text-center neumorphic-drag"
         >
+          <label className="block font-medium">Upload Photos:</label>
+          <p className="text-gray-500 text-sm">The first picture will be the profile photo</p>          
           <input {...getInputProps()} />
           {isDragActive ? (
             <p>Drop the files here...</p>
@@ -500,19 +543,27 @@ const ProfileForm = () => {
       </form>
     </div>
 
-      <Dialog open={profileUpdated} onClose={handleDialogClose}>
+      <Dialog open={profileUpdated} onClose={handleDialogClose} fullWidth maxWidth="sm">
         <DialogTitle>Profile Updated</DialogTitle>
-        <DialogContent>Your profile has been updated successfully!</DialogContent>
+        <DialogContent dividers>
+          <p>Your profile has been updated successfully!</p>
+        </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>OK</Button>
+          <Button onClick={handleDialogClose} color="primary">
+            Close Profile
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+      <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog} fullWidth maxWidth="sm">
         <DialogTitle>Delete Photo</DialogTitle>
-        <DialogContent>Are you sure you want to delete this photo?</DialogContent>
+        <DialogContent dividers>
+          <p>Are you sure you want to delete this photo?</p>
+        </DialogContent>
         <DialogActions>
-          <Button onClick={closeDeleteDialog}>Cancel</Button>
+          <Button onClick={closeDeleteDialog} color="primary">
+            Cancel
+          </Button>
           <Button onClick={deletePhoto} color="secondary">
             Delete
           </Button>
@@ -527,6 +578,7 @@ const ProfileForm = () => {
         </Dialog>
       )}
     </div>
+    </>
   );
 };
 
