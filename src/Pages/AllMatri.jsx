@@ -138,7 +138,7 @@ export default function Matri() {
         "";
       const religionLower = item.religion ? item.religion.toLowerCase() : "";
       const age = item.age ? parseInt(item.age) : 0;
-      const oppositeGender = loggedUserGender === 'male' ? 'Female' : 'male';
+      const oppositeGender = loggedUserGender === 'male' ? 'female' : 'male';
 
       return (
         professionLower.includes(searchTerms.prof.toLowerCase()) &&
@@ -294,7 +294,7 @@ export default function Matri() {
           ) : (
             <div className="flex items-center justify-center h-screen">
               <div className="text-center text-gray-500 py-2">
-                No one in that age range
+                No profile
               </div>
             </div>
           )}
