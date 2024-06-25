@@ -6,8 +6,10 @@ export default function Hero() {
   const navigate = useNavigate();
   return (
     <div className="relative">
-      <img src={hero} alt="Hero" className="w-full h-screen object-cover" />
-{/* 
+    <div className="overflow-hidden">
+        <img src={hero} alt="Hero" className="w-full h-screen object-cover rounded-t-xl" />
+    </div>
+    {/* 
       
 
       {/* <div className="absolute top-0 right-0 flex flex-col items-end md:flex-row md:items-center p-4 md:p-8 lg:p-12 space-y-2 md:space-y-0 md:space-x-4 lg:space-x-8">
@@ -22,9 +24,9 @@ export default function Hero() {
         </button>
       </div> */}
 
-     <div className="absolute top-2/3 left-10 p-4 pl-8 text-2xl bg-gradient-to-r from-gray-500 to-transparent rounded-xl md:top-1/2 md:p-8 md:text-3xl lg:p-12 lg:text-4xl">
+     <div className="absolute top-2/3 left-10 p-4 pl-8 text-2xl bg-gradient-to-r from-gray-500 to-transparent rounded-xl md:top-1/3 md:p-8 md:text-3xl lg:p-12 lg:text-4xl">
         <h1 className="text-white">Trusted Matrimony and</h1>
-        <h1 className="text-rose-600">Matchmaking Service.....</h1>
+        <h1 className="text-cyan-300">Matchmaking Service...</h1>
       </div>
     </div>
   );

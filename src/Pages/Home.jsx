@@ -19,7 +19,7 @@ export default function Home() {
         <Hero />
         <Hero2 />
         <Reviews />
-        <div className="flex flex-col md:flex-row gap-4 md:gap-10 bg-rose-500 py-5 items-center justify-center text-center">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-10 bg-orange-400 py-5 items-center justify-center text-center">
             <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">
               Your Story is waiting to Happen
             </p>

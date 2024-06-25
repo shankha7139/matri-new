@@ -15,7 +15,7 @@ export default function Reviews() {
           <span className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
             Matrimonial service
           </span>
-          <span className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-rose-500">
+          <span className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-orange-500">
             with Millions
           </span>
           <span className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl">

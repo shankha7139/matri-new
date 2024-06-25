@@ -1,9 +1,7 @@
 const express = require("express");
-const connectDB = require("./config/db");
 const multer = require("multer");
 const path = require("path");
 const bodyParser = require("body-parser");
-const User = require("./Models/UserModel");
 const cloudinary = require("./Cloudinary");
 const fs = require("fs");
 const axios = require("axios");
@@ -18,7 +16,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, "public")));
 
-connectDB();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -44,9 +41,6 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
 
 app.post("/api/generate-captcha", async (req, res) => {
   const captchaUrl =
@@ -123,89 +117,6 @@ app.post("/api/verify-aadhaar", async (req, res) => {
     res.status(500).json({
       error: "Failed to verify Aadhaar"
     });
-  }
-});
-
-app.post("/api/user/profile", upload.array("photos", 10), async (req, res) => {
-  const {
-    name,
-    age,
-    number,
-    email,
-    religion,
-    motherTongue,
-    sex,
-    profession,
-    chatId,
-    description,
-    adharVarified,
-  } = req.body;
-
-  if (
-    !name ||
-    !age ||
-    !number ||
-    !email ||
-    !religion ||
-    !motherTongue ||
-    !sex ||
-    !profession ||
-    !chatId ||
-    !adharVarified
-  ) {
-    return res.status(400).json({
-      error: "All fields are required."
-    });
-  }
-
-  try {
-    // Upload images to Cloudinary
-    const uploadPromises = req.files.map((file) =>
-      cloudinary.uploader.upload(file.path)
-    );
-    const uploadedImages = await Promise.all(uploadPromises);
-
-    // Delete local files after upload
-    req.files.forEach((file) => fs.unlinkSync(file.path));
-
-    const newUser = new User({
-      name,
-      chatId,
-      age,
-      number,
-      email,
-      religion,
-      motherTongue,
-      sex,
-      profession,
-      description,
-      adharVarified,
-      photos: uploadedImages.map((img) => img.secure_url), // Store image URLs
-    });
-
-    const savedUser = await newUser.save();
-    res.status(201).json({
-      message: "Profile submitted successfully.",
-      userId: savedUser._id,
-    });
-  } catch (err) {
-    console.error("Error submitting profile:", err);
-    res.status(500).json({
-      error: "Internal server error."
-    });
-  }
-});
-
-app.get("/test", (req, res) => {
-  res.send("yay");
-});
-
-app.post("/api/matriData", (req, res) => {
-  try {
-    res.send([global.testuser]);
-  } catch (error) {
-    console.error(error.message);
-    res.send("server error");
   }
 });
 

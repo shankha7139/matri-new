@@ -7,8 +7,8 @@ export default function Reviews() {
 
   return (
     <>
-      <div className= "w-full flex flex-col sm:flex-row px-5 md:px-20 py-10 md:py-20 bg-red-100">
-        <div className="left w-full md:w-2/3 border-r-0 md:border-r-4 border-rose-500 px-10 py-10">
+      <div className = "w-full flex flex-col sm:flex-row px-5 md:px-20 py-10 md:py-20 bg-orange-100" >
+        <div className="left w-full md:w-2/3 border-r-0 md:border-r-4 border-orange-500 px-10 py-10">
           <div className="info flex flex-col text-center md:text-left items-center">
             <span className="text-4xl md:text-7xl text-cyan-500">
               Search by Different Aspects

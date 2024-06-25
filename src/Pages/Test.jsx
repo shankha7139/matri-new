@@ -265,7 +265,7 @@ const deletePhoto = async () => {
 
 
   return (
-    <div className="container mx-auto bg-red-100 p-6 mt-10 rounded-lg shadow-md">
+    <div className="container mx-auto bg-orange-200 p-6 mt-10 rounded-lg shadow-md">
       <button
         className="absolute top-0 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         onClick={() => window.history.back()}

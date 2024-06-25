@@ -71,7 +71,7 @@ const Header = () => {
 
   return (
     <>
-      <nav className="flex justify-between items-center w-full z-20 fixed top-0 left-0 h-14 bg-gradient-to-r from-red-200 via-[#f43f5e] to-[#f43f5e] px-4">
+      <nav className = "flex justify-between items-center w-full z-20 fixed top-0 left-0 h-14 bg-gradient-to-r from-orange-200 via-[#f49d3f] to-[#f49d3f] px-4" >
         <div className="flex items-center gap-4">
           <div
             className="flex items-center cursor-pointer"

@@ -143,7 +143,7 @@ const PaymentDetails = () => {
                 Get started
               </a>
               <button
-                className="mt-4 px-4 py-2 text-white bg-[#f43f5e] rounded-lg mx-auto"
+                className = "mt-4 px-4 py-2 text-white bg-[#f49d3f] rounded-lg mx-auto"
                 onClick={handleProceed}
               >
                 Proceed
@@ -250,7 +250,7 @@ const PaymentDetails = () => {
                 Get started
               </a>
               <button
-                className="mt-4 px-4 py-2 text-white bg-[#f43f5e] rounded-lg mx-auto"
+                className = "mt-4 px-4 py-2 text-white bg-[#f49d3f] rounded-lg mx-auto"
                 onClick={handleProceed}
               >
                 Proceed
@@ -357,7 +357,7 @@ const PaymentDetails = () => {
                 Get started
               </a>
               <button
-                className="mt-4 px-4 py-2 text-white bg-[#f43f5e] rounded-lg mx-auto"
+                className = "mt-4 px-4 py-2 text-white bg-[#f49d3f] rounded-lg mx-auto"
                 onClick={handleProceed}
               >
                 Proceed

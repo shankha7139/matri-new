@@ -17,7 +17,7 @@ export default function Footer() {
             placeholder="Subscribe Newsletter"
             className="w-full md:w-auto border border-gray-300 p-2 rounded-l"
           />
-          <button className="bg-rose-500 w-10 h-10 flex items-center justify-center rounded-r hover:text-white shadow-xl duration-300 cursor-pointer">
+          <button className="bg-orange-400 w-10 h-10 flex items-center justify-center rounded-r hover:text-white shadow-xl duration-300 cursor-pointer">
             <AiOutlineArrowRight className="text-white" />
           </button>
         </div>
@@ -39,7 +39,7 @@ export default function Footer() {
         <img src={linked} alt="" className="bg-slate-300 p-2 rounded" />
         <img src={twit} alt="" className="bg-slate-300 p-2 rounded" />
       </div>
-      <div className="copyright flex justify-center text-center bg-red-100 py-4">
+      <div className="copyright flex justify-center text-center bg-orange-100 py-4">
         <span>Copyrights reserved &copy; Bantu Programmers</span>
       </div>
     </footer>

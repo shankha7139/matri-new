@@ -92,9 +92,28 @@ function AllChats() {
 
   return (
     <div className="mx-auto bg-gray-100 h-screen flex flex-col">
-      <header className="bg-gradient-to-r from-red-200 via-[#f43f5e] to-[#f43f5e] px-4 text-white p-4  shadow-md flex justify-center text-center ">
+      <header className = "bg-gradient-to-r from-orange-200 via-[#f49d3f] to-[#f49d3f] px-4 text-white p-4  shadow-md flex justify-center text-center " >
         <h1 className="text-xl font-semibold">All Chats</h1>
       </header>
+      <button
+        className="absolute top-0 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => window.history.back()}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
       <ul className="flex-grow overflow-y-auto">
         {chats.map((chat) => (
           <ChatItem
