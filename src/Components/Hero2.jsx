@@ -12,7 +12,7 @@ export default function Hero2() {
           <div className="info text-center md:text-left">
             <h1 className="text-2xl md:text-3xl text-cyan-500">Sign Up</h1>
             <p className="text-sm md:text-base">
-              Register for free and put up your matrimony profile
+              नि: शुल्क पंजीकरण करें और अपना वैवाहिक प्रोफाइल बनाएं,
             </p>
           </div>
         </div>
@@ -21,7 +21,7 @@ export default function Hero2() {
           <div className="info relative text-center md:text-left">
             <h1 className="md:absolute md:inset-y-0 md:left-0 text-2xl md:text-3xl text-cyan-500">Connect</h1>
             <p className="text-sm md:text-base mt-8 md:mt-10">
-              Select & Connect with matches you like
+              अपनी पसंद के मैचेस चुनें और उनसे जुड़ें,
             </p>
           </div>
         </div>
@@ -30,18 +30,20 @@ export default function Hero2() {
           <div className="info text-center md:text-left">
             <h1 className="text-2xl md:text-3xl text-cyan-500">Interact</h1>
             <p className="text-sm md:text-base">
-              Become a premium member & start a conversation
+              प्रीमियम सदस्य बनें और बातचीत शुरू करें |
             </p>
           </div>
         </div>
       </div>
       <div className="right basis-full md:basis-1/3 mt-10 md:mt-0 flex items-center justify-center md:justify-end">
         <div className="info flex flex-col p-10 md:p-20 text-center md:text-left">
-          <span className="text-4xl md:text-6xl lg:text-7xl">Find Your</span>
-          <span className="text-4xl md:text-6xl lg:text-7xl text-cyan-500">Special</span>
-          <span className="text-4xl md:text-6xl lg:text-7xl">Someone</span>
+          <span className="text-4xl md:text-6xl lg:text-7xl">ढूंढें अपना</span>
+          <span className="text-4xl md:text-6xl lg:text-7xl text-cyan-500">खास</span>
+          <span className="text-4xl md:text-6xl lg:text-7xl">साथी</span>
         </div>
       </div>
     </div>
   );
 }
+
+   

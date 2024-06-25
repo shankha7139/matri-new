@@ -7,6 +7,7 @@ import {
   updatePassword,
   signInWithPopup,
   GoogleAuthProvider,
+  signInWithRedirect
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore"; // Import Firestore functions
 
@@ -23,6 +24,7 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 
 export const doSignInWithGoogle = async (additionalData) => {
   const provider = new GoogleAuthProvider();
+  await signInWithRedirect(auth, provider);
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
   await addUserToFirestore(user, additionalData);

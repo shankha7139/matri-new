@@ -24,10 +24,9 @@ export default function Hero() {
         </button>
       </div> */}
 
-     <div className="absolute top-2/3 left-10 p-4 pl-8 text-2xl bg-gradient-to-r from-gray-500 to-transparent rounded-xl md:top-1/3 md:p-8 md:text-3xl lg:p-12 lg:text-4xl">
-        <h1 className="text-white">Trusted Matrimony and</h1>
-        <h1 className="text-cyan-300">Matchmaking Service...</h1>
-      </div>
+     <div className="absolute bottom-14 left-1/2 transform -translate-x-1/2 p-1 pl-2 text-sm sm:text-xl sm:p-2 sm:pl-4 bg-gradient-to-r from-gray-500 to-transparent rounded-xl md:p-4 md:text-3xl lg:p-6 lg:text-4xl">
+  <h1 className="text-white">विश्वसनीय वैवाहिक और मैचमेकिंग सेवा...</h1>
+</div>
     </div>
   );
 }

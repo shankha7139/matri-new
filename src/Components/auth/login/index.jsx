@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import {
   doSignInWithEmailAndPassword,
   doSignInWithGoogle,
 } from "../../../firebase/auth";
 import { useAuth } from "../../../context/authContext";
+import logo from "../../../assets/Logo.png";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
@@ -13,6 +14,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +48,7 @@ const Login = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      setErrorMessage(""); // Clear any previous error messages
+      setErrorMessage("");
       doSignInWithGoogle().catch((err) => {
         setErrorMessage(
           "An error occurred with Google Sign-In. Please try again."
@@ -56,11 +59,23 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className=" bg-gradient-to-b from-white via-orange-200 to-[#f49d3f] ">
       {userLoggedIn && <Navigate to={"/"} replace={true} />}
+      <nav className="flex justify-between items-center w-full z-20 fixed top-0 left-0 h-14 bg-gradient-to-r from-orange-200 via-[#f49d3f] to-[#f49d3f] px-4">
+        <div className="flex items-center gap-4 justify-center text-center ">
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <span className="text-3xl font-bold text-white transition-all duration-1000 ease-in-out px-4 py-2 rounded-lg hover:text-4xl">
+              <img className="mx-auto h-14 w-auto" src={logo} alt="Logo" />
+            </span>
+          </div>
+        </div>
+      </nav>
 
       <main className="w-full h-screen flex self-center place-content-center place-items-center">
-        <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
+        <div className="w-96 text-gray-600 bg-white space-y-5 p-4 shadow-xl border rounded-xl">
           <div className="text-center">
             <div className="mt-2">
               <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">
@@ -114,7 +129,7 @@ const Login = () => {
               className={`w-full px-4 py-2 text-white font-medium rounded-lg ${
                 isSigningIn
                   ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300"
+                  : "bg-[#f49d3f] hover:bg-[#f49d3f] hover:shadow-xl transition duration-300"
               }`}
             >
               {isSigningIn ? "Signing In..." : "Sign In"}

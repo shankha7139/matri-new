@@ -11,7 +11,7 @@ export default function AboveFooter() {
     <>
     <div className="banner flex flex-col sm:flex-row items-center gap-4 sm:gap-20 justify-center bg-slate-100 py-4 sm:py-6 border-b-2 border-slate-300">
         <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-white bg-cyan-600 px-4 py-2 sm:px-6 sm:py-3 rounded-full text-center">
-          Trusted by Indians
+          भारतीयों द्वारा विश्वास किया गया
         </h1>
         <div className="flex flex-wrap justify-center mt-4 sm:mt-0">
           <div className="flex flex-col items-center mr-4 sm:mr-8">
@@ -31,13 +31,7 @@ export default function AboveFooter() {
       <div className="flex flex-col px-4 py-10 justify-center items-center sm:px-10 md:px-20 lg:px-40 xl:px-60">
         <img className="mx-auto h-24 w-auto" src={logo} alt="Logo" />
         <p className="text-lg sm:text-xl lg:text-2xl text-center mt-4">
-          In today's world, finding a partner can be difficult. There are so
-          many options for singles to choose from and they all seem alike! That
-          is why YV was founded with the goal of making your search
-          easier. We want you to find happiness. YV is India's No.1
-          Matchmaking Service, founded with a simple objective - to help people
-          find happiness and love in their lives. YV has helped more than
-          a million Indian couples marry each other.
+          आज के समय में, एक साथी खोजना मुश्किल हो सकता है। एकल लोगों के लिए बहुत सारे विकल्प हैं और वे सभी एक जैसे लगते हैं! इसीलिए YV की स्थापना आपकी खोज को आसान बनाने के उद्देश्य से की गई थी। हम चाहते हैं कि आप खुशी पाएं। YV भारत की नंबर 1 मैचमेकिंग सेवा है, जिसे एक साधारण उद्देश्य के साथ स्थापित किया गया था - लोगों को अपने जीवन में खुशी और प्यार पाने में मदद करना।
         </p>
       </div>
       
