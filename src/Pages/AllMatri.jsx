@@ -115,7 +115,11 @@ export default function Matri() {
       // Get logged user's gender
       const loggedUserData = userData.find(user => user.uid === loggedUser);
       const loggedUserGender = loggedUserData ? loggedUserData.sex : null;
-      setUser(userData.filter(user => user.sex !== loggedUserGender));
+      setLoggedUserGender(loggedUserGender);
+
+      // Filter out users of the same gender
+      const oppositeGenderUsers = userData.filter(user => user.sex !== loggedUserGender);
+      setFilteredData(oppositeGenderUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -153,7 +157,6 @@ export default function Matri() {
   };
 
   useEffect(() => {
-    loadData();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoggedUser(user.uid); // Use user.uid directly
@@ -161,8 +164,15 @@ export default function Matri() {
         console.log("User is signed out");
       }
     });
+
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
+
+  useEffect(() => {
+    if (loggedUser) {
+      loadData();
+    }
+  }, [loggedUser]);
 
   useEffect(() => {
     filterData();
