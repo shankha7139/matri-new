@@ -205,24 +205,24 @@ export default function Matri() {
             ></path>
           </svg>
         </button>
-        <div className="mt-28 px-4 md:px-24">
+        <div className="mt-32 sm:mt-28 px-4 md:px-24">
           <button
             onClick={toggleFilterVisibility}
             className="bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
           >
             {isFilterVisible ? "Hide Filters" : "Show Filters"}
           </button>
-        </div>
+      </div>
       </div>
 
       <div>
         {isFilterVisible && (
-          <div className="flex flex-wrap justify-between items-center p-4 w-full bg-white pb-10 rounded-lg pl-44 pr-44">
+          <div className="flex flex-wrap justify-between items-center p-4 w-full bg-white pb-10 rounded-lg sm:pl-44 sm:pr-44">
             <input
               type="text"
               name="language"
               placeholder="Language"
-              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2 bg-white shadow-md"
+              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 w-full sm:w-1/4 sm:mr-2 bg-white shadow-md"
               value={searchTerms.language}
               onChange={handleSearchChange}
             />
@@ -230,7 +230,7 @@ export default function Matri() {
               type="text"
               name="prof"
               placeholder="Profession"
-              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2 bg-white shadow-md"
+              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 w-full sm:w-1/4 sm:mr-2 bg-white shadow-md"
               value={searchTerms.prof}
               onChange={handleSearchChange}
             />
@@ -238,11 +238,11 @@ export default function Matri() {
               type="text"
               name="religion"
               placeholder="Religion"
-              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 sm:w-1/4 mr-0 sm:mr-2 bg-white shadow-md"
+              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 w-full sm:w-1/4 sm:mr-2 bg-white shadow-md"
               value={searchTerms.religion}
               onChange={handleSearchChange}
             />
-            <div className="w-3/4 mt-4 px-4 mx-auto bg-white backdrop-filter backdrop-blur-lg bg-opacity-30 rounded-lg">
+            <div className="w-full sm:w-3/4 mt-4 px-4 mx-auto bg-white backdrop-filter backdrop-blur-lg bg-opacity-30 rounded-lg">
               <h3 className="text-lg font-semibold mb-2 text-orange-300">
                 Age Range: {ageRange.low} - {ageRange.high}
               </h3>
