@@ -6,8 +6,8 @@ export default function Hero() {
   const navigate = useNavigate();
   return (
     <div className="relative">
-    <div className="overflow-hidden">
-        <img src={hero} alt="Hero" className="w-full h-screen object-cover rounded-t-xl" />
+    <div className = "overflow-hidden rounded-t-xl" >
+        <img src={hero} alt="Hero" className="w-full h-screen object-cover" />
     </div>
     {/* 
       
