@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { FaCheckCircle, FaTimesCircle, FaVolumeUp, FaEye, FaTrash  } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaVolumeUp, FaEye, FaTrash } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db, storage } from "../firebase/Firebase"; // Import storage
+import { db, storage } from "../firebase/Firebase";
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import "../styles/shimmer.css";
-
 
 const ProfileForm = () => {
   const { currentUser } = useAuth();
@@ -55,10 +54,10 @@ const ProfileForm = () => {
       name: file.name,
       type: file.type,
       size: file.size,
-      url: URL.createObjectURL(file), // Create a local URL for rendering preview
-      file: file // Keep the file object itself for uploading/storage
+      url: URL.createObjectURL(file),
+      file: file,
     }));
-  
+
     setPhotos([...photos, ...formattedFiles]);
   };
 
@@ -131,17 +130,19 @@ const ProfileForm = () => {
 
     fetchUserProfile();
   }, [currentUser.uid]);
-  
+
   const fetchExistingPhotos = async () => {
     setIsPhotosLoading(true);
     const storageRef = ref(storage, `photos/${currentUser.uid}`);
     try {
       const result = await listAll(storageRef);
-      const urlPromises = result.items.map(imageRef => getDownloadURL(imageRef));
+      const urlPromises = result.items.map((imageRef) => getDownloadURL(imageRef));
       const urls = await Promise.all(urlPromises);
-      setExistingPhotos(urls.map((url) => ({
-        url: url
-      })));
+      setExistingPhotos(
+        urls.map((url) => ({
+          url: url,
+        }))
+      );
     } catch (error) {
       console.error("Error fetching existing photos:", error);
     } finally {
@@ -149,42 +150,42 @@ const ProfileForm = () => {
     }
   };
 
-useEffect(() => {
-  fetchExistingPhotos();
-}, [currentUser.uid]);
+  useEffect(() => {
+    fetchExistingPhotos();
+  }, [currentUser.uid]);
 
-const openDeleteDialog = (photo, index) => {
-  setPhotoToDelete({
-    photo,
-    index
-  });
-  setDeleteDialogOpen(true);
-};
+  const openDeleteDialog = (photo, index) => {
+    setPhotoToDelete({
+      photo,
+      index,
+    });
+    setDeleteDialogOpen(true);
+  };
 
-const closeDeleteDialog = () => {
-  setDeleteDialogOpen(false);
-  setPhotoToDelete(null);
-};
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setPhotoToDelete(null);
+  };
 
-const deletePhoto = async () => {
-  if (photoToDelete) {
-    try {
-      if (photoToDelete.photo.file) {
-        // This is a newly uploaded photo
-        setPhotos(photos.filter((_, i) => i !== photoToDelete.index));
-      } else {
-        // This is an existing photo from Firebase Storage
-        const photoRef = ref(storage, photoToDelete.photo.url);
-        await deleteObject(photoRef);
-        setExistingPhotos(existingPhotos.filter((_, i) => i !== photoToDelete.index));
+  const deletePhoto = async () => {
+    if (photoToDelete) {
+      try {
+        if (photoToDelete.photo.file) {
+          // This is a newly uploaded photo
+          setPhotos(photos.filter((_, i) => i !== photoToDelete.index));
+        } else {
+          // This is an existing photo from Firebase Storage
+          const photoRef = ref(storage, photoToDelete.photo.url);
+          await deleteObject(photoRef);
+          setExistingPhotos(existingPhotos.filter((_, i) => i !== photoToDelete.index));
+        }
+      } catch (error) {
+        console.error("Error deleting photo:", error);
+        alert("Failed to delete photo. Please try again.");
       }
-    } catch (error) {
-      console.error("Error deleting photo:", error);
-      alert("Failed to delete photo. Please try again.");
     }
-  }
-  closeDeleteDialog();
-};
+    closeDeleteDialog();
+  };
 
   const uploadPhoto = async (photo) => {
     const storageRef = ref(storage, `photos/${currentUser.uid}/${photo.name}`);
@@ -207,27 +208,31 @@ const deletePhoto = async () => {
       const newPhotoURLs = await Promise.all(photos.map(uploadPhoto));
 
       // Combine existing photo URLs with new photo URLs
-      const allPhotoURLs = [...existingPhotos.map(photo => photo.url), ...newPhotoURLs];
+      const allPhotoURLs = [...existingPhotos.map((photo) => photo.url), ...newPhotoURLs];
 
       // Save user data in Firestore
       const userRef = doc(db, "users", currentUser.uid);
-      await setDoc(userRef, {
-        uid: formData.uid,
-        name: formData.name,
-        age: formData.age ? parseInt(formData.age) : null,
-        number: formData.number,
-        email: formData.email,
-        religion: formData.religion,
-        motherTongue: formData.motherTongue,
-        sex: formData.sex,
-        profession: formData.profession,
-        description: formData.description,
-        adharVarified: adharCheck,
-        photos: allPhotoURLs,
-        updatedAt: new Date()
-      }, {
-        merge: true
-      });
+      await setDoc(
+        userRef,
+        {
+          uid: formData.uid,
+          name: formData.name,
+          age: formData.age ? parseInt(formData.age) : null,
+          number: formData.number,
+          email: formData.email,
+          religion: formData.religion,
+          motherTongue: formData.motherTongue,
+          sex: formData.sex,
+          profession: formData.profession,
+          description: formData.description,
+          adharVarified: adharCheck,
+          photos: allPhotoURLs,
+          updatedAt: new Date(),
+        },
+        {
+          merge: true,
+        }
+      );
 
       setProfileUpdated(true);
     } catch (err) {
@@ -252,7 +257,7 @@ const deletePhoto = async () => {
     setProfileUpdated(false);
     navigate("/");
   };
-   
+
   const handleImageClick = (url) => {
     setSelectedImage(url);
     setOpenImageModal(true);
@@ -263,274 +268,264 @@ const deletePhoto = async () => {
     setSelectedImage("");
   };
 
-
   return (
-    <div className="container mx-auto bg-orange-200 p-6 mt-10 rounded-lg shadow-md">
-      <button
-        className="absolute top-0 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        onClick={() => window.history.back()}
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M15 19l-7-7 7-7"
-          ></path>
-        </svg>
-      </button>
-      <h1 className="text-2xl font-bold mb-6 text-center">Profile Info</h1>
+  <div className="min-h-screen flex items-center justify-center bg-orange-200 py-12">
+    <div className="bg-white p-6 rounded-2xl shadow-md w-4/5 neumorphic-card">
+      <h1 className="text-2xl font-bold mb-4 text-center">Profile Form</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-wrap -mx-2">
-          {[
-            { label: "Name", type: "text", name: "name" },
-            { label: "Age", type: "number", name: "age" },
-            { label: "Phone Number", type: "text", name: "number" },
-            { label: "Religion", type: "text", name: "religion" },
-            { label: "Mother Tongue", type: "text", name: "motherTongue" },
-            { label: "Profession", type: "text", name: "profession" },
-          ].map((field) => (
-            <div key={field.name} className="w-full sm:w-1/2 px-2 mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                {field.label}
-              </label>
-              <input
-                type={field.type}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required
-              />
-            </div>
-          ))}
-          <div className="w-full sm:w-1/2 px-2 mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Sex
-            </label>
-            <select
-              name="sex"
-              value={formData.sex}
+        <div className="flex flex-col gap-4 md:flex-row">
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
               required
-            >
-              <option value="" disabled>
-                Select your sex
-              </option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
+            />
           </div>
-          <div className="w-full sm:w-1/2 px-2 mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Email
-            </label>
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Age:</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              required
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-4 md:flex-row">
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Number:</label>
+            <input
+              type="text"
+              name="number"
+              value={formData.number}
+              onChange={handleChange}
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              required
+            />
+          </div>
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Email:</label>
             <input
               type="email"
               name="email"
               value={formData.email}
-              readOnly
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200 cursor-not-allowed"
-            />
-          </div>
-          <div className="w-full px-2 mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
               onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
               required
+              disabled
             />
           </div>
-          <div className="w-full flex items-start px-2 mb-4">
-          <div className="flex-1 mr-2">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Aadhaar Number
-            </label>
+        </div>
+        <div className="flex flex-col gap-4 md:flex-row">
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Religion:</label>
             <input
               type="text"
-              name="aadhaarNumber"
-              value={formData.aadhaarNumber}
+              name="religion"
+              value={formData.religion}
               onChange={handleChange}
-              placeholder="Doesn't Get Stored, Relax!"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
               required
             />
           </div>
-            <div className="flex flex-col items-start flex-1 ml-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Captcha
-              </label>
-              <div className="flex items-center w-full">
-                <img src={captchaImage} alt="Captcha" className="mr-2" />
-                <FaVolumeUp
-                  className="text-gray-700 cursor-pointer"
-                  size={24}
-                  onClick={playCaptchaAudio}
-                />
-                <input
-                  type="text"
-                  name="captcha"
-                  value={formData.captcha}
-                  onChange={handleChange}
-                  placeholder = "Enter Captcha"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ml-2"
-                  required
-                />
-              </div>
-            </div>
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Mother Tongue:</label>
+            <input
+              type="text"
+              name="motherTongue"
+              value={formData.motherTongue}
+              onChange={handleChange}
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              required
+            />
           </div>
-          <div className="w-full flex items-center justify-center px-2 mb-4">
-            <button
-              type="button"
-              onClick={generateCaptcha}
-              className="bg-cyan-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
+        </div>
+        <div className="flex flex-col gap-4 md:flex-row">
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Sex:</label>
+            <select
+              name="sex"
+              value={formData.sex}
+              onChange={handleChange}
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              required
             >
-              Refresh Captcha
-            </button>
-            <button
-              type="button"
-              onClick={verifyAadhaar}
-              className="bg-cyan-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Verify Aadhaar
-            </button>
-            {verificationStatus !== null && (
-              <span className="ml-2">
-                {verificationStatus ? (
-                  <FaCheckCircle className="text-green-500" size={28} />
-                ) : (
-                  <FaTimesCircle className="text-red-500" size={28} />
-                )}
-              </span>
-            )}
+              <option value="">Select Sex</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
           </div>
-       <div className="w-full px-2 mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Upload Photos
-          </label>
-          <div
-            {...getRootProps()}
-            className="border-dashed border-2 border-gray-300 p-4 text-center cursor-pointer"
+          <div className="w-full md:w-1/2">
+            <label className="block font-medium">Profession:</label>
+            <input
+              type="text"
+              name="profession"
+              value={formData.profession}
+              onChange={handleChange}
+              className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+              required
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block font-medium">Description:</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+            required
+          />
+        </div>
+        <div className="flex items-center gap-4">
+          <label className="block font-medium">Aadhaar Number:</label>
+          <input
+            type="text"
+            name="aadhaarNumber"
+            value={formData.aadhaarNumber}
+            onChange={handleChange}
+            className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+            required
+          />
+        </div>
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <label className="block font-medium">Captcha:</label>
+          <img src={captchaImage} alt="Captcha" className="w-32 h-12 neumorphic-image" />
+          <button
+            type="button"
+            onClick={playCaptchaAudio}
+            className="px-4 py-2 rounded-lg neumorphic-button"
           >
-            <input {...getInputProps()} multiple />
-            {isDragActive ? (
-              <p>Drop the files here ...</p>
-            ) : (
-              <p>Drag 'n' drop some photos here, or click to select files</p>
-            )}
-          </div>
-          {(existingPhotos.length > 0 || photos.length > 0) && (
-            <div className="mt-4">
-              <h4 className="text-gray-700 text-sm font-bold mb-2">
-                Photos:
-              </h4>
-              {isPhotosLoading ? (
-                <div className="shimmer-container flex flex-wrap -mx-2">
-                  {/* Example shimmer divs */}
-                  <div className="shimmer px-2 mb-4 w-1/6"></div>
-                  <div className="shimmer px-2 mb-4 w-1/6"></div>
-                  <div className="shimmer px-2 mb-4 w-1/6"></div>
-                  <div className="shimmer px-2 mb-4 w-1/6"></div>
-                </div>
-              ) : (
-                <div className="flex flex-wrap -mx-2">
-                  {[...existingPhotos, ...photos].map((photo, index) => (
-  <div key={index} className="px-2 mb-4 w-1/4 sm:w-1/6 relative">
-    <img
-      src={photo.url}
-      alt={photo.name}
-      className="object-contain h-auto w-full rounded"
-    />
-    <button
-      onClick={() => handleImageClick(photo.url)}
-      className="absolute top-0 left-0 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center m-1 focus:outline-none"
-    >
-      <FaEye />
-    </button>
-    <button
-      onClick={() => openDeleteDialog(photo, index)}
-      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center m-1 focus:outline-none"
-    >
-      ×
-    </button>
-    <p className="text-gray-600 text-xs mt-1 truncate">{photo.name}</p>
-  </div>
-))}
-
-                </div>
-              )}
+            <FaVolumeUp className="text-xl" />
+          </button>
+          <input
+            type="text"
+            name="captcha"
+            value={formData.captcha}
+            onChange={handleChange}
+            className="w-full p-2 rounded-lg border-none shadow-lg neumorphic-input"
+            required
+          />
+          <button
+            type="button"
+            onClick={generateCaptcha}
+            className="px-4 py-2 rounded-lg bg-gray-300 text-gray-800 neumorphic-button"
+          >
+            Refresh
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={verifyAadhaar}
+          className="w-full py-2 rounded-lg bg-blue-500 text-white neumorphic-button-submit"
+        >
+          Verify Aadhaar
+        </button>
+        {verificationStatus !== null && (
+          <p
+            className={`mt-2 text-center ${verificationStatus ? "text-green-600" : "text-red-600"
+              }`}
+          >
+            {verificationStatus
+              ? "Aadhaar verified successfully"
+              : "Aadhaar verification failed"}
+          </p>
+        )}
+        <div
+          {...getRootProps()}
+          className="border-dashed border-2 p-4 rounded-lg text-center neumorphic-drag"
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <p>Drop the files here...</p>
+          ) : (
+            <p>Drag & drop some files here, or click to select files</p>
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {photos.map((photo, index) => (
+            <div key={index} className="relative">
+              <img
+                src={photo.url}
+                alt={`Photo ${index + 1}`}
+                className="w-full h-32 object-cover rounded-lg neumorphic-image"
+                onClick={() => handleImageClick(photo.url)}
+              />
+              <button
+                type="button"
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 neumorphic-delete"
+                onClick={() => openDeleteDialog(photo, index)}
+              >
+                <FaTrash />
+              </button>
+            </div>
+          ))}
+          {existingPhotos.map((photo, index) => (
+            <div key={index} className="relative">
+              <img
+                src={photo.url}
+                alt={`Photo ${index + 1}`}
+                className="w-full h-32 object-cover rounded-lg neumorphic-image"
+                onClick={() => handleImageClick(photo.url)}
+              />
+              <button
+                type="button"
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 neumorphic-delete"
+                onClick={() => openDeleteDialog(photo, index)}
+              >
+                <FaTrash />
+              </button>
+            </div>
+          ))}
+          {isPhotosLoading && (
+            <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center shimmer-animation">
+              Loading photos...
             </div>
           )}
         </div>
-
-
-        </div>
-        {isSubmitting ? (
-          <button
-            type="button"
-            className="bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full cursor-not-allowed"
-            disabled
-          >
-            Submitting...
-          </button>
-        ) : profileUpdated ? null : (
-          <button
-            type="submit"
-            className={`bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
-              !adharCheck ? "cursor-not-allowed opacity-50" : ""
+        <button
+          type="submit"
+          className={`w-full py-2 rounded-lg bg-blue-500 text-white neumorphic-button-submit ${isSubmitting ? "opacity-50" : ""
             }`}
-            disabled={!adharCheck}
-          >
-            Submit
-          </button>
-        )}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Submitting..." : "Submit"}
+        </button>
       </form>
+    </div>
+
+      <Dialog open={profileUpdated} onClose={handleDialogClose}>
+        <DialogTitle>Profile Updated</DialogTitle>
+        <DialogContent>Your profile has been updated successfully!</DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>OK</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this photo?
-        </DialogContent>
+        <DialogTitle>Delete Photo</DialogTitle>
+        <DialogContent>Are you sure you want to delete this photo?</DialogContent>
         <DialogActions>
-          <Button onClick={closeDeleteDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={deletePhoto} color="primary" autoFocus>
+          <Button onClick={closeDeleteDialog}>Cancel</Button>
+          <Button onClick={deletePhoto} color="secondary">
             Delete
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={profileUpdated} onClose={handleDialogClose}>
-        <DialogTitle>Profile Updated!</DialogTitle>
-        <DialogContent>Your profile has been updated successfully.</DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary" variant="contained">
-            Go to Home
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={openImageModal} onClose={handleCloseImageModal}>
-        <DialogContent>
-          <img src={selectedImage} alt="Selected" className="w-full h-auto" />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseImageModal} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {selectedImage && (
+        <Dialog open={openImageModal} onClose={handleCloseImageModal}>
+          <DialogContent>
+            <img src={selectedImage} alt="Selected" className="w-full h-auto" />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

@@ -38,9 +38,8 @@ export default function Matri() {
   const [user, setUser] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [ageRange, setAgeRange] = useState({ low: 18, high: 100 });
+  const [ageRange, setAgeRange] = useState({ low: 20, high: 60 });
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [loggedUserGender, setLoggedUserGender] = useState("");
 
   const toggleFilterVisibility = () => {
     setIsFilterVisible(!isFilterVisible);
@@ -83,12 +82,12 @@ export default function Matri() {
 
   const filterData = () => {
     const filtered = user.filter((item) => {
-      const professionLower = item.profession
-        ? item.profession.toLowerCase()
-        : "";
-      const mothertongueLower = item.motherTongue
-        ? item.motherTongue.toLowerCase()
-        : "";
+      const professionLower = item.profession ?
+        item.profession.toLowerCase() :
+        "";
+      const mothertongueLower = item.motherTongue ?
+        item.motherTongue.toLowerCase() :
+        "";
       const religionLower = item.religion ? item.religion.toLowerCase() : "";
       const age = item.age ? parseInt(item.age) : 0;
 
@@ -97,10 +96,7 @@ export default function Matri() {
         mothertongueLower.includes(searchTerms.language.toLowerCase()) &&
         religionLower.includes(searchTerms.religion.toLowerCase()) &&
         age >= ageRange.low &&
-        age <= ageRange.high &&
-        item.sex !== loggedUserGender && // Filter for opposite gender
-          item.sex && // Ensure the user has a gender specified
-          (item.sex === 'male' || item.sex === 'female')
+        age <= ageRange.high
       );
     });
     setFilteredData(filtered);
@@ -183,7 +179,7 @@ export default function Matri() {
               value={searchTerms.religion}
               onChange={handleSearchChange}
             />
-            <div className="w-full mt-4">
+            <div  className = "w-full mt-4 px-4 mx-auto" >
               <h3 className="text-lg font-semibold mb-2">
                 Age Range: {ageRange.low} - {ageRange.high}
               </h3>
@@ -200,7 +196,7 @@ export default function Matri() {
             ))
           : filteredData.length > 0
           ? filteredData
-              .filter((data) => loggedUser !== data.uid && data.name && data.sex !== loggedUserGender) // Filter out the logged-in user's profile and profiles with no name
+              .filter((data) => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
               .map((data) => (
                 <div key={data.id}>
                   <Card
@@ -219,7 +215,7 @@ export default function Matri() {
                 </div>
               ))
           : user
-              .filter((data) => loggedUser !== data.uid && data.name && data.sex !== loggedUserGender) // Filter out the logged-in user's profile and profiles with no name
+              .filter((data) => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
               .map((data) => (
                 <div key={data.id}>
                   <Card
