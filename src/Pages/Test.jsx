@@ -76,7 +76,7 @@ const ProfileForm = () => {
   };
 
   const generateCaptcha = () => {
-    fetch("https://matri-server.onrender.com/api/generate-captcha", {
+    fetch("https://firstapp-aadhaar.azurewebsites.net/api/generate-captcha", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const ProfileForm = () => {
       transaction_id: transactionId,
     };
 
-    fetch("https://matri-server.onrender.com/api/verify-aadhaar", {
+    fetch("https://firstapp-aadhaar.azurewebsites.net/api/verify-aadhaar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
