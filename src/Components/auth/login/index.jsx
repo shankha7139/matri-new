@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import {
   doSignInWithEmailAndPassword,
@@ -6,10 +6,15 @@ import {
 } from "../../../firebase/auth";
 import { useAuth } from "../../../context/authContext";
 import logo from "../../../assets/Logo.png";
+import {
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult,
+} from "firebase/auth";
+import { auth } from "../../../firebase/Firebase";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -43,20 +48,33 @@ const Login = () => {
       }
     }
   };
-
   const onGoogleSignIn = (e) => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
       setErrorMessage("");
-      doSignInWithGoogle().catch((err) => {
-        setErrorMessage(
-          "An error occurred with Google Sign-In. Please try again."
-        );
+      const provider = new GoogleAuthProvider();
+      signInWithRedirect(auth, provider).catch((error) => {
+        console.error("Google Sign-In Error:", error);
+        setErrorMessage(`Google Sign-In failed: ${error.message}`);
         setIsSigningIn(false);
       });
     }
   };
+
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          // User signed in successfully
+          console.log("Google Sign-In Successful", result.user);
+        }
+      })
+      .catch((error) => {
+        console.error("Redirect Error:", error);
+        setErrorMessage(`An error occurred: ${error.message}`);
+      });
+  }, []);
 
   return (
     <div className=" bg-gradient-to-b from-white via-orange-200 to-[#f49d3f] ">

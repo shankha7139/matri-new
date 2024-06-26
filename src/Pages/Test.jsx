@@ -76,7 +76,7 @@ const ProfileForm = () => {
   };
 
   const generateCaptcha = () => {
-    fetch("http://localhost:8008/api/generate-captcha", {
+    fetch("https://matri-server.onrender.com/api/generate-captcha", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const ProfileForm = () => {
       transaction_id: transactionId,
     };
 
-    fetch("http://localhost:8008/api/verify-aadhaar", {
+    fetch("https://matri-server.onrender.com/api/verify-aadhaar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
