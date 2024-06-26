@@ -76,7 +76,7 @@ const ProfileForm = () => {
   };
 
   const generateCaptcha = () => {
-    fetch("https://firstapp-aadhaar.azurewebsites.net/api/generate-captcha", {
+    fetch("http://3.110.120.110:8008/api/generate-captcha", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const ProfileForm = () => {
       transaction_id: transactionId,
     };
 
-    fetch("https://firstapp-aadhaar.azurewebsites.net/api/verify-aadhaar", {
+    fetch("http://3.110.120.110:8008/api/verify-aadhaar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
