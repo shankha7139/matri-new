@@ -16,7 +16,7 @@ import AllChats from "./Pages/AllChats";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/matri-new">
       <AuthProvider>
         {/* <Header /> */}
         <Routes>
