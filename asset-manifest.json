@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/your-repo-name/static/css/main.4812e369.css",
+    "main.js": "/your-repo-name/static/js/main.27ad6357.js",
+    "static/media/shadi2.png": "/your-repo-name/static/media/shadi2.4ce362545bbac60a62e1.png",
+    "static/media/shadi1.png": "/your-repo-name/static/media/shadi1.cff2ec4128e7f54b66cf.png",
+    "static/media/Hero.png": "/your-repo-name/static/media/Hero.5e2574f4093c6566225e.png",
+    "static/media/Logo.png": "/your-repo-name/static/media/Logo.a7f1021008a8d0d892e8.png",
+    "static/media/hero3.png": "/your-repo-name/static/media/hero3.9c44d4518a00afc97fd2.png",
+    "static/media/user.png": "/your-repo-name/static/media/user.d3e647d8c32d07620686.png",
+    "static/media/notification.png": "/your-repo-name/static/media/notification.753b37448d0cb17d984e.png",
+    "static/media/Pricing.png": "/your-repo-name/static/media/Pricing.b82363d1fc62aa29c3d5.png",
+    "static/media/playstore.png": "/your-repo-name/static/media/playstore.52722ba8da88f2a5ed91.png",
+    "static/media/love4.png": "/your-repo-name/static/media/love4.1d9f9de06468bb0ecb52.png",
+    "index.html": "/your-repo-name/index.html",
+    "main.4812e369.css.map": "/your-repo-name/static/css/main.4812e369.css.map",
+    "main.27ad6357.js.map": "/your-repo-name/static/js/main.27ad6357.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4812e369.css",
+    "static/js/main.27ad6357.js"
+  ]
+}
