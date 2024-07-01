@@ -52,24 +52,35 @@ export const doSendEmailVerification = () => {
 const addUserToFirestore = async (user, additionalData = {}) => {
   try {
     const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName || additionalData.name || "",
-      photoURL: user.photoURL || "",
-      createdAt: new Date(),
-      // Additional fields
-      name: additionalData.name || "",
-      adharVarified: additionalData.adharVarified || false,
-      description: additionalData.description || "",
-      age: additionalData.age || null,
-      number: additionalData.number || "",
-      religion: additionalData.religion || "",
-      motherTongue: additionalData.motherTongue || "",
-      sex: additionalData.sex || "",
-      profession: additionalData.profession || "",
-      photos: additionalData.photos || []
-    }, { merge: true });
+    await setDoc(
+      userRef,
+      {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || additionalData.name || "",
+        photoURL: user.photoURL || "",
+        createdAt: new Date(),
+        // Additional fields
+        name: additionalData.name || "",
+        adharVarified: additionalData.adharVarified || false,
+        description: additionalData.description || "",
+        age: additionalData.age || null,
+        number: additionalData.number || "",
+        religion: additionalData.religion || "",
+        motherTongue: additionalData.motherTongue || "",
+        sex: additionalData.sex || "",
+        profession: additionalData.profession || "",
+        status: additionalData.status || "",
+        childrenFromPreviousMarriage:
+          additionalData.childrenFromPreviousMarriage || "",
+        region: additionalData.region || "",
+        photos: additionalData.photos || [],
+        showEmail: additionalData.showEmail || false,
+        showNumber: additionalData.showNumber || false,
+        showStatus: additionalData.showStatus || false,
+      },
+      { merge: true }
+    );
     console.log("User added to Firestore");
   } catch (error) {
     console.error("Error adding user to Firestore:", error);

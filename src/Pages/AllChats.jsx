@@ -159,9 +159,9 @@ function ChatItem({ chat, userId, getOtherParticipantName, onSelect }) {
           <p className="text-sm font-medium text-gray-900">
             {otherParticipantName}
           </p>
-          <p className="text-sm text-gray-500 truncate">
+          {/* <p className="text-sm text-gray-500 truncate">
             {chat.lastMessage ? chat.lastMessage.text : "No messages yet"}
-          </p>
+          </p> */}
         </div>
         {chat.lastMessage && (
           <span className="text-xs text-gray-400">

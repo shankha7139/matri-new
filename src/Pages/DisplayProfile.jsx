@@ -11,6 +11,11 @@ const ProfileDetail = () => {
   const [chatbox, setChatbox] = useState(false);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
+  const displayField = (value, isVisible) => {
+    console.log(isVisible);
+    return isVisible ? value : "Chosen to be hidden by the user";
+  };
+
   console.log("printng here testing", profile.uid);
 
   if (!profile) {
@@ -80,6 +85,10 @@ const ProfileDetail = () => {
                     <span className="font-semibold">Gender:</span>{" "}
                     <span className="font-bold">{profile.sex}</span>
                   </p>
+                  <p>
+                    <span className="font-semibold">Region:</span>{" "}
+                    <span className="font-bold">{profile.region}</span>
+                  </p>
                 </div>
                 <div>
                   <p>
@@ -92,17 +101,27 @@ const ProfileDetail = () => {
                   </p>
                   <p>
                     <span className="font-semibold">Email:</span>{" "}
-                    <span className="font-bold">{profile.email}</span>
+                    <span className="font-bold">
+                      {displayField(profile.email, profile.showEmail)}
+                    </span>
                   </p>
                   <p>
                     <span className="font-semibold">Phone:</span>{" "}
-                    <span className="font-bold">{profile.number}</span>
+                    <span className="font-bold">
+                      {displayField(profile.number, profile.showNumber)}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-semibold">Status:</span>{" "}
+                    <span className="font-bold">
+                      {displayField(profile.status, profile.showStatus)}
+                    </span>
                   </p>
                 </div>
               </div>
-             <div className="mt-6 bg-cyan-600 p-4 rounded-xl inline-block text-white">
-              <SendFriendRequest recipientId={profile.uid} />
-            </div>
+              <div className="mt-6 bg-cyan-600 p-4 rounded-xl inline-block text-white">
+                <SendFriendRequest recipientId={profile.uid} />
+              </div>
               <h3 className="text-xl font-semibold mt-6 mb-2">Description</h3>
               <p className="text-gray-700">{profile.description}</p>
             </div>
@@ -158,7 +177,9 @@ const ProfileDetail = () => {
                   />
                 </div>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-semibold">{profile.name}</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold">
+                    {profile.name}
+                  </h2>
                 </div>
                 <button
                   onClick={() => setChatbox(false)}

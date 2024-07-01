@@ -13,6 +13,7 @@ import PaymentDetails from "./Pages/PaymentDetails"
 import PaymentGateway from "./Pages/PaymentGateway"
 import DisplayProfile from "./Pages/DisplayProfile";
 import AllChats from "./Pages/AllChats";
+import Try from "./Pages/Try";
 
 const App = () => {
   return (
@@ -25,7 +26,8 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/matri" element={<Matri />} />
           <Route path="/all-matri" element={<AllMatri />} />
-          <Route path="/profile" element={<Test />} />
+          {/* <Route path="/profile" element={<Test />} /> */}
+          <Route path="/profile" element={<Try />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/payment-details" element={<PaymentDetails />} />
           <Route path="/payment-gateway" element={<PaymentGateway />} />

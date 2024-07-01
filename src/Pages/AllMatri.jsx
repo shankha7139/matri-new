@@ -212,7 +212,7 @@ export default function Matri() {
           >
             {isFilterVisible ? "Hide Filters" : "Show Filters"}
           </button>
-      </div>
+        </div>
       </div>
 
       <div>
@@ -247,15 +247,15 @@ export default function Matri() {
                 Age Range: {ageRange.low} - {ageRange.high}
               </h3>
               <GlassSlider
-                getAriaLabel={() => 'Age range slider'}
+                getAriaLabel={() => "Age range slider"}
                 value={[ageRange.low, ageRange.high]}
                 onChange={handleAgeRangeChange}
                 valueLabelDisplay="auto"
                 min={20}
                 max={60}
                 marks={[
-                  { value: 20, label: '20' },
-                  { value: 60, label: '60' },
+                  { value: 20, label: "20" },
+                  { value: 60, label: "60" },
                 ]}
               />
             </div>
@@ -298,14 +298,20 @@ export default function Matri() {
                     religion={data.religion}
                     motherTongue={data.motherTongue}
                     description={data.description}
+                    status={data.status}
+                    childrenFromPreviousMarriage={
+                      data.childrenFromPreviousMarriage
+                    }
+                    region={data.region}
+                    showEmail={data.showEmail}
+                    showNumber={data.showNumber}
+                    showStatus={data.showStatus}
                   />
                 </div>
               ))
           ) : (
             <div className="flex items-center justify-center h-screen">
-              <div className="text-center text-gray-500 py-2">
-                No profile
-              </div>
+              <div className="text-center text-gray-500 py-2">No profile</div>
             </div>
           )}
         </div>
