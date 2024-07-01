@@ -60,11 +60,19 @@ const SendFriendRequest = ({ recipientId }) => {
   return (
     <div>
       {areFriends ? (
-        <p>You are already friends</p>
+        <p className="bg-[#41379d] text-[#ececfe] p-4 text-xl rounded-xl ">
+          You are already friends
+        </p>
       ) : requestSent ? (
-        <p>Friend request sent ✅</p>
+        <p className="bg-[#41379d] text-[#ececfe] p-4 text-xl rounded-xl ">
+          Friend request sent ✅
+        </p>
       ) : (
-        <button onClick={handleSendRequest} disabled={isSending}>
+        <button
+          onClick={handleSendRequest}
+          disabled={isSending}
+          className="bg-lime-600 text-[#ececfe] p-4 text-xl rounded-xl "
+        >
           {isSending ? "Sending..." : "Send Friend Request"}
         </button>
       )}

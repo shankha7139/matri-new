@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { AiOutlineSend } from "react-icons/ai";
+import {
+  AiOutlineSend,
+  AiOutlineArrowLeft,
+  AiOutlineUserAdd,
+} from "react-icons/ai";
 import Chat from "../Components/Chat";
 import Header from "../Components/header";
 import SendFriendRequest from "../Components/SendFriendRequest";
@@ -12,14 +16,18 @@ const ProfileDetail = () => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
   const displayField = (value, isVisible) => {
-    console.log(isVisible);
     return isVisible ? value : "Chosen to be hidden by the user";
   };
 
-  console.log("printng here testing", profile.uid);
-
   if (!profile) {
-    return <div className="text-center p-10">No profile data available.</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gradient-to-r from-indigo-100 to-purple-100">
+        <div className="text-center p-10 bg-white rounded-xl shadow-2xl">
+          <h2 className="text-3xl font-bold text-indigo-800 mb-4">Oops!</h2>
+          <p className="text-xl text-gray-600">No profile data available.</p>
+        </div>
+      </div>
+    );
   }
 
   const displayPhotos = showAllPhotos
@@ -27,29 +35,16 @@ const ProfileDetail = () => {
     : profile.photos.slice(0, 3);
 
   return (
-    <>
+    <div className="bg-gradient-to-r from-indigo-100 to-purple-100 min-h-screen">
       <Header />
-      <div className="container mx-auto p-4 mt-10">
+      <div className="container mx-auto p-4 pt-20">
         <button
-          className="absolute top-14 left-10 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="fixed top-20 left-4 z-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
           onClick={() => window.history.back()}
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
-          </svg>
+          <AiOutlineArrowLeft className="w-6 h-6" />
         </button>
-        <div className="relative mt-7">
+        <div className="relative">
           <div
             className={`${
               chatbox ? "hidden" : "block"
@@ -59,107 +54,84 @@ const ProfileDetail = () => {
               <img
                 src={profile.photos[0]}
                 alt={`${profile.name}'s profile`}
-                className="w-40 h-40 object-cover rounded-full mx-auto shadow-md"
+                className="w-40 h-40 object-cover rounded-full mx-auto shadow-xl border-4 border-white"
               />
             </div>
-            <h1 className="text-3xl font-bold mb-6 text-center">
+            <h1 className="text-4xl font-bold mb-6 text-center text-indigo-800">
               {profile.name}'s Profile
             </h1>
-            <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-semibold mb-4">Personal Details</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p>
-                    <span className="font-semibold">Age:</span>{" "}
-                    <span className="font-bold">{profile.age}</span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Religion:</span>{" "}
-                    <span className="font-bold">{profile.religion}</span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Mother Tongue:</span>{" "}
-                    <span className="font-bold">{profile.motherTongue}</span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Gender:</span>{" "}
-                    <span className="font-bold">{profile.sex}</span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Region:</span>{" "}
-                    <span className="font-bold">{profile.region}</span>
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    <span className="font-semibold">Profession:</span>{" "}
-                    <span className="font-bold">{profile.profession}</span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Height:</span>{" "}
-                    <span className="font-bold">{profile.height}</span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Email:</span>{" "}
-                    <span className="font-bold">
-                      {displayField(profile.email, profile.showEmail)}
-                    </span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Phone:</span>{" "}
-                    <span className="font-bold">
-                      {displayField(profile.number, profile.showNumber)}
-                    </span>
-                  </p>
-                  <p>
-                    <span className="font-semibold">Status:</span>{" "}
-                    <span className="font-bold">
-                      {displayField(profile.status, profile.showStatus)}
-                    </span>
-                  </p>
-                </div>
+            <div className="bg-white shadow-2xl rounded-2xl p-8 mb-8">
+              <h2 className="text-3xl font-semibold mb-6 text-indigo-700">
+                Personal Details
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  { label: "Age", value: profile.age },
+                  { label: "Religion", value: profile.religion },
+                  { label: "Mother Tongue", value: profile.motherTongue },
+                  { label: "Gender", value: profile.sex },
+                  { label: "Region", value: profile.region },
+                  { label: "Profession", value: profile.prof },
+                  { label: "Height", value: profile.height },
+                  {
+                    label: "Email",
+                    value: displayField(profile.email, profile.showEmail),
+                  },
+                  {
+                    label: "Phone",
+                    value: displayField(profile.number, profile.showNumber),
+                  },
+                  {
+                    label: "Status",
+                    value: displayField(profile.status, profile.showStatus),
+                  },
+                ].map((item, index) => (
+                  <div key={index} className="bg-indigo-50 p-4 rounded-lg">
+                    <p className="font-semibold text-indigo-800">
+                      {item.label}:
+                    </p>
+                    <p className="font-bold text-xl text-indigo-900">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
               </div>
-              <div className="mt-6 bg-cyan-600 p-4 rounded-xl inline-block text-white">
+              <div className="mt-8 flex justify-center">
                 <SendFriendRequest recipientId={profile.uid} />
               </div>
-              <h3 className="text-xl font-semibold mt-6 mb-2">Description</h3>
-              <p className="text-gray-700">{profile.description}</p>
+              <h3 className="text-2xl font-semibold mt-8 mb-4 text-indigo-700">
+                Description
+              </h3>
+              <p className="text-gray-700 bg-indigo-50 p-4 rounded-lg">
+                {profile.description}
+              </p>
             </div>
 
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold mb-4 text-center">
+              <h2 className="text-3xl font-semibold mb-6 text-center text-indigo-800">
                 Photos
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayPhotos.map((photo, index) => (
                   <div key={index} className="aspect-w-1 aspect-h-1">
                     <img
                       src={photo}
                       alt={`${profile.name}'s photo ${index + 1}`}
-                      className="object-cover rounded-lg shadow-md w-full h-full"
+                      className="object-cover rounded-2xl shadow-xl w-full h-full transition duration-300 ease-in-out transform hover:scale-105"
                     />
                   </div>
                 ))}
               </div>
 
-              {profile.photos.length > 3 && !showAllPhotos && (
-                <div className="mt-4 text-center">
+              {profile.photos.length > 3 && (
+                <div className="mt-8 text-center">
                   <button
-                    onClick={() => setShowAllPhotos(true)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => setShowAllPhotos(!showAllPhotos)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                   >
-                    Show More Photos ({profile.photos.length - 3} more)
-                  </button>
-                </div>
-              )}
-
-              {showAllPhotos && (
-                <div className="mt-4 text-center">
-                  <button
-                    onClick={() => setShowAllPhotos(false)}
-                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Show Less
+                    {showAllPhotos
+                      ? "Show Less"
+                      : `Show More Photos (${profile.photos.length - 3} more)`}
                   </button>
                 </div>
               )}
@@ -167,49 +139,44 @@ const ProfileDetail = () => {
           </div>
 
           {chatbox && (
-            <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50 top-14 mr-2">
-              <div className="flex items-center space-x-4 mb-4 p-4">
-                <div className="w-16 h-16">
+            <div className="fixed inset-0 bg-white shadow-2xl z-50 overflow-hidden pt-10 ">
+              <div className="flex items-center space-x-4 p-4 pt-8 bg-[#ebebfe] text-[#41379d] justify-between ">
+                <div className="flex items-center gap-8 ">
                   <img
                     src={profile.photos[0]}
                     alt={`${profile.name}'s profile`}
-                    className="object-cover rounded-full w-full h-full"
+                    className="w-16 h-16 object-cover rounded-full border-2 border-white"
                   />
+                  <h2 className="text-2xl font-semibold">{profile.name}</h2>
                 </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-semibold">
-                    {profile.name}
-                  </h2>
+                <div className="flex">
+                  <button
+                    onClick={() => setChatbox(false)}
+                    className="ml-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out"
+                  >
+                    &#x2715;
+                  </button>
                 </div>
-                <button
-                  onClick={() => setChatbox(false)}
-                  className="absolute top-0 right-0 m-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-                >
-                  &#x2715;
-                </button>
               </div>
-              <div
-                className="overflow-auto"
-                style={{ maxHeight: "calc(100vh - 112px)" }}
-              >
+              <div className="overflow-auto h-[calc(100vh-88px)]">
                 <Chat uid={profile.uid} />
               </div>
             </div>
           )}
 
           {!chatbox && (
-            <div className="fixed bottom-4 right-4 z-50">
+            <div className="fixed bottom-8 right-8 z-50">
               <button
                 onClick={() => setChatbox(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-4 shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
               >
-                <AiOutlineSend size={24} />
+                <AiOutlineSend size={28} />
               </button>
             </div>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

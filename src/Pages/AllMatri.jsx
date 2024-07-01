@@ -306,6 +306,7 @@ export default function Matri() {
                     showEmail={data.showEmail}
                     showNumber={data.showNumber}
                     showStatus={data.showStatus}
+                    height={data.height}
                   />
                 </div>
               ))

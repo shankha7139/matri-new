@@ -4,6 +4,7 @@ import { useAuth } from "../../context/authContext";
 import { doSignOut } from "../../firebase/auth";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import logo from "../../assets/Logo.png";
+import { FaSearch } from "react-icons/fa";
 
 import {
   getFirestore,
@@ -19,7 +20,6 @@ import UserIcon from "../../assets/user.png";
 import Pricing from "../../assets/Pricing.png";
 import FriendRequests from "../FriendRequests";
 import { BsChatDots } from "react-icons/bs";
-
 
 const Header = () => {
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ const Header = () => {
 
   return (
     <>
-      <nav className = "flex justify-between items-center w-full z-20 fixed top-0 left-0 h-14 bg-gradient-to-r from-orange-200 via-[#f49d3f] to-[#f49d3f] px-4" >
+      <nav className="flex justify-between items-center w-full z-20 fixed top-0 left-0 h-14 bg-gradient-to-r from-orange-200 via-[#f49d3f] to-[#f49d3f] px-4">
         <div className="flex items-center gap-4">
           <div
             className="flex items-center cursor-pointer"
@@ -85,8 +85,12 @@ const Header = () => {
 
         {userLoggedIn ? (
           <div className="flex items-center gap-4">
+            <button onClick={() => navigate("/all-matri")}>
+              <FaSearch className="w-6 h-6 text-white animate-pulse " />
+            </button>
+
             <Link
-              className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl"
+              className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl "
               to={"/payment-details"}
             >
               <img
