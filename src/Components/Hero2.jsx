@@ -38,7 +38,7 @@ export default function Hero2() {
         </RevealOnScroll>
         <div className="mt-32">
           <RevealOnScroll direction="up">
-            <h2 className="text-5xl font-bold text-center mb-10">
+            <h2 className="text-5xl font-bold text-center mb-10 text-gray-900 ">
               ढूंढें अपना खास साथी{" "}
             </h2>
           </RevealOnScroll>
