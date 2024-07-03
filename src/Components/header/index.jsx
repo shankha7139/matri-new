@@ -116,7 +116,7 @@ const Header = () => {
                 style={{ verticalAlign: "middle" }}
               />
               {incomingRequests.length > 0 && (
-                <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"></span>
+                <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-green-500 animate-ping border-2 border-white"></span>
               )}
             </button>
 
