@@ -113,57 +113,59 @@ const FriendRequests = () => {
     }
   };
   console.log(incomingRequests);
+  const RequestCard = ({ title, requests, onAccept, onReject }) => (
+    <div className="bg-white rounded-lg shadow-lg p-6 flex-1 min-w-[300px]">
+      <h3 className="text-xl font-semibold mb-4 text-indigo-700">{title}</h3>
+      {requests.length === 0 ? (
+        <p className="text-gray-500 italic">No {title.toLowerCase()}.</p>
+      ) : (
+        <ul className="space-y-3">
+          {requests.map((request) => (
+            <li
+              key={request.id}
+              className="bg-indigo-50 rounded-md p-4 transition-all hover:shadow-md"
+            >
+              <p className="font-medium text-indigo-900 mb-2">
+                {title === "Incoming Requests" ? "From: " : "To: "}
+                {request.senderName || request.recipientName}
+              </p>
+              {onAccept && onReject && (
+                <div className="flex space-x-2 mt-2">
+                  <button
+                    onClick={() => onAccept(request.id)}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded text-sm transition-colors duration-200"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => onReject(request.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm transition-colors duration-200"
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+
   return (
-    <div className="w-full">
-      <h2 className="text-xl font-bold mb-4">Friend Requests</h2>
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Incoming Requests</h3>
-          {incomingRequests.length === 0 ? (
-            <p>No incoming friend requests.</p>
-          ) : (
-            <ul className="space-y-2">
-              {incomingRequests.map((request) => (
-                <li
-                  key={request.id}
-                  className="bg-white shadow-md rounded-md p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center"
-                >
-                  <p className="mb-2 sm:mb-0">From: {request.senderName}</p>
-                  <div className="space-x-2">
-                    <button
-                      onClick={() => handleAcceptRequest(request.id)}
-                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded text-sm"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => handleRejectRequest(request.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Outgoing Requests</h3>
-          {outgoingRequests.length === 0 ? (
-            <p>No outgoing friend requests.</p>
-          ) : (
-            <ul className="space-y-2">
-              {outgoingRequests.map((request) => (
-                <li
-                  key={request.id}
-                  className="bg-white shadow-md rounded-md p-3"
-                >
-                  <p>To: {request.recipientName}</p>
-                </li>
-              ))}
-            </ul>
-          )}
+    <div className="w-full h-full overflow-y-auto bg-gradient-to-br from-indigo-100 to-orange-100 p-6">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6 text-center text-indigo-800">
+          Friend Requests
+        </h2>
+        <div className="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6">
+          <RequestCard
+            title="Incoming Requests"
+            requests={incomingRequests}
+            onAccept={handleAcceptRequest}
+            onReject={handleRejectRequest}
+          />
+          <RequestCard title="Outgoing Requests" requests={outgoingRequests} />
         </div>
       </div>
     </div>

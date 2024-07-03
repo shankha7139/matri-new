@@ -265,19 +265,23 @@ const Header = () => {
         )}
       </nav>
       {showNotifications && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-xl font-bold">Notifications</h2>
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ×
-              </button>
-            </div>
-            <div className="p-4">
-              <FriendRequests />
+        <div className="fixed inset-0 bg-indigo-100 bg-opacity-75 z-50 flex justify-center items-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden animate-slideIn">
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl h-[50vh] overflow-hidden">
+                <div className="flex justify-between items-center p-4 border-b">
+                  <h2 className="text-xl font-bold">Notifications</h2>
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="h-[calc(90vh-64px)]">
+                  <FriendRequests />
+                </div>
+              </div>
             </div>
           </div>
         </div>
