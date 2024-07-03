@@ -14,7 +14,7 @@ export default function Reviews() {
         <div className="flex flex-col lg:flex-row">
           <div className="lg:w-2/3 p-8 lg:p-12">
             <motion.h2
-              className="text-3xl sm:text-4xl font-bold text-[#F39C3E] mb-8"
+              className="text-3xl sm:text-4xl italic text-[#F39C3E] mb-8"
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}

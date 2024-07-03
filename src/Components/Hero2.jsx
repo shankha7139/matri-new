@@ -32,13 +32,13 @@ export default function Hero2() {
     <div className=" bg-gradient-to-r from-indigo-100 to-purple-100 text-white overflow-hidden">
       <div className="container mx-auto px-4 py-20">
         <RevealOnScroll>
-          <h1 className="text-6xl font-bold mb-8 text-center text-[#F39C3E] ">
+          <h1 className="text-6xl  mb-2 text-center text-[#F39C3E] italic ">
             Find Your someone Special!!
           </h1>
         </RevealOnScroll>
-        <div className="mt-32">
+        <div className="mt-20">
           <RevealOnScroll direction="up">
-            <h2 className="text-5xl font-bold text-center mb-10 text-gray-900 ">
+            <h2 className="text-5xl font-bold text-center mb-20 text-gray-900 ">
               ढूंढें अपना खास साथी{" "}
             </h2>
           </RevealOnScroll>

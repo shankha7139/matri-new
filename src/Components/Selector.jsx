@@ -47,7 +47,7 @@ export default function Categories() {
         <div className="flex flex-col justify-center items-center lg:flex-row ">
           <div className="lg:w-1/3 p-8 lg:p-12">
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F39C3E] mb-8"
+              className="text-4xl sm:text-5xl lg:text-6xl italic text-[#F39C3E] mb-8"
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
