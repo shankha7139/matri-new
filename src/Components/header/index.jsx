@@ -14,6 +14,7 @@ import {
   deleteUser,
 } from "firebase/auth";
 import { deleteDoc } from "firebase/firestore";
+import { FaUserFriends } from "react-icons/fa";
 
 import {
   Dialog,
@@ -37,6 +38,7 @@ import UserIcon from "../../assets/user.png";
 import Pricing from "../../assets/Pricing.png";
 import FriendRequests from "../FriendRequests";
 import { BsChatDots } from "react-icons/bs";
+import FriendsList from "../FriendList";
 
 const Header = () => {
   const { currentUser } = useAuth();
@@ -48,6 +50,7 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showFriends, setShowFriends] = useState(false);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -172,6 +175,10 @@ const Header = () => {
               <BsChatDots className="w-6 h-6 text-white" />
             </button>
 
+            <button onClick={() => setShowFriends(!showFriends)}>
+              <FaUserFriends className="w-6 h-6 text-white" />
+            </button>
+
             <button
               className="text-lg text-white transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl cursor-pointer relative"
               onClick={() => setShowNotifications(!showNotifications)}
@@ -271,6 +278,25 @@ const Header = () => {
             </div>
             <div className="p-4">
               <FriendRequests />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFriends && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-xl font-bold">All Friends</h2>
+              <button
+                onClick={() => setShowFriends(!showFriends)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-4">
+              <FriendsList onClose={() => setShowFriends(false)} />{" "}
             </div>
           </div>
         </div>
