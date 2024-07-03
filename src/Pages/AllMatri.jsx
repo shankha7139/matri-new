@@ -184,109 +184,108 @@ export default function Matri() {
 
   return (
     <>
-      <Headers />
-      <div className="flex justify-between">
-        <button
-          className="fixed top-14 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          onClick={() => window.history.back()}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
-          </svg>
-        </button>
-        <div className="mt-32 sm:mt-28 px-4 md:px-24">
-          <button
-            onClick={toggleFilterVisibility}
-            className="bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
-          >
-            {isFilterVisible ? "Hide Filters" : "Show Filters"}
-          </button>
-        </div>
-      </div>
-
-      <div>
-        {isFilterVisible && (
-          <div className="flex flex-wrap justify-between items-center p-4 w-full bg-white pb-10 rounded-lg sm:pl-44 sm:pr-44">
-            <input
-              type="text"
-              name="language"
-              placeholder="Language"
-              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 w-full sm:w-1/4 sm:mr-2 bg-white shadow-md"
-              value={searchTerms.language}
-              onChange={handleSearchChange}
-            />
-            <input
-              type="text"
-              name="prof"
-              placeholder="Profession"
-              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 w-full sm:w-1/4 sm:mr-2 bg-white shadow-md"
-              value={searchTerms.prof}
-              onChange={handleSearchChange}
-            />
-            <input
-              type="text"
-              name="religion"
-              placeholder="Religion"
-              className="border p-2 rounded flex-grow mb-2 sm:mb-0 sm:flex-grow-0 w-full sm:w-1/4 sm:mr-2 bg-white shadow-md"
-              value={searchTerms.religion}
-              onChange={handleSearchChange}
-            />
-            <div className="w-full sm:w-3/4 mt-4 px-4 mx-auto bg-white backdrop-filter backdrop-blur-lg bg-opacity-30 rounded-lg">
-              <h3 className="text-lg font-semibold mb-2 text-orange-300">
-                Age Range: {ageRange.low} - {ageRange.high}
-              </h3>
-              <GlassSlider
-                getAriaLabel={() => "Age range slider"}
-                value={[ageRange.low, ageRange.high]}
-                onChange={handleAgeRangeChange}
-                valueLabelDisplay="auto"
-                min={20}
-                max={60}
-                marks={[
-                  { value: 20, label: "20" },
-                  { value: 60, label: "60" },
-                ]}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="px-4 md:px-20 mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-          {isLoading ? (
-            // Display skeleton cards while loading
-            Array.from({ length: 8 }).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))
-          ) : !loggedUser ? (
-            // Display message when no user is logged in
-            <div className="flex flex-col items-center justify-center h-screen">
-              <div className="text-center text-gray-500 py-2 mb-4">
-                Log in to View Profiles
-              </div>
-              <button
-                onClick={handleLoginRedirect}
-                className="bg-orange-300 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-purple-100">
+        <Headers />
+        <div className="container mx-auto px-4 py-20  ">
+          <div className="flex justify-between items-center mb-8">
+            <button
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+              onClick={() => window.history.back()}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                Go to Login
-              </button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
+            <button
+              onClick={toggleFilterVisibility}
+              className="bg-[#F39C3E] hover:bg-[#e08b2d] text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+            >
+              {isFilterVisible ? "Hide Filters" : "Show Filters"}
+            </button>
+          </div>
+
+          {isFilterVisible && (
+            <div className="bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-2xl p-6 mb-8 shadow-xl">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <input
+                  type="text"
+                  name="language"
+                  placeholder="Language"
+                  className="border border-indigo-200 p-2 rounded-lg w-full bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-[#F39C3E]"
+                  value={searchTerms.language}
+                  onChange={handleSearchChange}
+                />
+                <input
+                  type="text"
+                  name="prof"
+                  placeholder="Profession"
+                  className="border border-indigo-200 p-2 rounded-lg w-full bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-[#F39C3E]"
+                  value={searchTerms.prof}
+                  onChange={handleSearchChange}
+                />
+                <input
+                  type="text"
+                  name="religion"
+                  placeholder="Religion"
+                  className="border border-indigo-200 p-2 rounded-lg w-full bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-[#F39C3E]"
+                  value={searchTerms.religion}
+                  onChange={handleSearchChange}
+                />
+              </div>
+              <div className="w-full px-4">
+                <h3 className="text-lg font-semibold mb-2 text-indigo-800">
+                  Age Range: {ageRange.low} - {ageRange.high}
+                </h3>
+                <GlassSlider
+                  getAriaLabel={() => "Age range slider"}
+                  value={[ageRange.low, ageRange.high]}
+                  onChange={handleAgeRangeChange}
+                  valueLabelDisplay="auto"
+                  min={20}
+                  max={60}
+                  marks={[
+                    { value: 20, label: "20" },
+                    { value: 60, label: "60" },
+                  ]}
+                />
+              </div>
             </div>
-          ) : filteredData.length > 0 ? (
-            filteredData
-              .filter((data) => loggedUser !== data.uid && data.name) // Filter out the logged-in user's profile and profiles with no name
-              .map((data) => (
-                <div key={data.id}>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))
+            ) : !loggedUser ? (
+              <div className="col-span-full flex flex-col items-center justify-center h-64 bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-2xl shadow-xl">
+                <div className="text-center text-indigo-800 font-semibold mb-4">
+                  Log in to View Profiles
+                </div>
+                <button
+                  onClick={handleLoginRedirect}
+                  className="bg-[#F39C3E] hover:bg-[#e08b2d] text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                >
+                  Go to Login
+                </button>
+              </div>
+            ) : filteredData.length > 0 ? (
+              filteredData
+                .filter((data) => loggedUser !== data.uid && data.name)
+                .map((data) => (
                   <Card
+                    key={data.id}
                     name={data.name}
                     sex={data.sex}
                     prof={data.profession}
@@ -308,16 +307,18 @@ export default function Matri() {
                     showStatus={data.showStatus}
                     height={data.height}
                   />
+                ))
+            ) : (
+              <div className="col-span-full flex items-center justify-center h-64 bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-2xl shadow-xl">
+                <div className="text-center text-indigo-800 font-semibold">
+                  No profiles found
                 </div>
-              ))
-          ) : (
-            <div className="flex items-center justify-center h-screen">
-              <div className="text-center text-gray-500 py-2">No profile</div>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }

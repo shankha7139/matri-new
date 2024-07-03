@@ -90,43 +90,62 @@ function AllChats() {
   //     // return <div>{selectedChat.participants.find((p) => p !== user.uid)}</div>;
   //   }
 
-  return (
-    <div className="mx-auto bg-gray-100 h-screen flex flex-col">
-      <header className = "bg-gradient-to-r from-orange-200 via-[#f49d3f] to-[#f49d3f] px-4 text-white p-4  shadow-md flex justify-center text-center " >
-        <h1 className="text-xl font-semibold">All Chats</h1>
-      </header>
-      <button
-        className="absolute top-0 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        onClick={() => window.history.back()}
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+  
+    if (!user) {
+      return (
+        <div className="flex items-center justify-center h-screen bg-indigo-100">
+          <p className="text-xl text-[#f49d3f] font-semibold">
+            Please log in to view your chats.
+          </p>
+        </div>
+      );
+    }
+
+    if (selectedChat) {
+      return (
+        <div className="mt-20">
+          <Chat uid={selectedChat.uid} chatId={selectedChat.chatId} />
+        </div>
+      );
+    }
+
+    return (
+      <div className="mx-auto bg-indigo-100 h-screen flex flex-col">
+        <header className="bg-gradient-to-r from-[#f49d3f] to-[#ffa726] px-4 text-white p-6 shadow-lg flex justify-center text-center">
+          <h1 className="text-2xl font-bold">All Chats</h1>
+        </header>
+        <button
+          className="absolute top-0 left-0 mt-6 ml-6 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => window.history.back()}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M15 19l-7-7 7-7"
-          ></path>
-        </svg>
-      </button>
-      <ul className="flex-grow overflow-y-auto">
-        {chats.map((chat) => (
-          <ChatItem
-            key={chat.id}
-            chat={chat}
-            userId={user.uid}
-            getOtherParticipantName={getOtherParticipantName}
-            onSelect={() => handleChatSelect(chat)}
-          />
-        ))}
-      </ul>
-    </div>
-  );
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </button>
+        <ul className="flex-grow overflow-y-auto px-4 py-6">
+          {chats.map((chat) => (
+            <ChatItem
+              key={chat.id}
+              chat={chat}
+              userId={user.uid}
+              getOtherParticipantName={getOtherParticipantName}
+              onSelect={() => handleChatSelect(chat)}
+            />
+          ))}
+        </ul>
+      </div>
+    );
 }
 
 function ChatItem({ chat, userId, getOtherParticipantName, onSelect }) {
@@ -150,21 +169,28 @@ function ChatItem({ chat, userId, getOtherParticipantName, onSelect }) {
   };
 
   return (
-    <li className="bg-white hover:bg-gray-50 cursor-pointer" onClick={onSelect}>
-      <div className="flex items-center px-4 py-3 border-b border-gray-200">
-        <div className="flex-shrink-0 h-12 w-12 rounded-full bg-[#f43f5e] flex items-center justify-center text-white font-semibold text-xl">
+    <li
+      className="bg-white hover:bg-indigo-50 cursor-pointer rounded-lg shadow-md mb-4 transition duration-300 ease-in-out transform hover:scale-102"
+      onClick={onSelect}
+    >
+      <div className="flex items-center px-6 py-4">
+        <div className="flex-shrink-0 h-14 w-14 rounded-full bg-[#f49d3f] flex items-center justify-center text-white font-bold text-xl shadow-md">
           {getInitials(otherParticipantName)}
         </div>
-        <div className="ml-3 flex-grow">
-          <p className="text-sm font-medium text-gray-900">
+        <div className="ml-4 flex-grow">
+          <p className="text-lg font-semibold text-gray-900">
             {otherParticipantName}
           </p>
-          {/* <p className="text-sm text-gray-500 truncate">
-            {chat.lastMessage ? chat.lastMessage.text : "No messages yet"}
-          </p> */}
+          {chat.lastMessage && (
+            <p className="text-sm text-gray-600 mt-1">
+              {chat.lastMessage.text.length > 30
+                ? chat.lastMessage.text.substring(0, 30) + "..."
+                : chat.lastMessage.text}
+            </p>
+          )}
         </div>
         {chat.lastMessage && (
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-400 ml-2">
             {new Date(chat.lastMessage.timestamp?.toDate()).toLocaleTimeString(
               [],
               { hour: "2-digit", minute: "2-digit" }

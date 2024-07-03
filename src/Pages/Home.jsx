@@ -9,26 +9,44 @@ import Hero from "../Components/Hero";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/header";
 import FriendRequests from "../Components/FriendRequests";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const navigate = useNavigate();
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <div className="flex-grow">
         <Hero />
         <Hero2 />
-        <div className="flex flex-col md:flex-row gap-4 md:gap-10 bg-orange-400 py-5 items-center justify-center text-center">
-            <p className="text-white text-3xl md:text-5xl mb-5 md:mb-0">
-              Find you perfect partner
-            </p>
-            <button
-              onClick={() => navigate("/all-matri")}
-              className="text-white text-2xl md:text-5xl bg-cyan-700 px-5 py-2 rounded-br-xl rounded-tl-xl"
-            >
-              Explore!
-            </button>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gradient-to-r from-orange-400 to-orange-500 py-12 px-4 sm:px-6 lg:px-8"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-between">
+              <motion.p
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="text-white text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-0 text-center sm:text-left"
+              >
+                Find your perfect partner
+              </motion.p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/all-matri")}
+                className="text-orange-500 bg-white text-xl sm:text-2xl lg:text-3xl font-bold px-8 py-3 rounded-full shadow-lg hover:bg-[#111827] hover:text-white transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              >
+                Explore Now!
+              </motion.button>
+            </div>
           </div>
+        </motion.div>
         <Selector />
         <Reviews />
         <AboveFooter />

@@ -10,7 +10,7 @@ export default function Card(props) {
   return (
     <>
       <div
-        className="bg-slate-100 p-4 rounded-xl relative"
+        className="bg-orange-200 p-4 rounded-xl relative shadow-xl "
         onClick={() => navigate("/individualProfile", { state: { props } })}
       >
         <div className="relative">
@@ -34,7 +34,7 @@ export default function Card(props) {
             <div>
               <p className="mt-1 text-sm text-gray-500">{props.prof}</p>
             </div>
-            <p className="text-sm font-medium text-gray-900">{props.sex}</p>
+            <p className="text-sm font-medium text-gray-900">{props.ex}</p>
           </div>
         </div>
       </div>

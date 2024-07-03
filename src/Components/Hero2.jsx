@@ -1,49 +1,62 @@
-import React from "react";
-import love1 from "../assets/love1.png";
-import love2 from "../assets/love2.png";
-import love3 from "../assets/love3.png";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import RevealOnScroll from "./RevealOnScroll";
 
 export default function Hero2() {
+  const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const steps = [
+    {
+      icon: "💌", // You can replace this with an actual icon component
+      title: "Connect",
+      text: "अपनी पसंद के मैचेस चुनें और उनसे जुड़ें,",
+      key: 1,
+    },
+    {
+      icon: "💬", // You can replace this with an actual icon component
+      title: "Interact",
+      text: "प्रीमियम सदस्य बनें और बातचीत शुरू करें |",
+      key: 2,
+    },
+    {
+      icon: "💌", // You can replace this with an actual icon component
+      title: "Connect",
+      text: "अपनी पसंद के मैचेस चुनें और उनसे जुड़ें,",
+      key: 3,
+    },
+  ];
+
   return (
-    <div className="parent flex flex-col md:flex-row px-4 md:px-20 py-10 md:py-20">
-      <div className="left basis-full md:basis-2/3 border-r-0 md:border-r-4 border-cyan-500 rounded-lg px-5 py-10 md:px-10 md:py-20">
-        <div className="ecliplse1 flex flex-col md:flex-row px-5 py-2 gap-5 items-center">
-          <img src={love1} alt="love1" className="w-24 md:w-32" />
-          <div className="info text-center md:text-left">
-            <h1 className="text-2xl md:text-3xl text-cyan-500">Sign Up</h1>
-            <p className="text-sm md:text-base">
-              नि: शुल्क पंजीकरण करें और अपना वैवाहिक प्रोफाइल बनाएं,
-            </p>
+    <div className=" bg-gradient-to-r from-indigo-100 to-purple-100 text-white overflow-hidden">
+      <div className="container mx-auto px-4 py-20">
+        <RevealOnScroll>
+          <h1 className="text-6xl font-bold mb-8 text-center text-[#F39C3E] ">
+            Find Your someone Special!!
+          </h1>
+        </RevealOnScroll>
+        <div className="mt-32">
+          <RevealOnScroll direction="up">
+            <h2 className="text-5xl font-bold text-center mb-10">
+              ढूंढें अपना खास साथी{" "}
+            </h2>
+          </RevealOnScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ">
+            {steps.map((feature, index) => (
+              <RevealOnScroll key={feature} direction="up">
+                <div className="bg-gray-900 p-8 rounded-xl text-center hover:animate-pulse ">
+                  <h3 className="text-2xl font-semibold mb-4">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-300">{feature.text}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
           </div>
-        </div>
-        <div className="ecliplse2 flex flex-col md:flex-row px-5 py-2 gap-5 items-center md:ml-20">
-          <img src={love2} alt="love2" className="w-24 md:w-32" />
-          <div className="info relative text-center md:text-left">
-            <h1 className="md:absolute md:inset-y-0 md:left-0 text-2xl md:text-3xl text-cyan-500">Connect</h1>
-            <p className="text-sm md:text-base mt-8 md:mt-10">
-              अपनी पसंद के मैचेस चुनें और उनसे जुड़ें,
-            </p>
-          </div>
-        </div>
-        <div className="ecliplse3 flex flex-col md:flex-row px-5 py-2 gap-5 items-center">
-          <img src={love3} alt="love3" className="w-24 md:w-32" />
-          <div className="info text-center md:text-left">
-            <h1 className="text-2xl md:text-3xl text-cyan-500">Interact</h1>
-            <p className="text-sm md:text-base">
-              प्रीमियम सदस्य बनें और बातचीत शुरू करें |
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="right basis-full md:basis-1/3 mt-10 md:mt-0 flex items-center justify-center md:justify-end">
-        <div className="info flex flex-col p-10 md:p-20 text-center md:text-left">
-          <span className="text-4xl md:text-6xl lg:text-7xl">ढूंढें अपना</span>
-          <span className="text-4xl md:text-6xl lg:text-7xl text-cyan-500">खास</span>
-          <span className="text-4xl md:text-6xl lg:text-7xl">साथी</span>
         </div>
       </div>
     </div>
   );
 }
-
-   

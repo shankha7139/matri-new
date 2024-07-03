@@ -4,11 +4,26 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['"Georgia"', 'sans-serif'],
+        sans: ['"Georgia"', "sans-serif"],
       },
+
       boxShadow: {
         neumorphism: "8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff",
-        "neumorphism-inner": "inset 8px 8px 16px #d1d9e6, inset -8px -8px 16px #ffffff",
+        "neumorphism-inner":
+          "inset 8px 8px 16px #d1d9e6, inset -8px -8px 16px #ffffff",
+      },
+      keyframes: {
+        revolve: {
+          "0%": { transform: "rotate(0deg) translateX(150px) rotate(0deg)" },
+          "100%": {
+            transform: "rotate(360deg) translateX(150px) rotate(-360deg)",
+          },
+        },
+      },
+      animation: {
+        "revolve-1": "revolve 10s linear infinite",
+        "revolve-2": "revolve 10s linear infinite 3.33s",
+        "revolve-3": "revolve 10s linear infinite 6.66s",
       },
     },
   },

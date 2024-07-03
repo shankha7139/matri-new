@@ -2,35 +2,46 @@ import React from "react";
 import Marquee from "react-fast-marquee";
 import shadi1 from "../assets/shadi1.png";
 
+const StoryCard = ({ image, names, story }) => (
+  <div className="bg-white shadow-lg rounded-xl p-4 mx-4 w-80 flex flex-col">
+    <img
+      src={image}
+      alt={names}
+      className="w-full h-48 object-cover rounded-lg mb-4"
+    />
+    <h3 className="text-xl font-semibold text-[#F39C3E] mb-2">{names}</h3>
+    <p className="text-[#111827] text-sm">{story}</p>
+  </div>
+);
+
 export default function Slider() {
+  const stories = [
+    {
+      image: shadi1,
+      names: "ABC and PQR",
+      story:
+        "I found my match on biyesadi.com in one month. Not yet married but going steady. Three cheers to new beginnings and fairy tales!",
+    },
+    {
+      image: shadi1,
+      names: "ABC and PQR",
+      story:
+        "I found my match on biyesadi.com in one month. Not yet married but going steady. Three cheers to new beginnings and fairy tales!",
+    },
+    {
+      image: shadi1,
+      names: "ABC and PQR",
+      story:
+        "I found my match on biyesadi.com in one month. Not yet married but going steady. Three cheers to new beginnings and fairy tales!",
+    },
+    // Add more stories here...
+  ];
+
   return (
-    <>
-      <Marquee className="my-2 pb-8 ">
-        <div className=" shadow-xl ml-1 flex flex-col text-center p-4 rounded-xl ml-4">
-          <img src={shadi1} alt="" className="w-96 rounded " />
-          <h1 className="text-xl text-orange-600">abc and pqr</h1>
-          <p className="max-w-96">
-            I found my match on biyesadi. com on one month.Not yet married
-            butgoing steady with him.There cheers to here.Fairy tales....
-          </p>
-        </div>
-        <div className=" shadow-xl ml-1 flex flex-col text-center p-4 rounded-xl ml-4">
-          <img src={shadi1} alt="" className="w-96 rounded " />
-          <h1 className="text-xl text-orange-600">abc and pqr</h1>
-          <p className="max-w-96">
-            I found my match on biyesadi. com on one month.Not yet married
-            butgoing steady with him.There cheers to here.Fairy tales....
-          </p>
-        </div>
-        <div className=" shadow-xl ml-1 flex flex-col text-center p-4 rounded-xl ml-4">
-          <img src={shadi1} alt="" className="w-96 rounded " />
-          <h1 className="text-xl text-orange-600">abc and pqr</h1>
-          <p className="max-w-96">
-            I found my match on biyesadi. com on one month.Not yet married
-            butgoing steady with him.There cheers to here.Fairy tales....
-          </p>
-        </div>
-      </Marquee>
-    </>
+    <Marquee gradient={false} speed={40}>
+      {stories.map((story, index) => (
+        <StoryCard key={index} {...story} />
+      ))}
+    </Marquee>
   );
 }
