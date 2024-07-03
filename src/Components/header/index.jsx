@@ -5,6 +5,23 @@ import { doSignOut } from "../../firebase/auth";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import logo from "../../assets/Logo.png";
 import { FaSearch } from "react-icons/fa";
+import { auth } from "../../firebase/Firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db, storage } from "../../firebase/Firebase";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  deleteUser,
+} from "firebase/auth";
+import { deleteDoc } from "firebase/firestore";
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 
 import {
   getFirestore,
@@ -22,6 +39,8 @@ import FriendRequests from "../FriendRequests";
 import { BsChatDots } from "react-icons/bs";
 
 const Header = () => {
+  const { currentUser } = useAuth();
+
   const navigate = useNavigate();
   const [loggedUser, setLoggedUser] = useState("");
   const { userLoggedIn } = useAuth();
@@ -30,6 +49,9 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [incomingRequests, setIncomingRequests] = useState([]);
+  const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [deletePassword, setDeletePassword] = useState("");
 
   useEffect(() => {
     if (userLoggedIn && auth.currentUser) {
@@ -67,6 +89,51 @@ const Header = () => {
 
   const handleMouseLeave = () => {
     setShowDropdown(false);
+  };
+
+  const openDeleteAccountDialog = () => {
+    setDeleteAccountDialogOpen(true);
+  };
+
+  const closeDeleteAccountDialog = () => {
+    setDeleteAccountDialogOpen(false);
+  };
+
+  const closeAndResetDeleteDialog = () => {
+    closeDeleteAccountDialog();
+    setDeletePassword("");
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      if (!deletePassword) {
+        alert("Password is required to delete your account.");
+        return;
+      }
+
+      // Re-authenticate the user
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        deletePassword
+      );
+      await reauthenticateWithCredential(auth.currentUser, credential);
+
+      // Delete user document from Firestore
+      await deleteDoc(doc(db, "users", currentUser.uid));
+
+      // Delete user from Firebase Authentication
+      await deleteUser(auth.currentUser);
+
+      // Close the dialog and navigate
+      closeDeleteAccountDialog();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("Failed to delete account. Please try again.");
+    } finally {
+      // Clear the password state
+      setDeletePassword("");
+    }
   };
 
   return (
@@ -136,7 +203,7 @@ const Header = () => {
                 <div
                   ref={dropdownRef}
                   onMouseLeave={handleMouseLeave}
-                  className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-lg w-48"
+                  className="absolute right-0 mt-2 py-2 px-2 bg-white rounded-md shadow-lg w-48"
                 >
                   <div
                     div
@@ -151,6 +218,13 @@ const Header = () => {
                     onClick={() => navigate("/profile")}
                   >
                     Edit Profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={openDeleteAccountDialog}
+                    className="w-full py-2 mt-4 rounded-lg bg-red-500 text-white neumorphic-button-delete"
+                  >
+                    Delete Account
                   </button>
                   <button
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-center"
@@ -201,6 +275,36 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      <Dialog
+        open={deleteAccountDialogOpen}
+        onClose={closeDeleteAccountDialog}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Delete Account</DialogTitle>
+        <DialogContent dividers>
+          <p>
+            Are you sure you want to delete your account? This action cannot be
+            undone.
+          </p>
+          <p>Please enter your password to confirm account deletion:</p>
+          <input
+            type="password"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+            className="w-full p-2 mt-2 rounded-lg border border-gray-300"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeAndResetDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteAccount} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
