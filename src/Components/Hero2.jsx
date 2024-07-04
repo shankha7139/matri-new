@@ -10,7 +10,7 @@ export default function Hero2() {
   const steps = [
     {
       icon: "💌", // You can replace this with an actual icon component
-      title: "Connect",
+      title: "Sign Up",
       text: "अपनी पसंद के मैचेस चुनें और उनसे जुड़ें,",
       key: 1,
     },

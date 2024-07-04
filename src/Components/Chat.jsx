@@ -81,7 +81,7 @@ function App(props) {
               <ChatRoom recipientId={recipientId} chatId={props.chatId} />
             ) : (
               <div className="flex items-center justify-center h-full">
-                Loading...
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#f49d3f]"></div>
               </div>
             )}
           </>

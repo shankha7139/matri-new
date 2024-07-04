@@ -71,7 +71,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-       <button
+      <button
         className="absolute top-14 left-0 mt-4 ml-4 bg-cyan-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         onClick={() => window.history.back()}
       >
@@ -102,7 +102,7 @@ function App() {
               <ChatRoom recipientId={location.state.chatId} />
             ) : (
               <div className="flex items-center justify-center h-full">
-                Loading...
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#f49d3f]"></div>
               </div>
             )}
           </>

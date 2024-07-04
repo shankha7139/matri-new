@@ -8,6 +8,7 @@ import {
   getDocs,
   deleteDoc,
 } from "firebase/firestore";
+import { FaUserFriends, FaUserSlash } from "react-icons/fa";
 
 const FriendsList = ({ onClose }) => {
   const [friends, setFriends] = useState([]);
@@ -95,26 +96,46 @@ const FriendsList = ({ onClose }) => {
   };
 
   if (loading) {
-    return <div>Loading friends...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#f49d3f]"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Your Friends</h2>
+    <div className="bg-gradient-to-br from-indigo-100 to-orange-100 p-8 max-w-md mx-auto">
+      {/* <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-[#f49d3f] flex items-center">
+          <FaUserFriends className="mr-2" />
+          Your Friends
+        </h2>
+        <button
+          onClick={onClose}
+          className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+        >
+          ×
+        </button>
+      </div> */}
       {friends.length === 0 ? (
-        <p>You have no friends yet.</p>
+        <p className="text-gray-600 text-center py-8">
+          You have no friends yet.
+        </p>
       ) : (
-        <ul>
+        <ul className="space-y-4">
           {friends.map((friend) => (
             <li
               key={friend.id}
-              className="flex justify-between items-center mb-2 p-2 bg-gray-100 rounded"
+              className="flex justify-between items-center p-4 bg-gradient-to-r from-orange-100 to-orange-200 rounded-lg transition-all duration-300 hover:shadow-md"
             >
-              <span>{friend.friendName}</span>
+              <span className="text-gray-800 font-medium">
+                {friend.friendName}
+              </span>
               <button
                 onClick={() => handleBlock(friend.id, friend.friendId)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                className="flex items-center bg-red-500 text-white px-3 py-2 rounded-full hover:bg-red-600 transition-colors duration-200"
               >
+                <FaUserSlash className="mr-1" />
                 Block & Unfriend
               </button>
             </li>

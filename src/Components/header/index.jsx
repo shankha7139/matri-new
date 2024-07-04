@@ -139,26 +139,33 @@ const Header = () => {
         </div>
 
         <div
-          className={`flex-col lg:flex-row lg:flex lg:items-center gap-4 lg:gap-0 ${
+          className={`flex-col lg:flex-row lg:flex lg:items-center gap-4 lg:gap-0 text-center justify-center items-center  ${
             isMobileMenuOpen
-              ? "flex bg-orange-200 bg-opacity-70 backdrop-blur-md "
+              ? "flex backdrop-blur bg-gray-500 bg-opacity-90 "
               : "hidden"
           } absolute lg:relative top-14 lg:top-0 right-0 w-full lg:w-auto lg:bg-transparent px-4 lg:px-0 transition-transform transform lg:transform-none ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           {userLoggedIn ? (
-            <div className="flex flex-col lg:flex-row items-start lg:items-center w-full lg:w-auto">
+            <div className="flex flex-col lg:flex-row items-start text-center justify-center align-center items-center lg:items-center w-full lg:w-auto">
               <button
                 onClick={() => navigate("/all-matri")}
-                className="flex items-center text-lg text-black transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl w-full lg:w-auto"
+                className={`flex items-center text-lg  transition ease-in-out px-4 py-2 duration-1000 hover:text-xl w-full lg:w-auto ${
+                  isMobileMenuOpen
+                    ? "border-b-2 py-4 border-indigo-200 text-orange-100 "
+                    : "text-white"
+                } `}
               >
-                <FaSearch className="w-6 h-6 text-white  mr-2" /> 
-                 {/* animate-pulse */}
+                <FaSearch className="w-6 h-6 text-white animate-pulse mr-2" />
                 Search
               </button>
               <Link
-                className="flex items-center text-lg text-black transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl w-full lg:w-auto"
+                className={`flex items-center text-lg  transition ease-in-out px-4 py-2 duration-1000 hover:text-xl w-full lg:w-auto ${
+                  isMobileMenuOpen
+                    ? "border-b-2 py-4 border-indigo-200 text-orange-100 "
+                    : "text-white"
+                } `}
                 to={"/payment-details"}
               >
                 <img src={Pricing} alt="Pricing" className="w-6 h-6 mr-2" />
@@ -166,21 +173,33 @@ const Header = () => {
               </Link>
               <button
                 onClick={() => navigate("/allChats")}
-                className="flex items-center text-lg text-black transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl w-full lg:w-auto"
+                className={`flex items-center text-lg  transition ease-in-out px-4 py-2 duration-1000 hover:text-xl w-full lg:w-auto ${
+                  isMobileMenuOpen
+                    ? "border-b-2 py-4 border-indigo-200 text-orange-100 "
+                    : "text-white"
+                } `}
               >
                 <BsChatDots className="w-6 h-6 text-white mr-2" />
                 Chats
               </button>
               <button
                 onClick={() => setShowFriends(!showFriends)}
-                className="flex items-center text-lg text-black transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl w-full lg:w-auto"
+                className={`flex items-center text-lg transition ease-in-out px-4 py-2 duration-1000 hover:text-xl w-full lg:w-auto ${
+                  isMobileMenuOpen
+                    ? "border-b-2 py-4 border-indigo-200 text-orange-100 "
+                    : "text-white"
+                } `}
               >
                 <FaUserFriends className="w-6 h-6 text-white mr-2" />
                 Friends
               </button>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="flex items-center text-lg text-black transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl cursor-pointer relative w-full lg:w-auto"
+                className={`flex items-center text-lg transition ease-in-out px-4 py-2 duration-1000 hover:text-xl cursor-pointer relative w-full lg:w-auto ${
+                  isMobileMenuOpen
+                    ? "border-b-2 py-4 border-indigo-200 text-orange-100 "
+                    : "text-white"
+                } `}
               >
                 <img
                   src={NotificationIcon}
@@ -189,12 +208,20 @@ const Header = () => {
                 />
                 Notifications
                 {incomingRequests.length > 0 && (
-                  <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-green-500 animate-ping border-2 border-white"></span>
+                  <span
+                    className={`absolute right-0 block h-3 w-3 rounded-full bg-green-500 animate-ping border-2 border-white ${
+                      isMobileMenuOpen ? "top-6" : "top-0"
+                    } `}
+                  ></span>
                 )}
               </button>
               <div className="relative w-full lg:w-auto">
                 <button
-                  className="flex items-center text-lg text-black transition ease-in-out px-4 py-2 rounded-lg duration-1000 hover:text-xl cursor-pointer w-full lg:w-auto"
+                  className={`flex items-center text-lg transition ease-in-out px-4 py-2 duration-1000 hover:text-xl w-full lg:w-auto ${
+                    isMobileMenuOpen
+                      ? "border-b-2 py-4 border-indigo-200 text-orange-100 "
+                      : "text-white"
+                  } `}
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   <img
@@ -262,25 +289,25 @@ const Header = () => {
 
       {showNotifications && (
         <div className="fixed inset-0 bg-indigo-100 bg-opacity-75 z-50 flex justify-center items-center p-4 animate-fadeIn">
-                  <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden animate-slideIn">
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-                      <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] overflow-hidden">
-                        <div className="flex justify-between items-center p-4 border-b">
-                          <h2 className="text-xl font-bold">Notifications</h2>
-                          <button
-                            onClick={() => setShowNotifications(!showNotifications)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            ×
-                          </button>
-                        </div>
-                        <div className="h-[calc(90vh-64px)]">
-                          <FriendRequests />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden animate-slideIn">
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] overflow-hidden">
+                <div className="flex justify-between items-center p-4 border-b">
+                  <h2 className="text-xl font-bold">Notifications</h2>
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
                 </div>
+                <div className="h-[calc(90vh-64px)]">
+                  <FriendRequests />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {showFriends && (
@@ -295,7 +322,7 @@ const Header = () => {
                 ×
               </button>
             </div>
-            <div className="p-4">
+            <div className="">
               <FriendsList onClose={() => setShowFriends(false)} />
             </div>
           </div>

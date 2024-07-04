@@ -596,7 +596,7 @@ const ProfileForm = () => {
             ))}
             {isPhotosLoading && (
               <div className="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center animate-pulse">
-                <p className="text-gray-600">Loading photos...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#f49d3f]"></div>
               </div>
             )}
           </div>
