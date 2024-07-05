@@ -150,11 +150,11 @@ const FriendsList = ({ onClose }) => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-[#f49d3f] flex items-center mb-4">
           <FaUserFriends className="mr-2" />
-          Your Friends
+          Your Connections
         </h2>
         {friends.length === 0 ? (
           <p className="text-gray-600 text-center py-4">
-            You have no friends yet.
+            You have no connections yet.
           </p>
         ) : (
           <ul className="space-y-4">
@@ -173,7 +173,7 @@ const FriendsList = ({ onClose }) => {
                       className="flex items-center bg-red-500 text-white px-3 py-2 rounded-full hover:bg-red-600 transition-colors duration-200"
                     >
                       <FaUserSlash className="mr-1" />
-                      Block & Unfriend
+                      Block!
                     </button>
                   ) : (
                     <div className="flex space-x-2">
@@ -224,7 +224,7 @@ const FriendsList = ({ onClose }) => {
                   className="flex items-center bg-green-500 text-white px-3 py-2 rounded-full hover:bg-green-600 transition-colors duration-200"
                 >
                   <FaUserPlus className="mr-1" />
-                  Unblock & Send Request
+                   Send Request
                 </button>
               </li>
             ))}

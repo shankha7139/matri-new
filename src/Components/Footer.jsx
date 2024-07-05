@@ -19,7 +19,7 @@ const SocialIcon = ({ src, alt }) => (
 
 export default function Footer() {
   return (
-    <footer className="bg-white w-full">
+    <footer className="bg-white w-full mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="top flex flex-col md:flex-row justify-between py-10 items-center border-b border-indigo-100">
           <motion.img

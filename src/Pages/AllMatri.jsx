@@ -209,7 +209,7 @@ export default function Matri() {
             </button>
             <button
               onClick={toggleFilterVisibility}
-              className="bg-[#F39C3E] hover:bg-[#e08b2d] text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+              className="mt-24 bg-[#F39C3E] hover:bg-[#e08b2d] text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
             >
               {isFilterVisible ? "Hide Filters" : "Show Filters"}
             </button>
