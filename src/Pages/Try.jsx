@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import axios from "axios";
 import {
   FaCheckCircle,
   FaTimesCircle,
   FaVolumeUp,
   FaEye,
   FaTrash,
+  FaCamera,
 } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
 import {
@@ -33,8 +33,6 @@ import { deleteDoc } from "firebase/firestore";
 import { doSignOut } from "../firebase/auth";
 import { auth } from "../firebase/Firebase";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-import { Camera } from "lucide-react";
-import Cropper from "react-easy-crop";
 
 const ProfileForm = () => {
   const { currentUser } = useAuth();
@@ -76,7 +74,6 @@ const ProfileForm = () => {
     // Aadhaar verification
     aadhaarNumber: "",
     captcha: "",
-    dp: null,
   });
 
   const [photos, setPhotos] = useState([]);
@@ -96,10 +93,7 @@ const ProfileForm = () => {
   const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [deletePassword, setDeletePassword] = useState("");
-  const [croppedImage, setCroppedImage] = useState(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
 
   const navigate = useNavigate();
 
@@ -121,6 +115,24 @@ const ProfileForm = () => {
     }));
 
     setPhotos([...photos, ...formattedFiles]);
+  };
+
+  const handleProfilePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setProfilePhotoFile(file);
+      setProfilePhoto(URL.createObjectURL(file));
+    }
+  };
+
+  const uploadProfilePhoto = async () => {
+    if (profilePhotoFile) {
+      const storageRef = ref(storage, `profilePhotos/${currentUser.uid}`);
+      await uploadBytes(storageRef, profilePhotoFile);
+      const url = await getDownloadURL(storageRef);
+      return url;
+    }
+    return null;
   };
 
   const generateCaptcha = () => {
@@ -372,48 +384,6 @@ const ProfileForm = () => {
     }
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFormData((prev) => ({ ...prev, dp: reader.result }));
-        setIsDialogOpen(true);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
-
-  const onCropComplete = useCallback(
-    (croppedArea, croppedAreaPixels) => {
-      const canvas = document.createElement("canvas");
-      const image = new Image();
-      image.src = formData.dp;
-      image.onload = () => {
-        canvas.width = croppedAreaPixels.width;
-        canvas.height = croppedAreaPixels.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(
-          image,
-          croppedAreaPixels.x,
-          croppedAreaPixels.y,
-          croppedAreaPixels.width,
-          croppedAreaPixels.height,
-          0,
-          0,
-          croppedAreaPixels.width,
-          croppedAreaPixels.height
-        );
-        setCroppedImage(canvas.toDataURL());
-      };
-    },
-    [formData.dp]
-  );
-
-  const handleCropSave = () => {
-    setFormData((prev) => ({ ...prev, dp: croppedImage }));
-    setIsDialogOpen(false);
-  };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -435,28 +405,35 @@ const ProfileForm = () => {
       <h2 className="text-3xl font-bold mb-8 text-center text-indigo-800 animate-pulse">
         Personal Details
       </h2>
-      <div className="mb-6 flex justify-center">
-        <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 cursor-pointer">
-          {formData.dp ? (
-            <img
-              src={formData.dp}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Camera className="text-gray-400" size={48} />
-            </div>
-          )}
+      {/* Profile Photo Section */}
+      <div className="flex justify-center mb-8">
+        <div className="relative">
+          <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-indigo-500">
+            {profilePhoto ? (
+              <img
+                src={profilePhoto}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <FaCamera className="text-4xl text-gray-400" />
+              </div>
+            )}
+          </div>
+          <label
+            htmlFor="profilePhotoInput"
+            className="absolute bottom-0 right-0 bg-indigo-500 rounded-full p-2 cursor-pointer"
+          >
+            <FaCamera className="text-white" />
+          </label>
           <input
+            id="profilePhotoInput"
             type="file"
             accept="image/*"
-            onChange={handleFileChange}
-            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={handleProfilePhotoChange}
+            className="hidden"
           />
-          {/* <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-            <span className="text-white text-sm">Change Photo</span>
-          </div> */}
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -938,7 +915,6 @@ const ProfileForm = () => {
     }
 
     setIsSubmitting(true);
-
     try {
       const newPhotoURLs = await Promise.all(photos.map(uploadPhoto));
       const allPhotoURLs = [
@@ -946,14 +922,7 @@ const ProfileForm = () => {
         ...newPhotoURLs,
       ];
 
-      // Upload profile picture
-      let dpUrl = formData.dp;
-      if (formData.dp && formData.dp.startsWith("data:")) {
-        const dpRef = ref(storage, `profilePictures/${currentUser.uid}`);
-        const dpBlob = await fetch(formData.dp).then((r) => r.blob());
-        await uploadBytes(dpRef, dpBlob);
-        dpUrl = await getDownloadURL(dpRef);
-      }
+      const profilePhotoURL = await uploadProfilePhoto();
 
       const userRef = doc(db, "users", currentUser.uid);
       await setDoc(
@@ -961,8 +930,7 @@ const ProfileForm = () => {
         {
           ...formData,
           photos: allPhotoURLs,
-          dp: dpUrl,
-          adharVarified: adharCheck,
+          profilePhoto: profilePhotoURL,
           updatedAt: new Date(),
         },
         { merge: true }
@@ -976,6 +944,7 @@ const ProfileForm = () => {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <>
@@ -1041,31 +1010,6 @@ const ProfileForm = () => {
             Close Profile
           </Button>
         </DialogActions>
-      </Dialog>
-
-      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-        <DialogContent>
-          <DialogTitle>Crop Profile Picture</DialogTitle>
-          <div className="relative h-64 w-full">
-            <Cropper
-              image={formData.dp}
-              crop={crop}
-              zoom={zoom}
-              aspect={1}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-            />
-          </div>
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button variant="outlined" onClick={() => setIsDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="contained" onClick={handleCropSave}>
-              Save
-            </Button>
-          </div>
-        </DialogContent>
       </Dialog>
 
       <Dialog
