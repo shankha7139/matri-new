@@ -62,10 +62,10 @@ export default function AboveFooter() {
         </div>
 
         <div className="apps bg-indigo-100 py-12 px-8 sm:px-12">
-          <h1 className="text-3xl md:text-5xl pb-8 text-center text-[#F39C3E] font-bold">
-            Get the Matrimony app here..
+          <h1 className="text-3xl md:text-5xl pb-8 text-center text-[#F39C3E] italic">
+            Let's tie knots of trust...
           </h1>
-          <div className="flex justify-center gap-6">
+          {/* <div className="flex justify-center gap-6">
             <motion.img
               src={playstore}
               alt="playstore"
@@ -86,7 +86,7 @@ export default function AboveFooter() {
                   "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
               }}
             />
-          </div>
+          </div> */}
         </div>
       </motion.div>
     </div>

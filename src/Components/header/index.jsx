@@ -158,7 +158,7 @@ const Header = () => {
                 } `}
               >
                 <FaSearch className="w-6 h-6 text-white animate-pulse mr-2" />
-                Search
+                Explore!
               </button>
               <Link
                 className={`flex items-center text-lg  transition ease-in-out px-4 py-2 duration-1000 hover:text-xl w-full lg:w-auto ${
@@ -191,7 +191,7 @@ const Header = () => {
                 } `}
               >
                 <FaUserFriends className="w-6 h-6 text-white mr-2" />
-                Friends
+                Connections
               </button>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
@@ -314,7 +314,7 @@ const Header = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-xl font-bold">All Friends</h2>
+              <h2 className="text-xl font-bold">All Connections</h2>
               <button
                 onClick={() => setShowFriends(!showFriends)}
                 className="text-gray-500 hover:text-gray-700"
