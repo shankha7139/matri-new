@@ -60,6 +60,7 @@ const addUserToFirestore = async (user, additionalData = {}) => {
         displayName: user.displayName || additionalData.name || "",
         photoURL: user.photoURL || "",
         createdAt: new Date(),
+        reported: additionalData.reported || false,
         // Additional fields
         name: additionalData.name || "",
         adharVarified: additionalData.adharVarified || false,
