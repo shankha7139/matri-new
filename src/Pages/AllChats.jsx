@@ -54,6 +54,21 @@ function AllChats() {
     }
   };
 
+  const getOtherParticipantDp = async (participants) => {
+    const otherParticipantId = participants.find((p) => p !== user.uid);
+    try {
+      const userDoc = await getDoc(doc(firestore, "users", otherParticipantId));
+      if (userDoc.exists()) {
+        return userDoc.data().photos[0];
+      } else {
+        return "Unknown User";
+      }
+    } catch (error) {
+      console.error("Error fetching user name:", error);
+      return "Error";
+    }
+  };
+
   if (!user) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -90,75 +105,84 @@ function AllChats() {
   //     // return <div>{selectedChat.participants.find((p) => p !== user.uid)}</div>;
   //   }
 
-  
-    if (!user) {
-      return (
-        <div className="flex items-center justify-center h-screen bg-indigo-100">
-          <p className="text-xl text-[#f49d3f] font-semibold">
-            Please log in to view your chats.
-          </p>
-        </div>
-      );
-    }
-
-    if (selectedChat) {
-      return (
-        <div className="mt-20">
-          <Chat uid={selectedChat.uid} chatId={selectedChat.chatId} />
-        </div>
-      );
-    }
-
+  if (!user) {
     return (
-      <div className="mx-auto bg-indigo-100 h-screen flex flex-col">
-        <header className="bg-gradient-to-r from-[#f49d3f] to-[#ffa726] px-4 text-white p-6 shadow-lg flex justify-center text-center">
-          <h1 className="text-2xl font-bold">All Chats</h1>
-        </header>
-        <button
-          className="absolute top-0 left-0 mt-6 ml-6 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-          onClick={() => window.history.back()}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
-          </svg>
-        </button>
-        <ul className="flex-grow overflow-y-auto px-4 py-6">
-          {chats.map((chat) => (
-            <ChatItem
-              key={chat.id}
-              chat={chat}
-              userId={user.uid}
-              getOtherParticipantName={getOtherParticipantName}
-              onSelect={() => handleChatSelect(chat)}
-            />
-          ))}
-        </ul>
+      <div className="flex items-center justify-center h-screen bg-indigo-100">
+        <p className="text-xl text-[#f49d3f] font-semibold">
+          Please log in to view your chats.
+        </p>
       </div>
     );
+  }
+
+  if (selectedChat) {
+    return (
+      <div className="mt-20">
+        <Chat uid={selectedChat.uid} chatId={selectedChat.chatId} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto bg-indigo-100 h-screen flex flex-col">
+      <header className="bg-gradient-to-r from-[#f49d3f] to-[#ffa726] px-4 text-white p-6 shadow-lg flex justify-center text-center">
+        <h1 className="text-2xl font-bold">All Chats</h1>
+      </header>
+      <button
+        className="absolute top-0 left-0 mt-6 ml-6 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+        onClick={() => window.history.back()}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
+      <ul className="flex-grow overflow-y-auto px-4 py-6">
+        {chats.map((chat) => (
+          <ChatItem
+            key={chat.id}
+            chat={chat}
+            userId={user.uid}
+            getOtherParticipantName={getOtherParticipantName}
+            getOtherParticipantDp={getOtherParticipantDp}
+            onSelect={() => handleChatSelect(chat)}
+          />
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-function ChatItem({ chat, userId, getOtherParticipantName, onSelect }) {
+function ChatItem({
+  chat,
+  userId,
+  getOtherParticipantName,
+  onSelect,
+  getOtherParticipantDp,
+}) {
   const [otherParticipantName, setOtherParticipantName] =
     useState("Loading...");
+  const [otherParticipantDp, setOtherParticipantDp] = useState("");
 
   useEffect(() => {
     const fetchName = async () => {
       const name = await getOtherParticipantName(chat.participants);
       setOtherParticipantName(name);
+      const dp = await getOtherParticipantDp(chat.participants);
+      setOtherParticipantDp(dp);
     };
     fetchName();
-  }, [chat.participants, getOtherParticipantName]);
+  }, [chat.participants, getOtherParticipantName, getOtherParticipantDp]);
 
   const getInitials = (name) => {
     return name
@@ -174,8 +198,8 @@ function ChatItem({ chat, userId, getOtherParticipantName, onSelect }) {
       onClick={onSelect}
     >
       <div className="flex items-center px-6 py-4">
-        <div className="flex-shrink-0 h-14 w-14 rounded-full bg-[#f49d3f] flex items-center justify-center text-white font-bold text-xl shadow-md">
-          {getInitials(otherParticipantName)}
+        <div className="flex-shrink-0 h-14 w-14 rounded-full overflow-hidden bg-[#f49d3f] flex items-center justify-center text-white font-bold text-xl shadow-md">
+          <img src={otherParticipantDp} alt="" />
         </div>
         <div className="ml-4 flex-grow">
           <p className="text-lg font-semibold text-gray-900">

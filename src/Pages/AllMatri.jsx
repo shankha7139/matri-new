@@ -282,7 +282,10 @@ export default function Matri() {
               </div>
             ) : filteredData.length > 0 ? (
               filteredData
-                .filter((data) => loggedUser !== data.uid && data.name)
+                .filter(
+                  (data) =>
+                    loggedUser !== data.uid && data.name && data.verifiedByAdmin
+                )
                 .map((data) => (
                   <Card
                     key={data.id}

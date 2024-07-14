@@ -54,6 +54,7 @@ const ProfileForm = () => {
     bloodGroup: "",
     email: currentUser.email,
     dateOfBirth: "",
+    sex: "",
 
     // Family Details
     caste: "",
@@ -421,12 +422,6 @@ const ProfileForm = () => {
               </div>
             )}
           </div>
-          <label
-            htmlFor="profilePhotoInput"
-            className="absolute bottom-0 right-0 bg-indigo-500 rounded-full p-2 cursor-pointer"
-          >
-            <FaCamera className="text-white" />
-          </label>
           <input
             id="profilePhotoInput"
             type="file"
@@ -439,6 +434,7 @@ const ProfileForm = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {[
           { name: "name", placeholder: "Name", type: "text" },
+          { name: "sex", placeholder: "sex", type: "text" },
           {
             name: "age",
             placeholder: "Age",
@@ -945,7 +941,6 @@ const ProfileForm = () => {
     }
   };
 
-
   return (
     <>
       <Headers />
@@ -1003,7 +998,10 @@ const ProfileForm = () => {
       >
         <DialogTitle>Profile Updated</DialogTitle>
         <DialogContent dividers>
-          <p>Your profile has been updated successfully!</p>
+          <p>
+            Your profile has been updated successfully!will be visible to others
+            after verified by Admin
+          </p>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
