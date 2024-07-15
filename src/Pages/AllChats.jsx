@@ -8,12 +8,17 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import Chat from "../Components/Chat"; // Import the Chat component
+import Chat from "../Components/Chat";
+import { useNavigate } from "react-router-dom";
+import { IoHomeOutline } from "react-icons/io5";
+import { motion } from "framer-motion";
+import { IoSearchOutline } from "react-icons/io5";
 
 function AllChats() {
   const [chats, setChats] = useState([]);
   const [user, setUser] = useState(null);
   const [selectedChat, setSelectedChat] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -69,6 +74,11 @@ function AllChats() {
     }
   };
 
+  const handleChatSelect = (chat) => {
+    const recipientId = chat.participants.find((p) => p !== user.uid);
+    setSelectedChat({ uid: recipientId, chatId: chat.id });
+  };
+
   if (!user) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -79,86 +89,77 @@ function AllChats() {
     );
   }
 
-  //   console.log(selectedChat.participants);
-
-  const handleChatSelect = (chat) => {
-    const recipientId = chat.participants.find((p) => p !== user.uid);
-    setSelectedChat({ uid: recipientId, chatId: chat.id });
-  };
-
-  if (selectedChat) {
-    return (
-      <div className="mt-20">
-        <Chat uid={selectedChat.uid} chatId={selectedChat.chatId} />
-      </div>
-    );
-  }
-
-  //   if (selectedChat) {
-  //     console.log(
-  //       "yala buga",
-  //       selectedChat.participants.find((p) => p !== user.uid)
-  //     );
-  //     const temp = selectedChat.participants.find((p) => p !== user.uid);
-  //     console.log(temp);
-  //     return <Chat uid={temp} />;
-  //     // return <div>{selectedChat.participants.find((p) => p !== user.uid)}</div>;
-  //   }
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-indigo-100">
-        <p className="text-xl text-[#f49d3f] font-semibold">
-          Please log in to view your chats.
-        </p>
-      </div>
-    );
-  }
-
-  if (selectedChat) {
-    return (
-      <div className="mt-20">
-        <Chat uid={selectedChat.uid} chatId={selectedChat.chatId} />
-      </div>
-    );
-  }
-
   return (
-    <div className="mx-auto bg-indigo-100 h-screen flex flex-col">
-      <header className="bg-gradient-to-r from-[#f49d3f] to-[#ffa726] px-4 text-white p-6 shadow-lg flex justify-center text-center">
-        <h1 className="text-2xl font-bold">All Chats</h1>
-      </header>
-      <button
-        className="absolute top-0 left-0 mt-6 ml-6 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-        onClick={() => window.history.back()}
+    <div className="flex h-screen bg-indigo-100">
+      {/* Left Panel - Chat List */}
+      <motion.div
+        initial={{ x: -300, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-1/3 flex flex-col bg-white border-r shadow-lg"
       >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+        <motion.header
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="bg-gradient-to-br from-indigo-100 to-orange-100 px-4 py-6 text-white flex justify-between items-center"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M15 19l-7-7 7-7"
-          ></path>
-        </svg>
-      </button>
-      <ul className="flex-grow overflow-y-auto px-4 py-6">
-        {chats.map((chat) => (
-          <ChatItem
-            key={chat.id}
-            chat={chat}
-            userId={user.uid}
-            getOtherParticipantName={getOtherParticipantName}
-            getOtherParticipantDp={getOtherParticipantDp}
-            onSelect={() => handleChatSelect(chat)}
-          />
-        ))}
-      </ul>
+          <h1 className="text-2xl font-bold text-indigo-500 ">Chats</h1>
+          <button
+            className="text-2xl cursor-pointer hover:text-indigo-200 transition-colors duration-300"
+            onClick={() => navigate("/")}
+          >
+            <IoHomeOutline className="text-indigo-500" />
+          </button>
+        </motion.header>
+
+        <div className="flex-grow overflow-y-auto">
+          <motion.ul
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.1 } },
+            }}
+          >
+            {chats.map((chat) => (
+              <ChatItem
+                key={chat.id}
+                chat={chat}
+                userId={user.uid}
+                getOtherParticipantName={getOtherParticipantName}
+                getOtherParticipantDp={getOtherParticipantDp}
+                onSelect={() => handleChatSelect(chat)}
+                isSelected={selectedChat && selectedChat.chatId === chat.id}
+              />
+            ))}
+          </motion.ul>
+        </div>
+      </motion.div>
+
+      {/* Right Panel - Chat Box */}
+      <motion.div
+        initial={{ x: 300, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-2/3 flex flex-col bg-indigo-50 overflow-hidden"
+      >
+        {selectedChat ? (
+          <div className="h-full overflow-y-auto">
+            <Chat uid={selectedChat.uid} chatId={selectedChat.chatId} />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <motion.p
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="text-2xl text-indigo-400 font-semibold"
+            >
+              Select a chat to start messaging
+            </motion.p>
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 }
@@ -169,6 +170,7 @@ function ChatItem({
   getOtherParticipantName,
   onSelect,
   getOtherParticipantDp,
+  isSelected,
 }) {
   const [otherParticipantName, setOtherParticipantName] =
     useState("Loading...");
@@ -184,45 +186,33 @@ function ChatItem({
     fetchName();
   }, [chat.participants, getOtherParticipantName, getOtherParticipantDp]);
 
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  };
-
   return (
-    <li
-      className="bg-white hover:bg-indigo-50 cursor-pointer rounded-lg shadow-md mb-4 transition duration-300 ease-in-out transform hover:scale-102"
+    <motion.li
+      variants={{
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 },
+      }}
+      className={`cursor-pointer py-4 px-6 hover:bg-indigo-50 transition-colors duration-300 border-b border-indigo-100 ${
+        isSelected ? "bg-indigo-100" : ""
+      }`}
       onClick={onSelect}
     >
-      <div className="flex items-center px-6 py-4">
-        <div className="flex-shrink-0 h-14 w-14 rounded-full overflow-hidden bg-[#f49d3f] flex items-center justify-center text-white font-bold text-xl shadow-md">
-          <img src={otherParticipantDp} alt="" />
+      <div className="flex items-center">
+        <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden shadow-md">
+          <motion.img
+            whileHover={{ scale: 1.1 }}
+            src={otherParticipantDp}
+            alt=""
+            className="h-full w-full object-cover"
+          />
         </div>
         <div className="ml-4 flex-grow">
           <p className="text-lg font-semibold text-gray-900">
             {otherParticipantName}
           </p>
-          {chat.lastMessage && (
-            <p className="text-sm text-gray-600 mt-1">
-              {chat.lastMessage.text.length > 30
-                ? chat.lastMessage.text.substring(0, 30) + "..."
-                : chat.lastMessage.text}
-            </p>
-          )}
         </div>
-        {chat.lastMessage && (
-          <span className="text-xs text-gray-400 ml-2">
-            {new Date(chat.lastMessage.timestamp?.toDate()).toLocaleTimeString(
-              [],
-              { hour: "2-digit", minute: "2-digit" }
-            )}
-          </span>
-        )}
       </div>
-    </li>
+    </motion.li>
   );
 }
 

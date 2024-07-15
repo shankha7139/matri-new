@@ -69,7 +69,7 @@ function App(props) {
 
   return (
     <div className="App">
-      <Header />
+
       <section className="relative h-full">
         {user ? (
           <>

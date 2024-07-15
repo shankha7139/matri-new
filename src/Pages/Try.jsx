@@ -957,12 +957,12 @@ const ProfileForm = () => {
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             {renderCurrentPage()}
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-end mt-4">
               {currentPage > 1 && (
                 <button
                   type="button"
                   onClick={handlePreviousPage}
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg neumorphic-button"
+                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg neumorphic-button mr-2"
                 >
                   Previous
                 </button>

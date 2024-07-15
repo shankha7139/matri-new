@@ -5,7 +5,6 @@ import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { MdOutlineReportOff } from "react-icons/md";
-
 import {
   Button,
   Dialog,
@@ -13,6 +12,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 
 export default function Card(props) {
@@ -21,6 +23,13 @@ export default function Card(props) {
   const [isReported, setIsReported] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [reportReasons, setReportReasons] = useState({
+    inappropriateContent: false,
+    spam: false,
+    harassment: false,
+    fakeProfile: false,
+  });
+
   const auth = getAuth();
 
   useEffect(() => {
@@ -49,9 +58,14 @@ export default function Card(props) {
     const db = getFirestore();
     const userRef = doc(db, "users", props.uid);
 
+    const selectedReasons = Object.entries(reportReasons)
+      .filter(([_, value]) => value)
+      .map(([key, _]) => key);
+
     try {
       await updateDoc(userRef, {
         reported: true,
+        reportReason: selectedReasons,
       });
       setIsReported(true);
       setOpenDialog(false);
@@ -69,6 +83,13 @@ export default function Card(props) {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  const handleReasonChange = (event) => {
+    setReportReasons({
+      ...reportReasons,
+      [event.target.name]: event.target.checked,
+    });
   };
 
   return (
@@ -99,18 +120,64 @@ export default function Card(props) {
             onClose={handleCloseDialog}
             onClick={(e) => e.stopPropagation()}
           >
-            <DialogTitle>{"Are you sure?"}</DialogTitle>
+            <DialogTitle>{"Report User"}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                This action will report the user's profile. Are you sure you
-                want to proceed?
+                Please select the reason(s) for reporting this user:
               </DialogContentText>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={reportReasons.inappropriateContent}
+                      onChange={handleReasonChange}
+                      name="inappropriateContent"
+                    />
+                  }
+                  label="Inappropriate Content"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={reportReasons.spam}
+                      onChange={handleReasonChange}
+                      name="spam"
+                    />
+                  }
+                  label="Spam"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={reportReasons.harassment}
+                      onChange={handleReasonChange}
+                      name="harassment"
+                    />
+                  }
+                  label="Harassment"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={reportReasons.fakeProfile}
+                      onChange={handleReasonChange}
+                      name="fakeProfile"
+                    />
+                  }
+                  label="Fake Profile"
+                />
+              </FormGroup>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog} color="primary">
                 Cancel
               </Button>
-              <Button onClick={handleReport} color="primary" autoFocus>
+              <Button
+                onClick={handleReport}
+                color="primary"
+                autoFocus
+                disabled={!Object.values(reportReasons).some(Boolean)}
+              >
                 Confirm
               </Button>
             </DialogActions>

@@ -77,6 +77,12 @@ const addUserToFirestore = async (user, additionalData = {}) => {
           additionalData.childrenFromPreviousMarriage || "",
         region: additionalData.region || "",
         photos: additionalData.photos || [],
+        reportReasons: additionalData.reportReasons || {
+          inappropriateContent: false,
+          spam: false,
+          harassment: false,
+          fakeProfile: false,
+        },
         showEmail: additionalData.showEmail || false,
         showNumber: additionalData.showNumber || false,
         showStatus: additionalData.showStatus || false,
