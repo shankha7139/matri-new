@@ -55,6 +55,7 @@ const ProfileForm = () => {
     email: currentUser.email,
     dateOfBirth: "",
     sex: "",
+    agentRefCode: "",
 
     // Family Details
     caste: "",
@@ -600,6 +601,20 @@ const ProfileForm = () => {
                 : "Aadhaar verification failed"}
             </p>
           )}
+
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <label className="text-lg font-medium text-indigo-800">
+              Agent ref code:
+            </label>
+            <input
+              type="text"
+              name="agentRefCode"
+              value={formData.agentRefCode}
+              onChange={handleChange}
+              className="w-full p-4 bg-white rounded-lg shadow-inner border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 transition duration-200 ease-in-out"
+              required
+            />
+          </div>
 
           {/* Photo Upload Section */}
           <div

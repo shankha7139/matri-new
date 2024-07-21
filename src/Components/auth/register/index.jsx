@@ -15,11 +15,24 @@ const Register = () => {
 
   const { userLoggedIn } = useAuth();
 
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!isRegistering) {
+  //     setIsRegistering(true);
+  //     await doCreateUserWithEmailAndPassword(email, password);
+  //   }
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!isRegistering) {
       setIsRegistering(true);
-      await doCreateUserWithEmailAndPassword(email, password);
+      try {
+        await doCreateUserWithEmailAndPassword(email, password);
+        // After successful registration, navigate to the profile page
+        navigate("/profile");
+      } catch (error) {
+        setErrorMessage(error.message);
+        setIsRegistering(false);
+      }
     }
   };
 

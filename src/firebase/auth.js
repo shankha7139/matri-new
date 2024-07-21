@@ -71,6 +71,7 @@ const addUserToFirestore = async (user, additionalData = {}) => {
         religion: additionalData.religion || "",
         motherTongue: additionalData.motherTongue || "",
         sex: additionalData.sex || "",
+        agentRefCode: additionalData.agentRefCode || "",
         profession: additionalData.profession || "",
         status: additionalData.status || "",
         childrenFromPreviousMarriage:
@@ -94,4 +95,3 @@ const addUserToFirestore = async (user, additionalData = {}) => {
     console.error("Error adding user to Firestore:", error);
   }
 };
-
