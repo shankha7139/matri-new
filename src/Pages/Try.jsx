@@ -38,6 +38,9 @@ const ProfileForm = () => {
   const { currentUser } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [adharCheck, setAdharCheck] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(false);
+  const [paymentType, setPaymentType] = useState("");
+  const [photoLimit, setPhotoLimit] = useState(0);
 
   const [formData, setFormData] = useState({
     // Personal Details
@@ -99,6 +102,41 @@ const ProfileForm = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchPaymentInfo = async () => {
+      if (currentUser) {
+        const userRef = doc(db, "users", currentUser.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setPaymentStatus(userData.payment || false);
+          setPaymentType(userData.paymentType || "");
+
+          // Set photo limit based on payment status and type
+          if (!userData.payment) {
+            setPhotoLimit(1);
+          } else {
+            switch (userData.paymentType) {
+              case "A":
+                setPhotoLimit(6);
+                break;
+              case "B":
+                setPhotoLimit(9);
+                break;
+              case "C":
+                setPhotoLimit(12);
+                break;
+              default:
+                setPhotoLimit(1);
+            }
+          }
+        }
+      }
+    };
+
+    fetchPaymentInfo();
+  }, [currentUser]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -108,7 +146,18 @@ const ProfileForm = () => {
   };
 
   const handlePhotoUpload = (acceptedFiles) => {
-    const formattedFiles = acceptedFiles.map((file) => ({
+    const totalPhotos = photos.length + existingPhotos.length;
+    const remainingSlots = photoLimit - totalPhotos;
+
+    if (remainingSlots <= 0) {
+      alert(
+        `You have reached your photo limit of ${photoLimit}. Please upgrade your plan to upload more photos.`
+      );
+      return;
+    }
+
+    const filesToAdd = acceptedFiles.slice(0, remainingSlots);
+    const formattedFiles = filesToAdd.map((file) => ({
       name: file.name,
       type: file.type,
       size: file.size,
@@ -117,6 +166,12 @@ const ProfileForm = () => {
     }));
 
     setPhotos([...photos, ...formattedFiles]);
+
+    if (filesToAdd.length < acceptedFiles.length) {
+      alert(
+        `Only ${filesToAdd.length} photo(s) were added. You've reached your limit of ${photoLimit} photos.`
+      );
+    }
   };
 
   const handleProfilePhotoChange = (event) => {
@@ -617,16 +672,16 @@ const ProfileForm = () => {
           </div>
 
           {/* Photo Upload Section */}
+          <p className="text-indigo-600 text-sm mb-4 text-center">
+            {paymentStatus
+              ? `Your current plan allows you to upload up to ${photoLimit} photos.`
+              : "You can upload 1 photo. Upgrade your plan to upload more!"}
+          </p>
+
           <div
             {...getRootProps()}
             className="border-dashed border-2 border-indigo-300 p-6 rounded-lg text-center hover:border-indigo-500 transition duration-200 ease-in-out"
           >
-            <label className="block text-lg font-medium text-indigo-800 mb-2">
-              Upload Photos:
-            </label>
-            <p className="text-indigo-600 text-sm mb-4">
-              The first picture will be the profile photo
-            </p>
             <input {...getInputProps()} />
             {isDragActive ? (
               <p className="text-indigo-700">Drop the files here...</p>
@@ -638,7 +693,7 @@ const ProfileForm = () => {
           </div>
 
           {/* Photo Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
             {[...photos, ...existingPhotos].map((photo, index) => (
               <div key={index} className="relative group">
                 <img
@@ -662,6 +717,11 @@ const ProfileForm = () => {
               </div>
             )}
           </div>
+
+          <p className="text-indigo-600 text-sm mt-4 text-center">
+            {photos.length + existingPhotos.length} / {photoLimit} photos
+            uploaded
+          </p>
         </div>
       </div>
     </>
