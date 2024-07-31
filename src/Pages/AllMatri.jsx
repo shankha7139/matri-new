@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Card from "../Components/Card";
 import Footer from "../Components/Footer";
 import Headers from "../Components/header";
-import { useAuth } from "../context/authContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
-import CircularProgress from '@mui/material/CircularProgress';
-import Slider from '@mui/material/Slider'; // Import Slider from Material-UI
-import { styled } from '@mui/material/styles';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import CircularProgress from "@mui/material/CircularProgress";
+import Slider from "@mui/material/Slider";
+import { styled } from "@mui/material/styles";
 
 const SkeletonCard = () => (
   <div className="border rounded-lg p-4 max-w-sm w-full mx-auto">
@@ -26,56 +31,55 @@ const SkeletonCard = () => (
 );
 
 const GlassSlider = styled(Slider)(({ theme }) => ({
-  color: '#fdba74', // This is the Tailwind orange-300 color
+  color: "#fdba74",
   height: 8,
-  '& .MuiSlider-track': {
-    border: 'none',
-    backgroundColor: '#fdba74',
+  "& .MuiSlider-track": {
+    border: "none",
+    backgroundColor: "#fdba74",
   },
-  '& .MuiSlider-thumb': {
+  "& .MuiSlider-thumb": {
     height: 24,
     width: 24,
-    backgroundColor: '#fdba74',
-    border: '2px solid currentColor',
-    '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-      boxShadow: 'inherit',
+    backgroundColor: "#fdba74",
+    border: "2px solid currentColor",
+    "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
+      boxShadow: "inherit",
     },
-    '&:before': {
-      display: 'none',
+    "&:before": {
+      display: "none",
     },
   },
-  '& .MuiSlider-valueLabel': {
+  "& .MuiSlider-valueLabel": {
     lineHeight: 1.2,
     fontSize: 12,
-    background: 'unset',
+    background: "unset",
     padding: 0,
     width: 32,
     height: 32,
-    borderRadius: '50% 50% 50% 0',
-    backgroundColor: '#fdba74',
-    transformOrigin: 'bottom left',
-    transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
-    '&:before': { display: 'none' },
-    '&.MuiSlider-valueLabelOpen': {
-      transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
+    borderRadius: "50% 50% 50% 0",
+    backgroundColor: "#fdba74",
+    transformOrigin: "bottom left",
+    transform: "translate(50%, -100%) rotate(-45deg) scale(0)",
+    "&:before": { display: "none" },
+    "&.MuiSlider-valueLabelOpen": {
+      transform: "translate(50%, -100%) rotate(-45deg) scale(1)",
     },
-    '& > *': {
-      transform: 'rotate(45deg)',
+    "& > *": {
+      transform: "rotate(45deg)",
     },
   },
-  '& .MuiSlider-rail': {
+  "& .MuiSlider-rail": {
     opacity: 0.5,
-    backgroundColor: '#fdba74',
+    backgroundColor: "#fdba74",
   },
 }));
 
 export default function Matri() {
-  const { userLoggedIn } = useAuth();
-  const [loggedUser, setLoggedUser] = useState(null); // Changed initial state to null
-  const location = useLocation();
-  const auth = getAuth();
-  const navigate = useNavigate(); // Use useNavigate from react-router-dom
+  const [loggedUser, setLoggedUser] = useState(null);
   const [loggedUserGender, setLoggedUserGender] = useState(null);
+  const [payment, setpayment] = useState(null);
+  const navigate = useNavigate();
+  const auth = getAuth();
 
   const [searchTerms, setSearchTerms] = useState({
     religion: "",
@@ -95,7 +99,7 @@ export default function Matri() {
   const handleAgeRangeChange = (event, newValue) => {
     setAgeRange({
       low: newValue[0],
-      high: newValue[1]
+      high: newValue[1],
     });
   };
 
@@ -112,13 +116,13 @@ export default function Matri() {
       }));
       setUser(userData);
 
-      // Get logged user's gender
-      const loggedUserData = userData.find(user => user.uid === loggedUser);
+      const loggedUserData = userData.find((user) => user.uid === loggedUser);
       const loggedUserGender = loggedUserData ? loggedUserData.sex : null;
       setLoggedUserGender(loggedUserGender);
 
-      // Filter out users of the same gender
-      const oppositeGenderUsers = userData.filter(user => user.sex !== loggedUserGender);
+      const oppositeGenderUsers = userData.filter(
+        (user) => user.sex !== loggedUserGender
+      );
       setFilteredData(oppositeGenderUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -134,15 +138,15 @@ export default function Matri() {
 
   const filterData = () => {
     const filtered = user.filter((item) => {
-      const professionLower = item.profession ?
-        item.profession.toLowerCase() :
-        "";
-      const mothertongueLower = item.motherTongue ?
-        item.motherTongue.toLowerCase() :
-        "";
+      const professionLower = item.profession
+        ? item.profession.toLowerCase()
+        : "";
+      const mothertongueLower = item.motherTongue
+        ? item.motherTongue.toLowerCase()
+        : "";
       const religionLower = item.religion ? item.religion.toLowerCase() : "";
       const age = item.age ? parseInt(item.age) : 0;
-      const oppositeGender = loggedUserGender === 'male' ? 'female' : 'male';
+      const oppositeGender = loggedUserGender === "male" ? "female" : "male";
 
       return (
         professionLower.includes(searchTerms.prof.toLowerCase()) &&
@@ -150,43 +154,59 @@ export default function Matri() {
         religionLower.includes(searchTerms.religion.toLowerCase()) &&
         age >= ageRange.low &&
         age <= ageRange.high &&
-        item.sex === oppositeGender // Only show opposite gender profiles
+        item.sex === oppositeGender
       );
     });
     setFilteredData(filtered);
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setLoggedUser(user.uid); // Use user.uid directly
+        setLoggedUser(user.uid);
+        const db = getFirestore();
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setpayment(userData.payment);
+        }
       } else {
         console.log("User is signed out");
+        setLoggedUser(null);
+        setpayment(null);
       }
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
   }, [auth]);
 
   useEffect(() => {
-    if (loggedUser) {
+    if (loggedUser && payment) {
       loadData();
     }
-  }, [loggedUser]);
+  }, [loggedUser, payment]);
 
   useEffect(() => {
-    filterData();
+    if (user.length > 0) {
+      filterData();
+    }
   }, [user, searchTerms, ageRange, loggedUserGender]);
 
   const handleLoginRedirect = () => {
     navigate("/login");
   };
 
+  const handleUpgradeRedirect = () => {
+    navigate("/upgrade");
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-purple-100">
         <Headers />
-        <div className="container mx-auto px-4 py-20  ">
+        <div className="container mx-auto px-4 py-20">
           <div className="flex justify-between items-center mb-8">
             <button
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
@@ -278,6 +298,18 @@ export default function Matri() {
                   className="bg-[#F39C3E] hover:bg-[#e08b2d] text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                 >
                   Go to Login
+                </button>
+              </div>
+            ) : !payment ? (
+              <div className="col-span-full flex flex-col items-center justify-center h-64 bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-2xl shadow-xl">
+                <div className="text-center text-indigo-800 font-semibold mb-4">
+                  Upgrade your account to view profiles
+                </div>
+                <button
+                  onClick={handleUpgradeRedirect}
+                  className="bg-[#F39C3E] hover:bg-[#e08b2d] text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                >
+                  Upgrade Account
                 </button>
               </div>
             ) : filteredData.length > 0 ? (

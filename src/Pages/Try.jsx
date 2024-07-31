@@ -38,7 +38,7 @@ const ProfileForm = () => {
   const { currentUser } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [adharCheck, setAdharCheck] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(false);
+  const [payment, setpayment] = useState(false);
   const [paymentType, setPaymentType] = useState("");
   const [photoLimit, setPhotoLimit] = useState(0);
 
@@ -109,7 +109,7 @@ const ProfileForm = () => {
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setPaymentStatus(userData.payment || false);
+          setpayment(userData.payment || false);
           setPaymentType(userData.paymentType || "");
 
           // Set photo limit based on payment status and type
@@ -673,7 +673,7 @@ const ProfileForm = () => {
 
           {/* Photo Upload Section */}
           <p className="text-indigo-600 text-sm mb-4 text-center">
-            {paymentStatus
+            {payment
               ? `Your current plan allows you to upload up to ${photoLimit} photos.`
               : "You can upload 1 photo. Upgrade your plan to upload more!"}
           </p>

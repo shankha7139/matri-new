@@ -41,11 +41,9 @@ export default function Card(props) {
         const userData = userSnap.data();
         setIsReported(userData.reported || false);
 
-        // Check if the current user is not the profile owner
         const currentUser = auth.currentUser;
         const isOwnProfile = currentUser && currentUser.uid === props.uid;
 
-        // Show report button if it's not the user's own profile
         setShowReportButton(!isOwnProfile);
       }
     };
@@ -92,10 +90,30 @@ export default function Card(props) {
     });
   };
 
+  const handleCardClick = () => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const db = getFirestore();
+      const userRef = doc(db, "users", currentUser.uid);
+      getDoc(userRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          if (userData.payment) {
+            navigate("/individualProfile", { state: { props } });
+          } else {
+            alert("Please upgrade your account to view profiles.");
+          }
+        }
+      });
+    } else {
+      alert("Please log in to view profiles.");
+    }
+  };
+
   return (
     <div
       className="bg-orange-200 p-4 rounded-xl relative shadow-xl cursor-pointer"
-      onClick={() => navigate("/individualProfile", { state: { props } })}
+      onClick={handleCardClick}
     >
       {showReportButton && (
         <>

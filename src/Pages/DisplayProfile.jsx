@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   AiOutlineSend,
   AiOutlineArrowLeft,
@@ -8,23 +8,57 @@ import {
 import Chat from "../Components/Chat";
 import Header from "../Components/header";
 import SendFriendRequest from "../Components/SendFriendRequest";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const ProfileDetail = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const profile = location.state?.props;
   const [chatbox, setChatbox] = useState(false);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const [canViewProfile, setCanViewProfile] = useState(false);
+
+  useEffect(() => {
+    const checkpayment = async () => {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const db = getFirestore();
+        const userRef = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setCanViewProfile(!!userData.payment);
+        }
+      }
+    };
+
+    checkpayment();
+  }, []);
 
   const displayField = (value, isVisible) => {
     return isVisible ? value : "Chosen to be hidden by the user";
   };
 
-  if (!profile) {
+  if (!profile || !canViewProfile) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-r from-indigo-100 to-purple-100">
         <div className="text-center p-10 bg-white rounded-xl shadow-2xl">
           <h2 className="text-3xl font-bold text-indigo-800 mb-4">Oops!</h2>
-          <p className="text-xl text-gray-600">No profile data available.</p>
+          <p className="text-xl text-gray-600">
+            {!profile
+              ? "No profile data available."
+              : "Please upgrade your account to view profiles."}
+          </p>
+          {!canViewProfile && (
+            <button
+              onClick={() => navigate("/upgrade")} // Create an upgrade page
+              className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              Upgrade Account
+            </button>
+          )}
         </div>
       </div>
     );
