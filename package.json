@@ -19,6 +19,7 @@
     "firebase": "^10.12.2",
     "flowbite": "^2.3.0",
     "framer-motion": "^11.3.2",
+    "http-proxy-middleware": "^3.0.3",
     "lucide-react": "^0.400.0",
     "mongoose": "^8.4.0",
     "multer": "^1.4.5-lts.1",
@@ -46,7 +47,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "proxy": "https://cdn-api.co-vin.in"
   },
   "eslintConfig": {
     "extends": [
